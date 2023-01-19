@@ -1,0 +1,39 @@
+{
+  "short_name": "HELP2FIX",
+  "name": "HELP2FIX",
+  "description": "Service for interaction between client and masters.",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "browser_action": {
+    "default_icon": "images/logo.png",
+    "default_title": "HELP 2 FIX",
+    "default_popup": ""
+  },
+  "permissions": [ 
+    "http://*/",
+    "http://*.google.com/",
+    "http://localhost/*",
+    "https://maps.google.com/*",
+    "https://maps.googleapis.com/*"
+  ],
+  "content_security_policy": "script-src 'self' https://maps.googleapis.com https://maps.gstatic.com; object-src 'self'",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
