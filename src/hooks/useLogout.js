@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useDispatch } from "react-redux";
-import { setAuth, logOut } from "../features/auth/authSlice";
+import { logOut } from "../features/auth/authSlice";
 
 axios.defaults.withCredentials = true;
 const useLogout = () => {
@@ -8,7 +8,7 @@ const useLogout = () => {
 
     const logout = async () => {
         try {
-            const response = await axios.delete(//REACT_APP_BACKEND_URL
+            await axios.delete(//REACT_APP_BACKEND_URL
                 `${process.env.REACT_APP_BACKEND_URL}/logout`, 
                 {
                     headers: { 'Content-Type': 'application/json' }, 

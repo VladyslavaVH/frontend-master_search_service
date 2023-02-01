@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Category from "./Category";
 import { useGetPopularCategoriesQuery } from "../../../features/home/homeApiSlice";
+import { useTranslation } from 'react-i18next';
  
 const Categories = (props) => {
+    const { t } = useTranslation();
     const { 
         data: popularCategories,
         //data,
@@ -17,7 +19,7 @@ const Categories = (props) => {
             <div className="row">
                 <div className="col-xl-12">
                     <div className="section-headline centered margin-bottom-15">
-                        <h3>Popular Job Categories</h3>
+                        <h3>{t('PopularJobCategories')}</h3>
                     </div>
 
                     <div className="categories-container">

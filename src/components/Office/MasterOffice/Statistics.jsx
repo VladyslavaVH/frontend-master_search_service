@@ -1,20 +1,34 @@
-import React, { useEffect, useRef } from "react";
-import { connect } from 'react-redux';
+import React, { useEffect, useState, useRef } from "react";
+import { useGetMasterStatisticsQuery } from '../../../features/master/masterApiSlice';
+import { useGetNotificationsQuery } from '../../../features/user/userApiSlice';
 import { useCountUp } from "react-countup";
 import { funFacts } from "../../../amimations/amimations";
 import NotificationListItem from './../../HeaderContainer/NotificationsWindow/NotificationListItem';
-import SimpleBar from "simplebar-react";
+import { useTranslation } from 'react-i18next';
 
 let Statistics = (props) => {
-    const { completedJobs, totalAmountEarned,
-        unreadNotifications } = props;
+    const { t } = useTranslation();
+    const { data: statistics, isLoading } = useGetMasterStatisticsQuery();
+    // const [completedJobs, setCompletedJobs] = useState(0);
+    // const [totalAmount, setTotalAmount] = useState(0);
+    const { completedJobs, totalAmount } = statistics || { completedJobs: 0, totalAmount: 0 };
+    const { data: notifications } = useGetNotificationsQuery();
+    const { unreadNotifications } = notifications || [];
     const parameters = { separator: ',', duration: 2 };
 
     const completedJobsRef = useRef(null);
     const totalAmountEarnedRef = useRef(null);
 
-    useCountUp({ ref: completedJobsRef, end: 22, ...parameters });
-    useCountUp({ ref: totalAmountEarnedRef, end: 300, ...parameters });
+    const { start: startCompletedJobs } = useCountUp({ ref: completedJobsRef, end: completedJobs, ...parameters });
+    const { start: startTotalAmount} = useCountUp({ ref: totalAmountEarnedRef, end: totalAmount, ...parameters });
+
+    useEffect(() => {
+        if (!isLoading) {
+            startCompletedJobs();
+            startTotalAmount();
+        }
+    }, [isLoading]);
+
 
     useEffect(() => {
         funFacts();
@@ -26,14 +40,14 @@ let Statistics = (props) => {
         <div className="fun-facts-container">
             <div className="fun-fact" data-fun-fact-color="#2a41e8">
                 <div className="fun-fact-text">
-                    <span>Completed Jobs</span>
+                    <span>{t('CompletedJobs')}</span>
                     <h4 ref={completedJobsRef}></h4>
                 </div>
                 <div className="fun-fact-icon"><i className="icon-material-outline-business-center"></i></div>
             </div>
             <div className="fun-fact" data-fun-fact-color="#36bd78">{/*#b81b7f*/}
                 <div className="fun-fact-text">
-                    <span>Total Amount Earned</span>
+                <span>{t("TotalAmountEarned")}</span>
                     <h4 ref={totalAmountEarnedRef}></h4>
                 </div>
                 <div className="fun-fact-icon"><i className="icon-feather-dollar-sign"></i></div>{/*icon-line-awesome-money  icon-material-outline-local-atm*/}
@@ -41,6 +55,7 @@ let Statistics = (props) => {
         </div>
 
         {/* <!-- Row --> */}
+        {unreadNotifications?.length > 0 &&
         <div className="row">
 
             {/* <!-- Dashboard Box --> */}
@@ -53,12 +68,12 @@ let Statistics = (props) => {
                         </button>
                     </div>
                     <div className="content">
-                        <SimpleBar data-simplebar-force-visible data-simplebar-auto-hide="false" autoHide={false} className="header-notifications-scroll">{/*data-simplebar */}
+                        <div className="header-notifications-scroll">{/*data-simplebar */}
                             <ul className="dashboard-box-list">
                                 {unreadNotifications.map(n => 
                                 <NotificationListItem key={n.id} isSmall={false} {...n} />)}
                             </ul>
-                        </SimpleBar>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -132,17 +147,9 @@ let Statistics = (props) => {
                 </div>
             </div>}
 
-        </div>
+        </div>}
         {/* <!-- Row / End --> */}    
 </>;
-
 };
 
-let mapStateToProps = (state) => {
-	return {
-		unreadNotifications: state.auth.unreadNotifications,
-		notifications: state.auth.notifications
-	};
-}
-
-export default connect(mapStateToProps, {})(Statistics);
+export default Statistics;

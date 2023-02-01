@@ -1,18 +1,15 @@
-import React, { useEffect, useState} from "react";
+import React from "react";
 import Categories from "./Categories/Categories";
 import RecentJobsList from "./RecentJobsList";
 import IntroBanner from './IntroBanner/IntroBanner';
-import Plans from "./Plans/Plans";
 import MasterCarousel from "./MasterCarousel";
-import { testAPI } from './../../api/api';
-import { homeAPI } from "./../../api/api";
 import { useGetHighestRatedMastersQuery } from "../../features/home/homeApiSlice";
 
-let HomeContent = (props) => {
+let HomeContent = ({isMapApiLoaded}) => {
   const { data: masters, isLoading } = useGetHighestRatedMastersQuery();
 
   return <>
-    <IntroBanner />
+    <IntroBanner isMapApiLoaded={isMapApiLoaded} />
     
     <Categories />  
 

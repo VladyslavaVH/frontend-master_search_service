@@ -1,13 +1,15 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const NotificationListItem = (props) => {
+    const { t } = useTranslation();
     const { id, fullName, jobTitle, isSmall } = props;
 
     return <li className="notifications-not-read">
         <a>
             <span className="notification-icon"><i className="icon-material-outline-group"></i></span>
             <span className="notification-text">
-                <strong>{fullName}</strong> applied for a job <span className="color">{jobTitle}</span>
+                <strong>{fullName}</strong> {t('appliedForAJob')} <span className="color">{jobTitle}</span>
             </span>
             {!isSmall &&
             <div className="buttons-to-right">

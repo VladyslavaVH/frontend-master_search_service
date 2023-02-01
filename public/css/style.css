@@ -122,6 +122,7 @@ input[type="number"],
 textarea,
 select {
 	height: 48px;
+	-moz-appearance: textfield;
 	line-height: 48px;
 	padding: 0 20px;
 	outline: none;
@@ -138,6 +139,12 @@ select {
 	border-radius: 4px;
 	border: none;
 	box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.12);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 form input {
@@ -1393,7 +1400,7 @@ body #navigation ul ul ul { margin-top: 0; }
 /* Sticky Header
 ------------------------------------- */
 #header-container {
-    position: absolute;
+    position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
@@ -1406,7 +1413,7 @@ body #navigation ul ul ul { margin-top: 0; }
 
 @media (max-width: 1099px) {
   #wrapper { padding-top: 0 !important; }
-  #header-container { position: relative !important; }
+  /* #header-container { position: relative !important; } */
   #header-container.transparent-header { position: absolute; }
 }
 
@@ -4592,6 +4599,10 @@ span.blog-item-tag {
 .job-listing .job-listing-company-logo img {
 	border-radius: 4px;
 	transform: translate3d(0,0,0);
+}
+
+.job-listing-description {
+	cursor: pointer;
 }
 
 .job-listing .job-listing-description {
@@ -7891,7 +7902,7 @@ input:checked + .switch-button:before {
 
 	.intro-search-field .bootstrap-select.btn-group .dropdown-toggle .filter-option { height: auto; line-height: 20px; }
 
-	.intro-banner { padding: 70px 0; }
+	.intro-banner { margin-top: 76px; padding: 70px 0; }
 
 	.banner-headline { max-width: 100% }
 	.banner-headline h1,
@@ -15914,15 +15925,18 @@ ul.dashboard-box-list > li:hover {
 /* Scrollbar Adjustments */
 .messages-inbox ul { max-height: 875px; }
 .message-content-inner { max-height: 750px; }
+.message-content { max-height: 730px; }
 
-.message-content,
 .messages-container-inner .messages-inbox { overflow: hidden; }
 
+.message-content,
 .message-content-inner,
 .messages-container-inner .messages-inbox ul {
 	overflow-y: scroll;
+	overflow-x: hidden;
 	width: calc(100% + 18px)
 }
+.message-content::-webkit-scrollbar,
 .message-content-inner::-webkit-scrollbar,
 .messages-container-inner .messages-inbox ul::-webkit-scrollbar { width: 17px; }
 /*  Scrollbar Hide - End */

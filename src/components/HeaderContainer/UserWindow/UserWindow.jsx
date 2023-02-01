@@ -5,8 +5,10 @@ import useLogout from './../../../hooks/useLogout';
 import { NavLink } from 'react-router-dom';
 import Snackbar from "node-snackbar";
 import $ from 'jquery';
+import { useTranslation } from "react-i18next";
 
 const UserWindow = (props) => {
+    const { t } = useTranslation();
     const [isActive, setIsActive] = useState(false);
     const [isOnline, setIsOnline] = useState(true);
     const user = useSelector(selectCurrentUser);
@@ -55,7 +57,7 @@ const UserWindow = (props) => {
         <div className="header-notifications-trigger">
             <a>
                 <div className={`user-avatar status-${isOnline ? 'online' : 'offline'}`}>
-                    <img src={`${profilePhotosPath}${avatar ? avatar : userPlaceholder}`} alt="" />
+                    <img src={`${profilePhotosPath}${avatar}`} alt="" />
                 </div>
             </a>
         </div>
@@ -71,27 +73,30 @@ const UserWindow = (props) => {
                         <img src={`${profilePhotosPath}${avatar}`} alt="status" />
                     </div>
                     <div className="user-name">
-                        {fullName} <span>{isMaster ? 'Master' : 'Client'}</span>
+                        {fullName} <span>{isMaster ? t('Master') : t('Client')}</span>
                     </div>
                 </div>
             </div>
 
             <ul className="user-menu-small-nav">
                 {isMaster && <li>
-                    <NavLink state={{ name: `Howdy, ${fullName}!`, page: 'Statistics', span: 'We are glad to see you again!' }}
+                    <NavLink state={{ name: `${t('Howdy')}, ${fullName}!`, page: t('Statistics'), span: t('Greetings') }}
                         to={`/master-office/statistics`}>
-                        <i className="icon-material-outline-dashboard"></i> Statistics
+                        <i className="icon-material-outline-dashboard"></i> 
+                        {t('Statistics')}
                     </NavLink>
                 </li>}
                 <li>
-                    <NavLink state={{ name: 'Settings', page: 'Settings' }}
+                    <NavLink state={{ name: t('Settings'), page: t('Settings') }}
                         to={`/${isMaster ? 'master' : 'client'}-office/settings`}>
-                        <i className="icon-material-outline-dashboard"></i> Settings
+                        <i className="icon-material-outline-dashboard"></i> 
+                        {t('Settings')}
                     </NavLink>
                 </li>
                 <li>
                     <NavLink to={`/`} onClick={async () => await logout()}>
-                        <i className="icon-material-outline-power-settings-new"></i> Logout
+                        <i className="icon-material-outline-power-settings-new"></i> 
+                        {t('Logout')}
                     </NavLink>
                 </li>
             </ul>

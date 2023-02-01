@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { logOut } from "../../../features/auth/authSlice";
 import useLogout from "../../../hooks/useLogout";
-import { connect } from "react-redux";
-import { setLogout } from "../../../redux/authReducer";
-
-import SimpleBar from 'simplebar-react';
-import 'simplebar/dist/simplebar.min.css';
+import { useGetMessagesQuery } from '../../../features/user/userApiSlice';
+import { useTranslation } from "react-i18next";
 
 let Sidebar = (props) => {
-    //const { unreadMessages } = props;
+    const { t } = useTranslation();
     const [isMasterProfile, setMasterProfile] = useState(null);
+    const { data: unreadMessages } = useGetMessagesQuery();
     const location = useLocation();
-    let unreadMessages = [];
     const logout = useLogout();
 
     useEffect(() => {
@@ -25,63 +20,64 @@ let Sidebar = (props) => {
         <div className="dashboard-nav-container">
 
             {/* <!-- Responsive Navigation Trigger --> */}
-            <a href="#" className="dashboard-responsive-nav-trigger">
+            <a href="" className="dashboard-responsive-nav-trigger">
                 <span className="hamburger hamburger--collapse" >
                     <span className="hamburger-box">
                         <span className="hamburger-inner"></span>
                     </span>
                 </span>
-                <span className="trigger-title">Office Navigation</span>
+                <span className="trigger-title">{t('OfficeNavigation')}</span>
             </a>
             
             {/* <!-- Navigation --> */}
             <div className="dashboard-nav">
                 <div className="dashboard-nav-inner">
 
-                    <ul data-submenu-title="Start">
+                    <ul data-submenu-title={t('Start')}>
                         {isMasterProfile &&
                         <li className={isMasterProfile ? 'active' : ''}>
                             <a>
                                 <i className="icon-material-outline-business-center"></i>
-                                View Master Profile
+                                {t('ViewMasterProfile')}
                             </a>
                         </li>}
                         <li className={(location.pathname.includes('job-posting')) ? 'active' : ''}>
-                            <NavLink state={{name: 'Post a Job', page: 'Post a Job'}} className={({isActive}) => { return isActive ? 'current' : ''}}
+                            <NavLink state={{name: t('PostAJob'), page: t('PostAJob')}} className={({isActive}) => { return isActive ? 'current' : ''}}
                             to='/client-office/job-posting'>
                                 <i className="icon-material-outline-business-center"></i>
-                                Post a Job
+                                {t('PostAJob')}
                             </NavLink>
                         </li>
                         <li className={(location.pathname.includes('messages')) ? 'active' : ''}>
-                        <NavLink state={{name: 'Messages', page: 'Messages'}}
+                        <NavLink state={{name: t('Messages'), page: t('Messages')}}
                             to='/client-office/messages'>
                                 <i className="icon-material-outline-question-answer"></i> 
-                                Messages 
-                                {(unreadMessages.length > 0) && <span className="nav-tag">{unreadMessages.length}</span>}
+                                {t('Messages')} 
+                                {(unreadMessages?.length > 0) && <span className="nav-tag">{unreadMessages.length}</span>}
                         </NavLink>
                         </li>
                         <li className={(location.pathname.includes('master')
                         || location.pathname.includes('manage')) ? 'active' : ''}>
-                            <NavLink  state={{name: 'Manage Jobs', page: 'Manage Jobs'}}
+                            <NavLink  state={{name: t('ManageJobs'), page: t('ManageJobs')}}
                             to='/client-office/manage-jobs'>
                                 <i className="icon-material-outline-assignment"></i> 
-                                Manage Jobs
+                                {t('ManageJobs')}
                             </NavLink>
                         </li>
                     </ul>
                     
-                    <ul data-submenu-title="Account">
+                    <ul data-submenu-title={t('Account')}>
                         <li className={(location.pathname.includes('settings')) ? 'active' : ''}>
-                            <NavLink  state={{name: 'Settings', page: 'Settings'}}
+                            <NavLink  state={{name: t('Settings'), page: t('Settings')}}
                             to='/client-office/settings'>
                                 <i className="icon-material-outline-settings"></i>
-                                Settings
+                                {t('Settings')}
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to={'/'} onClick={async () => await logout()}>
-                                <i className="icon-material-outline-power-settings-new"></i> Logout
+                                <i className="icon-material-outline-power-settings-new"></i> 
+                                {t('Logout')}
                             </NavLink>
                         </li>
                     </ul>

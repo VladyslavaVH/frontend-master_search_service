@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import $ from 'jquery';
+import { useTranslation } from 'react-i18next';
 
 let OfficeFooter = (props) => {
+    const { t } = useTranslation();
     const [year, setYear] = useState(2023);
     const SITE_NAME = process.env.REACT_APP_SITE_NAME;
 
@@ -21,7 +23,7 @@ let OfficeFooter = (props) => {
     <div className="dashboard-footer-spacer"></div>
         <div className="small-footer margin-top-15">
             <div className="small-footer-copyrights">
-                © {year} <strong>{SITE_NAME}</strong>. All Rights Reserved.
+                © {year} <strong>{SITE_NAME}</strong>. {t('AllRightsReserved')}
             </div>
             <ul className="footer-social-links">
                 <li>

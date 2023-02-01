@@ -16,13 +16,13 @@ let MasterOffice = (props) => {
     
     return <div className="dashboard-container">
             <Sidebar />
-            <SimpleBar data-simplebar-force-visible data-simplebar-auto-hide="true" style={{ maxHeight: '91vh' }} autoHide={true} className="dashboard-content-container">{/*data-simplebar*/}
+            <div className="dashboard-content-container">{/*data-simplebar*/}
                 <div className="dashboard-content-inner">
                     <Titlebar name={location.state.name} page={location.state.page} span={location.state?.span} />
                     <Outlet />
                     <OfficeFooter />
                 </div>
-            </SimpleBar>
+            </div>
         </div>;
 };
 

@@ -2,8 +2,10 @@ import React from "react";
 import JobListItem from "../Jobs/JobListItem";
 import { NavLink } from 'react-router-dom';
 import { useGetRecentJobsListQuery } from "../../features/home/homeApiSlice";
+import { useTranslation } from "react-i18next";
 
 const RecentJobsList = (props) => {
+    const { t } = useTranslation();
     const { 
         data: jobs,
         isLoading,
@@ -18,8 +20,8 @@ const RecentJobsList = (props) => {
                 <div className="col-xl-12">
 
                     <div className="section-headline margin-top-0 margin-bottom-35">
-                        <h3>Recent jobs</h3>
-                        <NavLink to={`/jobs`} className="headline-link">Browse All Jobs</NavLink>
+                        <h3>{t('RecentJobs')}</h3>
+                        <NavLink to={`/jobs`} className="headline-link">{t('BrowseAllJobs')}</NavLink>
                     </div>
 
                     <div className="listings-container compact-list-layout margin-top-35">

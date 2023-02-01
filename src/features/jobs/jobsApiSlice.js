@@ -20,7 +20,7 @@ export const jobsApiSlice = apiSlice.injectEndpoints({
         }),  
         postJob: builder.mutation({
             query: jobData => ({
-                url: '/create/job',
+                url: '/job', 
                 method: 'POST',
                 //headers: { 'Content-Type': 'multipart/form-data' },
                 body: jobData
@@ -66,5 +66,5 @@ export const {
     useDeleteJobMutation,
     useDeleteCandidateMutation,
     useConfirmCandidateMutation,
-} = jobsApiSlice
+} = jobsApiSlice;
 

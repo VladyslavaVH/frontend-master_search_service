@@ -842,7 +842,7 @@ $(document).ready(function(){
 		$(window).on('resize', function() {
 			keywordsList.css({'height':'auto'}).height();
 		});
-
+ 
 		// Auto Height for keywords that are pre-added
 		$(window).on('load', function() {
 			let keywordCount = $('.keywords-list').children("span").length;

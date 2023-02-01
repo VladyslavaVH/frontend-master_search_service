@@ -1,5 +1,36 @@
 import $ from 'jquery';
 
+export function mmenuInit() {
+    let wi = $(window).width();
+    if(wi <= '1099') {
+
+        $(".mmenu-init" ).remove();
+        $("#navigation").clone().addClass("mmenu-init").insertBefore("#navigation").removeAttr('id').removeClass('style-1 style-2')
+                        .find('ul, div').removeClass('style-1 style-2 mega-menu mega-menu-content mega-menu-section').removeAttr('id');
+        $(".mmenu-init").find("ul").addClass("mm-listview");
+        $(".mmenu-init").find(".mobile-styles .mm-listview").unwrap();
+
+
+        $(".mmenu-init").mmenu({
+             "counters": true
+        }, {
+         // configuration
+         offCanvas: {
+            pageNodetype: "#wrapper"
+         }
+        });
+
+        let mmenuAPI = $(".mmenu-init").data( "mmenu" );
+        let $icon = $(".mmenu-trigger .hamburger");
+
+        $(".mmenu-trigger").on('click', function() {
+            mmenuAPI.open();
+        });
+
+    }
+    $(".mm-next").addClass("mm-fullsubopen");
+};
+
 export function close_user_dropdown() {
     $('.header-notifications').removeClass("active");
 };

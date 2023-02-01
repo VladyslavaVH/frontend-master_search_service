@@ -1,91 +1,109 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useGetFaqsQuery } from '../../../features/faqs/faqsApiSlice';
+import { useChangeFaqsMutation } from '../../../features/admin/adminApiSlice';
+
+const EDIT_BTN_STYLES = { 
+    width: '100px', 
+    paddingTop: 0, 
+    paddingBottom: 0, 
+    color: '#fff',
+    cursor: 'pointer'
+};
 
 const EditFAQs = (props) => {
-    return <div class="col-xl-12">
+    const [accordionData, setAccordionData] = useState([]);
+    const { data, isLoading } = useGetFaqsQuery();
+    const [newFaqs, setNewFaqs] = useState([]);
+    const [changeFaqs] = useChangeFaqsMutation();
 
-        {/* <!-- Accordion --> */}
-        <div class="accordion js-accordion">
+    useEffect(() => {
+        if (!isLoading && accordionData.length !== data.faqs.length) {
+            for (let i = 0; i < data.faqs.length; i++) {
+                accordionData.push(false);  
+                setNewFaqs(data.faqs);
+            }
+        }
+    }, [isLoading]);
 
-            {/* <!-- Accordion Item --> */}
-            <div class="accordion__item js-accordion-item">
-                <div class="accordion-header js-accordion-header">Question 1</div>
+    const onAccordionClick = e => {
+        const accordionIndex = e.target.parentNode.getAttribute('data-index');
+        const tmp = accordionData[accordionIndex];
+        accordionData[accordionIndex] = !tmp;
+        setAccordionData([...accordionData]);
+    }
 
-                {/* <!-- Accordtion Body --> */}
-                <div class="accordion-body js-accordion-body">
+    const editFaqs = (e) => {
+        let parentNode = null;
+        if (e.target.tagName === 'I') {
+            parentNode = e.target.parentNode.parentNode;
+        } else {
+            parentNode = e.target.parentNode;
+        }
 
-                    {/* <!-- Accordion Content --> */}
-                    <div class="accordion-body__contents">
-                        Globally incubate standards compliant channels before scalable benefits. Quickly disseminate superior deliverables whereas web-enabled applications. Quickly drive clicks-and-mortar catalysts for change.
-                    </div>
+        if (parentNode) {
+            const editEl = parentNode.children[1];
+            const dataIndex = parentNode.parentNode.parentNode.parentNode.getAttribute('data-index');
+            
+            const dataInfo = editEl.getAttribute('data-info');
+            if (editEl?.outerHTML.includes('div')) {
+                editEl.outerHTML = `<textarea data-info="${dataInfo}">${editEl?.innerText}</textarea>`;
+            } else {
+                let prevFaq = newFaqs[dataIndex];
+                let newFaq = null;
+                let newArr = null;
 
-                </div>
-                {/* <!-- Accordion Body / End --> */}
-            </div>
-            {/* <!-- Accordion Item / End --> */}
+                if (editEl.getAttribute('data-info') === 'question') {
+                    newFaq = { ...prevFaq, question: editEl.value };
+                } else if (editEl.getAttribute('data-info') === 'answer') {
+                    newFaq = { ...prevFaq, answer: editEl.value };
+                }
 
-            {/* <!-- Accordion Item --> */}
-            <div class="accordion__item js-accordion-item active">
-                <div class="accordion-header js-accordion-header">Question 2</div>
+                newArr = [...newFaqs].filter(f => f.id !== newFaq.id);
+                setNewFaqs([newFaq, ...newArr]);
 
-                {/* <!-- Accordtion Body --> */}
-                <div class="accordion-body js-accordion-body">
+                editEl.outerHTML = `<div data-info="${dataInfo}">${editEl?.value}</div>`;
+            }
+        }
+        
+    }
 
-                    {/* <!-- Accordion Content --> */}
-                    <div class="accordion-body__contents">
-                        Distinctively re-engineer revolutionary meta-services and premium architectures. Intrinsically incubate intuitive opportunities and real-time potentialities. Appropriately communicate one-to-one technology after plug-and-play networks.
-                    </div>
+    const saveChanges = async () => {
+        const res = await changeFaqs({ faqs: newFaqs }).unwrap();
+        if (!res) return;
 
-                    {/* <!-- Sub Accordion Container --> */}
-                    <div class="accordion js-accordion">
+        //console.log(res);
+    }
 
-                        {/* <!-- Sub Accordion --> */}
-                        <div class="accordion__item js-accordion-item">
-                            <div class="accordion-header js-accordion-header">Sub Panel 1</div>
-                            <div class="accordion-body js-accordion-body">
-                                <div class="accordion-body__contents">
-                                    Completely synergize scalable e-commerce rather than high standards in e-services. Assertively iterate resource maximizing products after leading-edge intellectual capital.
-                                </div>
+    return <>
+        <div className="accordion js-accordion">
+    
+            {!isLoading && newFaqs?.map((faq, i) =>
+                <div key={faq.id} onClick={onAccordionClick} data-index={i} className={`accordion__item js-accordion-item ${accordionData[i] ? 'active' : ''}`}>
+                    <div className="accordion-header js-accordion-header">{faq.question}</div>
+    
+                    <div className="accordion-body js-accordion-body" style={{ display: accordionData[i] ? 'block' : 'none' }}>
+    
+                        <div className="accordion-body__contents">
+                            <div className='margin-bottom-15'>
+                                <div style={{ color: '#2a41e8' }}><i className='icon-line-awesome-question'>Question:</i></div>
+                                <div data-info="question">{faq.question}</div>
+                                <button onClick={editFaqs} type='button' className="button ripple-effect button-sliding-icon" style={EDIT_BTN_STYLES}>Edit <i className="icon-feather-edit"></i></button>
+                            </div>
+                            <hr />
+                            <div>
+                                <div style={{ color: '#2a41e8' }}><i className='icon-material-outline-question-answer'></i> Answer:</div>
+                                <div data-info="answer">{faq.answer}</div>
+                                <button onClick={editFaqs} type='button' className="button ripple-effect button-sliding-icon" style={EDIT_BTN_STYLES}>Edit <i className="icon-feather-edit"></i></button>
                             </div>
                         </div>
-
-                        {/* <!-- Sub Accordion --> */}
-                        <div class="accordion__item js-accordion-item">
-                            <div class="accordion-header js-accordion-header">Sub Panel 2</div>
-                            <div class="accordion-body js-accordion-body">
-                                <div class="accordion-body__contents">
-                                    Dynamically target high-payoff intellectual capital for customized technologies. Objectively integrate emerging core competencies before process-centric communities.
-                                </div>
-                            </div>
-                        </div>
-
+    
                     </div>
-                    {/* <!-- Sub Accordion / End --> */}
-                </div>
-                {/* <!-- Accordion Body / End --> */}
-            </div>
-            {/* <!-- Accordion Item / End --> */}
-
-            {/* <!-- Accordion Item --> */}
-            <div class="accordion__item js-accordion-item">
-                <div class="accordion-header js-accordion-header">Question 3</div>
-
-                {/* <!-- Accordtion Body --> */}
-                <div class="accordion-body js-accordion-body">
-
-                    {/* <!-- Accordion Content --> */}
-                    <div class="accordion-body__contents">
-                        Efficiently enable enabled sources and cost effective products. Completely synthesize principle-centered information after ethical communities. Efficiently innovate open-source infrastructures via inexpensive materials.
-                    </div>
-
-                </div>
-                {/* <!-- Accordion Body / End --> */}
-            </div>
-            {/* <!-- Accordion Item / End --> */}
-
+                </div>)
+            }
         </div>
-        {/* <!-- Accordion / End --> */}
 
-    </div>;
+        <button onClick={saveChanges} type='button' className="button ripple-effect button-sliding-icon margin-top-15" style={{ width: '170px' }}>Save changes <i className="icon-feather-check"></i></button>
+    </>;
 };
 
 export default EditFAQs;

@@ -11,6 +11,8 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
 import JobListItem from "./JobListItem";
+import locations from '../../data/test_locations';
+import Map from "./Map";
 
 let Jobs = (props) => {
 	const { category } = useParams();
@@ -38,12 +40,11 @@ let Jobs = (props) => {
 		}
 	}, []);
 
-    return <div className="full-page-container with-map">
+    return <div className="full-page-container with-map" style={{ maxHeight: '100vh' }}>
 
 	<FiltersSidebar />
 	
 
-	{/* <!-- Full Page Content --> */}
 	<div className="full-page-content-container">{/*data-simplebar*/}
 		<div className="full-page-content-inner">
 
@@ -81,13 +82,9 @@ let Jobs = (props) => {
 
 		</div>
 	</div>
-	{/* <!-- Full Page Content / End --> */}
 
-
-	{/* <!-- Full Page Map --> */}
 	<div className="full-page-map-container">
 		
-		{/* <!-- Enable Filters Button --> */}
 		<div className="filter-button-container">
 			<button className="enable-filters-button">
 				<i className="enable-filters-button-icon"></i>
@@ -99,14 +96,15 @@ let Jobs = (props) => {
 		
 		{/* <!-- Map --> */}
 		{!isLoaded && <div>Loading...</div>}
-	    {/* <div id="map" data-map-zoom="12" data-map-scroll="true"></div> */}
-		<GoogleMap id="map" zoom={12} center={center}
-		mapTypeId={'roadmap'} streetView={false}>
-			<MarkerF position={{ lat: 37.788181, lng: -122.461270 }} />
-		</GoogleMap>
+		{/* <GoogleMap id="map" zoom={12} center={center}
+		mapTypeId={'roadmap'} streetView={true}>
+			{
+				locations?.map(l =>
+					<MarkerF position={{ lat: l.lat, lng: l.lng }} />)
+			}
+		</GoogleMap> */}
+		<Map />
 	</div>
-	{/* <!-- Full Page Map / End --> */}
-
 </div>;
 };
 

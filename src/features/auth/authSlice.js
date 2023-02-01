@@ -10,6 +10,7 @@ const ROLE = {
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
+        lang: 'en',
         isAuth: false,
         user: null,
         token: null,
@@ -24,6 +25,7 @@ const authSlice = createSlice({
         setAuth: (state, { payload }) => {
             state.token = payload.accessToken;            
             const decoded = jwtDecode(state.token);
+            console.log(decoded);
             
             state.isAuth = true;
             state.user = decoded?.userInfo?.user || undefined;
@@ -39,6 +41,9 @@ const authSlice = createSlice({
                 case ROLE.MASTER:
                     state.isMaster = true;
                     break;
+                default:
+                    state.isMaster = false;
+                    break;
             }
         },
         logOut: (state) => {
@@ -49,10 +54,14 @@ const authSlice = createSlice({
         setPersist: (state, { payload }) => {
             state.persist = payload;
         },
+        setLanguage: (state, { payload }) => {
+            state.lang = payload;
+            document.documentElement.lang = state.lang;
+        }
     }
 });
 
-export const { setAuth, logOut, setPersist } = authSlice.actions;
+export const { setAuth, logOut, setPersist, setLanguage } = authSlice.actions;
 
 export default authSlice.reducer;
 

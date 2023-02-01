@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import { connect } from "react-redux";
-import { setLogout } from "../../../redux/authReducer";
-
-import SimpleBar from 'simplebar-react';
-import 'simplebar/dist/simplebar.min.css';
+import { useSelector } from "react-redux";
+import useLogout from './../../../hooks/useLogout';
 
 let Sidebar = (props) => {
+    const logout = useLogout();
     const { messages, unreadMessages, setLogout } = props;
 
     const location = useLocation();    
 
     return <div className="dashboard-sidebar">
-    <SimpleBar data-simplebar-force-visible data-simplebar-auto-hide="false" style={{ maxHeight: '91vh' }} autoHide={false} className="dashboard-sidebar-inner" >{/*data-simplebar*/}
+    <div className="dashboard-sidebar-inner" >{/*data-simplebar*/}
         <div className="dashboard-nav-container">
 
             {/* <!-- Responsive Navigation Trigger --> */}
@@ -65,17 +63,17 @@ let Sidebar = (props) => {
                         </li>                       
                     </ul>
 
-                    <ul data-submenu-title="Account">
-                        <li className={location.pathname.includes('settings') ? 'active' : ''}>
+                    <ul data-submenu-title="">
+                        {/* <li className={location.pathname.includes('settings') ? 'active' : ''}>
                             <NavLink state={{name: 'Settings', page: 'Settings'}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/admin-panel/settings'>
                                 <i className="icon-material-outline-settings"></i>
                                 Settings
                             </NavLink>
-                        </li>
+                        </li> */}
                         <li>
-                            <NavLink to='/' onClick={() => setLogout()}>
+                            <NavLink to='/' onClick={async () => await logout()}>
                                 <i className="icon-material-outline-power-settings-new"></i> 
                                 Logout
                             </NavLink>
@@ -87,17 +85,8 @@ let Sidebar = (props) => {
             {/* <!-- Navigation / End --> */}
 
         </div>
-    </SimpleBar>
+    </div>
 </div>;
 };
 
-let mapStateToProps = (state) => {
-    return {
-        messages: state.auth.messages,
-        unreadMessages: state.auth.unreadMessages,
-    };
-};
-
-export default connect(mapStateToProps, {
-    setLogout
-})(Sidebar);
+export default Sidebar;

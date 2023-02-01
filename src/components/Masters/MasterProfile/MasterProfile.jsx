@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { inlineBG, starRating } from "../../../amimations/amimations";
-import SendMessagePopup from './../../Office/ClientOffice/ManageCandidates/SendMessagePopup';
 import { useGetMasterByIdQuery } from "../../../features/masters/mastersApiSlice";
 import Comments from "./Comments/Comments";
 import Sidebar from "./Sidebar/Sidebar";

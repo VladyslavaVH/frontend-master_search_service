@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import Verified from "./Verified";
 
 import { authentication } from "../../firebase_config";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+//import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
 authentication.languageCode = 'en-US';
 // To apply the default browser preference instead of explicitly setting it.
@@ -21,38 +21,38 @@ const NumberVerification = ({ phone, onClose }) => {
     const [otp, setOTP] = useState(0);
     const { register, handleSubmit } = useForm();
 
-    const generateRecaptcha = () => {
-        window.recaptchaVerifier = new RecaptchaVerifier(
-        'recaptcha-container', {
-            'size': 'normal',
-            'callback': (response) => {
-                // reCAPTCHA solved, allow signInWithPhoneNumber.
-                // ...
-            },
-            'expired-callback': () => {
-                // Response expired. Ask user to solve reCAPTCHA again.
-                // ...
-            }
-        }, 
-        authentication);
-    }
+    // const generateRecaptcha = () => {
+    //     window.recaptchaVerifier = new RecaptchaVerifier(
+    //     'recaptcha-container', {
+    //         'size': 'normal',
+    //         'callback': (response) => {
+    //             // reCAPTCHA solved, allow signInWithPhoneNumber.
+    //             // ...
+    //         },
+    //         'expired-callback': () => {
+    //             // Response expired. Ask user to solve reCAPTCHA again.
+    //             // ...
+    //         }
+    //     }, 
+    //     authentication);
+    // }
 
-    useEffect(() => {
-        console.log('created');
+    // useEffect(() => {
+    //     console.log('created');
 
-        generateRecaptcha();
-        let appVerifier = window.recaptchaVerifier;
-        console.log(phoneNumber)
-        signInWithPhoneNumber(authentication, phoneNumber, appVerifier)
-        .then(confirmationResult => {
-            window.confirmationResult = confirmationResult;
-            console.log(confirmationResult)
-        })
-        .catch(error => {
-            //Error: SMS not sended
-            console.log(error);
-        });
-    }, []);
+    //     generateRecaptcha();
+    //     let appVerifier = window.recaptchaVerifier;
+    //     console.log(phoneNumber)
+    //     signInWithPhoneNumber(authentication, phoneNumber, appVerifier)
+    //     .then(confirmationResult => {
+    //         window.confirmationResult = confirmationResult;
+    //         console.log(confirmationResult)
+    //     })
+    //     .catch(error => {
+    //         //Error: SMS not sended
+    //         console.log(error);
+    //     });
+    // }, []);
 
     //with request otp
     const onSubmit = (data) => {
@@ -62,21 +62,21 @@ const NumberVerification = ({ phone, onClose }) => {
         }
         code = parseInt(code);
         console.log(code);
-        setOTP(code);
+        // setOTP(code);
 
-        let confirmationResult = window.confirmationResult;
-        confirmationResult
-        .confirm(code)
-        .then((result) => {
-            // User signed in successfully.
-            const user = result.user;
-            console.log('verification successful', user);
-            // ...
-        }).catch((error) => {
-            console.log(error);
-            // User couldn't sign in (bad verification code?)
-            // ...
-        });
+        // let confirmationResult = window.confirmationResult;
+        // confirmationResult
+        // .confirm(code)
+        // .then((result) => {
+        //     // User signed in successfully.
+        //     const user = result.user;
+        //     console.log('verification successful', user);
+        //     // ...
+        // }).catch((error) => {
+        //     console.log(error);
+        //     // User couldn't sign in (bad verification code?)
+        //     // ...
+        // });
         
         //verifyCode(code);
 

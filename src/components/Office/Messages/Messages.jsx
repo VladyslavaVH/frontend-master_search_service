@@ -1,9 +1,12 @@
 import React from "react";
-import MessageContent from "./MessageContent/MessageContent";
-import MessageList from "./MessageList/MessageList";
+import Conversations from "./Conversations/Conversations";
 import { Outlet } from 'react-router-dom';
+import { io } from "socket.io-client";
+
 
 let Messages = (props) => {
+    const socket = io(process.env.REACT_APP_BACKEND_URL);
+
     const msgList = [
         { id: 1, isActive: false, isOnline: true, avatar: 'user-avatar-small-03.jpg', fullName: 'David Peterson', date: '4 hours ago', lastMessage: `Thanks for reaching out. I'm quite busy right now on many` },
         { id: 2, isActive: true, isOnline: false, avatar: 'user-avatar-small-02.jpg', fullName: 'Cindy Forest', date: 'Yesterday', lastMessage: `Hi Tom! Hate to break it to you but I'm actually on vacation` },
@@ -27,10 +30,9 @@ let Messages = (props) => {
     ]
 };
     return <div className="messages-container margin-top-0">
-        <div className="messages-container-inner">
-            <MessageList msgList={msgList} />
+        <div className="messages-container-inner" >
+            <Conversations />
             <Outlet />
-            {/* <MessageContent msgInfo={msgInfo} /> */}
         </div>
     </div>;
 };

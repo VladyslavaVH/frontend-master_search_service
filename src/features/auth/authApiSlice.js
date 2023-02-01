@@ -9,17 +9,10 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 body: { ...credentials }
             })
         }),
-        changeAvatar: builder.mutation({
-            query: formData => ({
-                url: '/user/change/avatar',
-                method: 'POST',
-                body: formData
-            })
-        }),         
+             
     })
 });
 
 export const { 
     useLoginMutation,
-    useChangeAvatarMutation,
  } = authApiSlice;

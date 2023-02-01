@@ -6,7 +6,7 @@ import IntroHeadline from "./IntroHeadline";
 import { inlineBG } from "../../../amimations/amimations";
 import { useGetJobsMastersCountQuery } from "../../../features/home/homeApiSlice";
 
-const IntroBanner = (props) => {
+const IntroBanner = ({isMapApiLoaded}) => {
     const { data, isLoading } = useGetJobsMastersCountQuery();
 
     const imgPath = process.env.REACT_APP_IMG_PATH;
@@ -30,7 +30,7 @@ const IntroBanner = (props) => {
 
             <IntroHeadline />
 
-            <SearchBar />
+            <SearchBar isMapApiLoaded={isMapApiLoaded} />
 
             {!isLoading && <Stats jobsCount={data?.jobsCount || 0} mastersCount={data?.mastersCount || 0} />}
 

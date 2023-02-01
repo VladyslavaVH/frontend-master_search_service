@@ -1,31 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink } from 'react-router-dom';
-import { connect, useSelector, useDispatch } from "react-redux";
-import { compose } from "redux";
+import { NavLink } from 'react-router-dom';
+import { useSelector } from "react-redux";
 import SignInWindow from './SignInWindow/SignInWindow';
 import $ from 'jquery';
+import Mmenu from "mmenu-js";
+import "mmenu-js/dist/mmenu.css";
 import NotificationsWindow from "./NotificationsWindow/NotificationsWindow";
 import MessagesWindow from "./MessagesWindow/MessagesWindow";
 import UserWindow from "./UserWindow/UserWindow";
-import { close_user_dropdown } from './../../amimations/amimations';
+import { mmenuInit, close_user_dropdown } from './../../amimations/amimations';
 import { useNavigate, useLocation } from "react-router-dom";
-import { selectIsMaster, selectIsAdmin, selectIsAuth } from "../../features/auth/authSlice";
+import { selectIsMaster, selectIsAdmin, selectIsAuth, selectCurrentUser } from "../../features/auth/authSlice";
+import { useTranslation } from "react-i18next";
 
 let HeaderContainer = (props) => {
+	const { t } = useTranslation();
+	const user = useSelector(selectCurrentUser);
 	const isMaster = useSelector(selectIsMaster);
 	const isAdmin = useSelector(selectIsAdmin);
 	let isAuth = useSelector(selectIsAuth);
-
-	const { unreadMessages, unreadNotifications, 
-		   } = props;
 	
 	const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || '/';
+    //const from = location.state?.from?.pathname || '/';
 	
     const [ isOpen, setIsOpen ] = useState(false);
 	
 	useEffect(() => {
+
 		$(".header-notifications").each(function () {
 			let userMenu = $(this);
 			let userMenuTrigger = $(this).find('.header-notifications-trigger a');
@@ -72,29 +74,29 @@ let HeaderContainer = (props) => {
 							<li>
 								<NavLink to='/' end
 									className={({ isActive }) => { return isActive ? 'current' : '' }}>
-									Home
+									{ t('Home') }
 								</NavLink>
 							</li>
 
 							{isAuth
 								? <>{(!isMaster && !isAdmin) &&
 									<li>
-										<NavLink state={{ name: 'Post a Job', page: 'Post a Job' }} className={({ isActive }) => { return isActive ? 'current' : '' }}
+										<NavLink state={{ name: `${t('PostAJob')}`, page: `${t('PostAJob')}` }} className={({ isActive }) => { return isActive ? 'current' : '' }}
 											to='/client-office/job-posting'>
-											Post a Job
+											{ t('PostAJob') }
 										</NavLink>
 									</li>}
 								</>
 								: <li>
 									<a onClick={() => setIsOpen(true)} className="popup-with-zoom-anim log-in-button">
-										Post a Job
+									{ t('PostAJob') }
 									</a>
 								</li>}
 
-							<li><a>About</a>
+							<li><a>{ t('About') }</a>
 								<ul className="dropdown-nav">
 									<li>
-										<NavLink to='/support'>Support</NavLink>
+										<NavLink to='/support'>{ t('Support') }</NavLink>
 									</li>
 									<li>
 										<NavLink to='/faqs'>FAQs</NavLink>
@@ -106,31 +108,31 @@ let HeaderContainer = (props) => {
 								? <>
 									{isAdmin
 										? <li>
-											<NavLink state={{ name: 'Admin panel', page: 'Statistics' }}
+											<NavLink state={{ name: t("AdminPanel"), page: t('Statistics') }}
 												to='/admin-panel/statistics' className={({ isActive }) => { return isActive ? 'current' : '' }}>
-												Admin panel
+												{ t("AdminPanel") }
 											</NavLink>
 										</li>
 
 										: <>
 											{isMaster
 												? <li>
-													<NavLink state={{ name: 'Howdy, Tom!', page: 'Statistics', span: 'We are glad to see you again!' }}
+													<NavLink state={{ name: `${t('Howdy')}, ${user.firstName}!`, page: t('Statistics'), span: `${t('Greetings')}` }}
 														to='/master-office/statistics' className={({ isActive }) => { return isActive ? 'current' : '' }}>
-														Office
+														{ t('Office') }
 													</NavLink>
 												</li>
 												: <li>
-													<NavLink state={{ name: 'Manage Jobs', page: 'Manage Jobs' }} className={({ isActive }) => { return isActive ? 'current' : '' }}
+													<NavLink state={{ name: `${t('ManageJobs')}`, page: `${t('ManageJobs')}` }} className={({ isActive }) => { return isActive ? 'current' : '' }}
 														to='/client-office/manage-jobs'>
-														Office
+														{ t('Office') }
 													</NavLink>
 												</li>}
 										</>}
 								</>
 								: <li>
 									<a onClick={() => setIsOpen(true)} className="popup-with-zoom-anim log-in-button">
-										Office
+										{ t('Office') }
 									</a>
 								</li>}
 
@@ -144,9 +146,7 @@ let HeaderContainer = (props) => {
 				<div className="right-side">
 					{!isAuth &&
 						<div className="header-widget">
-							{/* <a href="#sign-in-dialog" className="popup-with-zoom-anim log-in-button"><i className="icon-feather-log-in"></i> <span>Log In / Register</span></a>
-							<Popup id={'sign-in-dialog'} children={<SignInWindow />} /> */}
-							<button type="button" onClick={() => setIsOpen(true)} className="log-in-button"><i className="icon-feather-log-in"></i> <span>Log In / Register</span></button>
+							<button type="button" onClick={() => setIsOpen(true)} className="log-in-button"><i className="icon-feather-log-in"></i> <span>{t('LogInRegister')}</span></button>
 							<SignInWindow open={isOpen} onClose={() => setIsOpen(false)} />
 						</div>}
 

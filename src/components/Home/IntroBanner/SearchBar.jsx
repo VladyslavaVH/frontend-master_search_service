@@ -6,8 +6,10 @@ import {
     getLatLng,
 } from 'react-places-autocomplete';
 import PlacesAutocomplete from "react-places-autocomplete";
+import { useTranslation } from "react-i18next";
 
-const SearchBar = (props) => {
+const SearchBar = ({isMapApiLoaded}) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [where, setWhere] = useState('');
     const [job, setJob] = useState('');
@@ -55,14 +57,14 @@ const SearchBar = (props) => {
                 {/* <!-- Search Field --> */}
 
                 {/* <div className="intro-search-field with-autocomplete">
-                    <label htmlFor="autocomplete-input" className="field-title ripple-effect">Where?</label>
+                    <label htmlFor="autocomplete-input" className="field-title ripple-effect">{t('Where')}</label>
                     <div className="input-with-icon">
-                        <input id="autocomplete-input" type="text" placeholder={'Place'} />
+                        <input id="autocomplete-input" type="text" placeholder={t('Place')} />
                         <i className="icon-material-outline-location-on"></i>
                     </div>
-                </div> */} 
+                </div>  */}
 
-                <PlacesAutocomplete
+                {isMapApiLoaded && <PlacesAutocomplete
                     value={address}
                     onChange={setAddress}
                     onSelect={handleSelect}>
@@ -101,12 +103,12 @@ const SearchBar = (props) => {
                                 })}
                             </ul>
                         </div>)}
-                </PlacesAutocomplete>
+                </PlacesAutocomplete>}
 
                 {/* <!-- Search Field --> */}
                 <div className="intro-search-field">
-                    <label htmlFor="intro-keywords" className="field-title ripple-effect">What job you want?</label>
-                    <input id="intro-keywords" type="text" placeholder="Job Title" onChange={(e) => setJob(e.target.value)} />
+                    <label htmlFor="intro-keywords" className="field-title ripple-effect">{t('WhatJobYouWant')}</label>
+                    <input id="intro-keywords" type="text" placeholder={t('JobTitle')} onChange={(e) => setJob(e.target.value)} />
                     <ul id="intro-keywords-dropdown" className="autocomplete-dropdown-container"></ul>
                 </div>
 
@@ -116,7 +118,7 @@ const SearchBar = (props) => {
                     onClick={() => { navigate(`/jobs?${job ? `title=${job}&` : ''}`, 
                     { state: {
                         title: job
-                     } }) }}>Search</button>
+                     } }) }}>{t('Search')}</button>
                 </div>
             </div>
         </div>

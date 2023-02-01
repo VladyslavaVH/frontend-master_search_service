@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import NumberVerification from './NumberVerification';
 import { registerAPI } from '../../../api/api';
+import { useTranslation } from "react-i18next";
 
 const Registration = ({ onClose }) => {
+    const { t } = useTranslation();
     const { register, handleSubmit } = useForm();
     const [isNumberVer, setIsNumberVer] = useState(false);//? set false
     const [phone, setPhone] = useState(null);
     const [isClientChecked, setIsClientChecked] = useState(true)
 
     const onSubmit = (data) => {
-        console.log(data);
-
         registerAPI.register(data)
         .then(response => {
             if (response.status == 201) {
@@ -30,7 +30,7 @@ const Registration = ({ onClose }) => {
         : <>
             <form onSubmit={handleSubmit(onSubmit)} id="register-account-form">
                 <div className="welcome-text">
-                    <h3>Let's create your account!</h3>
+                    <h3>{t('LetsCreateYourAccount')}</h3>
                 </div>
 
                 <div className="account-type">
@@ -40,7 +40,7 @@ const Registration = ({ onClose }) => {
                             value="client" type="radio"
                             {...register('accountType', { required: true })}
                             name="accountType" id="client-radio" className="account-type-radio" />
-                        <label htmlFor="client-radio" className="ripple-effect-dark"><i className="icon-material-outline-account-circle"></i> Client</label>
+                        <label htmlFor="client-radio" className="ripple-effect-dark"><i className="icon-material-outline-account-circle"></i> {t("Client")}</label>
                     </div>
 
                     <div>
@@ -48,20 +48,20 @@ const Registration = ({ onClose }) => {
                             value="master" type="radio" 
                             {...register('accountType', { required: true })}
                             name="accountType" id="master-radio" className="account-type-radio" />
-                        <label htmlFor="master-radio" className="ripple-effect-dark"><i className="icon-material-outline-business-center"></i> Master</label>
+                        <label htmlFor="master-radio" className="ripple-effect-dark"><i className="icon-material-outline-business-center"></i> {t('Master')}</label>
                     </div>
 
                 </div>
 
                 <div className="input-with-icon-left">
                     <i className="icon-feather-user"></i>
-                    <input type="text" title='Only letters' autoComplete='off' placeholder="First Name" required 
+                    <input type="text" title='Only letters' autoComplete='off' placeholder={t("FirstName")} required 
                     {...register('firstName', { required: true })} className="input-text with-border" name="firstName" id="firstName-register" />
                 </div>
 
                 <div className="input-with-icon-left">
                     <i className="icon-feather-user"></i>
-                    <input type="text" title='Only letters' autoComplete='off' placeholder="Last Name" required 
+                    <input type="text" title='Only letters' autoComplete='off' placeholder={t("LastName")} required 
                     {...register('lastName', { required: true })} className="input-text with-border" name="lastName" id="lastName-register" />
                 </div>
 
@@ -75,16 +75,16 @@ const Registration = ({ onClose }) => {
 
                 <div className="input-with-icon-left" title="Should be at least 8 characters long" data-tippy-placement="bottom">
                     <i className="icon-material-outline-lock"></i>
-                    <input type="password" {...register('password', { required: true })} pattern={'^[0-9A-Za-z-_\.`~!@#$%^&*()+=\?]{8,20}$'} className="input-text with-border" name="password" id="password-register" placeholder="Password" required />
+                    <input type="password" {...register('password', { required: true })} pattern={'^[0-9A-Za-z-_\.`~!@#$%^&*()+=\?]{8,20}$'} className="input-text with-border" name="password" id="password-register" placeholder={t("Password")} required />
                 </div>
 
                 <div className="input-with-icon-left" title="Should be at least 8 characters long">
                     <i className="icon-material-outline-lock"></i>
-                    <input type="password" {...register('passwordRepeat', { required: true })} pattern={'^[0-9A-Za-z-_\.`~!@#$%^&*()+=\?]{8,20}$'} className="input-text with-border" name="passwordRepeat" id="password-repeat-register" placeholder="Repeat Password" required />
+                    <input type="password" {...register('passwordRepeat', { required: true })} pattern={'^[0-9A-Za-z-_\.`~!@#$%^&*()+=\?]{8,20}$'} className="input-text with-border" name="passwordRepeat" id="password-repeat-register" placeholder={t("RepeatPassword")} required />
                 </div>
             </form>
 
-            <button type="submit" form="register-account-form" className="margin-top-10 button full-width button-sliding-icon ripple-effect">Register <i className="icon-material-outline-arrow-right-alt"></i></button>
+            <button type="submit" form="register-account-form" className="margin-top-10 button full-width button-sliding-icon ripple-effect">{t("Register")} <i className="icon-material-outline-arrow-right-alt"></i></button>
         </>}
     </div>;
 };

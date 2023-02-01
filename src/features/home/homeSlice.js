@@ -1,5 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import jwtDecode from 'jwt-decode';
+import { createSlice } from '@reduxjs/toolkit';
 
 const homeSlice = createSlice({
     name: 'home',

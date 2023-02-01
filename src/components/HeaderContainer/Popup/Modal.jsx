@@ -52,7 +52,7 @@ export default function Modal({ open, onClose, tabs, children }) {
 
   return ReactDOM.createPortal (
     <>
-        <div style={OVERLAY_STYLES}></div>
+        <div style={OVERLAY_STYLES} onClick={onClose}></div>
         <div style={MODAL_STYLES}>
             {tabs &&
             <ul className="popup-tabs-nav">
@@ -61,7 +61,7 @@ export default function Modal({ open, onClose, tabs, children }) {
             </ul>}
             <button onClick={onClose} style={{...BTN_CLOSE, borderLeft: tabs ? '1px solid #e0e0e0' : '1px solid transparent' }} 
             title="Close" type="button"><i className='icon-line-awesome-close'></i></button>
-            {children[activeTab]}
+            {children[activeTab] || children}
         </div>
     </>,
     document.getElementById('portal')

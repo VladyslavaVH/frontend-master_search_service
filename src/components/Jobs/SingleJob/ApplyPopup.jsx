@@ -46,7 +46,7 @@ const CommentPopup = (props) => {
         <div className="sign-in-form">
 
             <ul className="popup-tabs-nav">
-                <li><a href="#tab">Apply for a Job</a></li>
+                <li className="active"><a href="#tab">Apply for a Job</a></li>
             </ul>
 
             <div className="popup-tabs-container">

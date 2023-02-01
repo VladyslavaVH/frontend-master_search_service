@@ -1,15 +1,26 @@
 import React, { useEffect, useRef } from 'react';
 import { funFacts } from "../../../amimations/amimations";
 import { useCountUp } from 'react-countup';
+import { useGetAdminPanelQuery } from '../../../features/admin/adminApiSlice';
 
 const SiteStatistics = (props) => {
+    const { data: statistics, isLoading } = useGetAdminPanelQuery();
+    const { newJobs, newMasters } = statistics || { newJobs: 0, newMasters: 0 };
     const parameters = { separator: ',', duration: 2 };
 
     const countNewJobsRef = useRef(null);
     const countNewMastersRef = useRef(null);
 
-    useCountUp({ ref: countNewJobsRef, end: 25, ...parameters });
-    useCountUp({ ref: countNewMastersRef, end: 15, ...parameters });
+    const { start: startNewJobs } = useCountUp({ ref: countNewJobsRef, end: newJobs, ...parameters });
+    const { start: startNewMasters } = useCountUp({ ref: countNewMastersRef, end: newMasters, ...parameters });
+
+    useEffect(() => {
+        if (!isLoading) {
+            startNewJobs();
+            startNewMasters();
+        }
+    }, [isLoading]);
+
 
     useEffect(() => {
         funFacts();

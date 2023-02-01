@@ -1,14 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { connect } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const MessageListItem = (props) => {
-    const { id, isNotRead, isOnline, isMaster, imgPath, avatar, userPlaceholder, fullName, message, date } = props;
+    const { t } = useTranslation();
+    const { id, isNotRead, isOnline, isMaster, avatar, fullName, message, date } = props;
     
+    const profilePhotosPath = process.env.REACT_APP_PROFILE_PHOTOS_PATH;
     return <li className="notifications-not-read">
-        <NavLink state={{name: 'Messages', page: 'Messages'}}
+        <NavLink state={{name: t('Messages'), page: t('Messages')}}
         to={`/${isMaster ? 'master' : 'client'}-office/messages/user/${id}`}>
-            <span className={`notification-avatar status-${isOnline ? 'online' : 'offline'}`}><img src={`${imgPath}${avatar ? avatar : userPlaceholder}`} alt="message" /></span>
+            <span className={`notification-avatar status-${isOnline ? 'online' : 'offline'}`}><img src={`${profilePhotosPath}${avatar}`} alt="message" /></span>
             <div className="notification-text">
                 <strong>{fullName}</strong>
                 <p className="notification-msg-text">{message}</p>
@@ -18,11 +20,4 @@ const MessageListItem = (props) => {
     </li>;
 }
 
-let mapStateToProps = (state) => {
-    return {
-        imgPath: state.path.imgPath,
-        userPlaceholder: state.path.userPlaceholder
-    }
-};
-
-export default connect(mapStateToProps, {})(MessageListItem);
+export default MessageListItem;

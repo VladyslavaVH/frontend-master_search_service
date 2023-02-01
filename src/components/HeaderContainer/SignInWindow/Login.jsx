@@ -6,8 +6,10 @@ import { useLoginMutation } from '../../../features/auth/authApiSlice';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectPersist, setPersist } from './../../../features/auth/authSlice';
+import { useTranslation } from "react-i18next";
 
 const Login = ({ onClose, fromLocationData, from }) => {
+    const { t } = useTranslation();
     const { register, handleSubmit } = useForm();
     const [user, setUser] = useState('');
     const [password, setPassword] = useState('');
@@ -36,10 +38,8 @@ const Login = ({ onClose, fromLocationData, from }) => {
     };
 
     const onPersistChange = () => {
-        console.log(persist);
         setIsPersist(!isPersist);
         dispatch(setPersist(!isPersist));
-        console.log('persist changed', persist);
     }
 
     useEffect(() => {
@@ -50,8 +50,8 @@ const Login = ({ onClose, fromLocationData, from }) => {
     return <div className="popup-tab-content" id="login">
 
         <div className="welcome-text">
-            <h3>We're glad to see you again!</h3>
-            <span>Don't have an account? <a href="#" className="register-tab">Sign Up!</a></span>
+            <h3>{`${t('Greetings')}`}</h3>
+            <span>{t('DontHaveAnAccount')} <a href="#" className="register-tab">{t('SignUp')}</a></span>
         </div>
 
         <form onSubmit={ handleSubmit(onSubmit) } id="login-form">
@@ -59,26 +59,26 @@ const Login = ({ onClose, fromLocationData, from }) => {
                 <i className="icon-feather-phone"></i>
                 <input type="tel" title="Only + and numbers"
                  {...register('phone', { required: true })}
-                className="input-text with-border" name="phone" id="phone" placeholder="Phone number" required />
+                className="input-text with-border" name="phone" id="phone" placeholder={t('PhoneNumber')} required />
             </div>
 
             <div className="input-with-icon-left">
                 <i className="icon-material-outline-lock"></i>
                 <input type="password" title='Should be at least 8 characters long'
                 {...register('password', { required: true })}
-                className="input-text with-border" name="password" id="password" placeholder="Password" required />
+                className="input-text with-border" name="password" id="password" placeholder={t('Password')} required />
             </div>
         </form> 
 
             <div className="checkbox">
 				<input type="checkbox" id="persistCheckbox" 
                 checked={isPersist} onChange={onPersistChange} />
-				<label htmlFor="persistCheckbox"><span className="checkbox-icon"></span> Trust this device </label>
+				<label htmlFor="persistCheckbox"><span className="checkbox-icon"></span> {t('TrustThisDevice')} </label>
 			</div><br />
 
-            <a href="" className="forgot-password">Forgot Password?</a><br />
+            {false && <><a href="" className="forgot-password">{t('ForgotPassword')}</a><br /></>}
 
-        <button className="button full-width button-sliding-icon ripple-effect" type="submit" form="login-form">Log In <i className="icon-material-outline-arrow-right-alt"></i></button>
+        <button className="button full-width button-sliding-icon ripple-effect" type="submit" form="login-form">{t("LogIn")} <i className="icon-material-outline-arrow-right-alt"></i></button>
 
     </div>;
 };

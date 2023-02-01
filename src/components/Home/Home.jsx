@@ -4,7 +4,7 @@ import Footer from './../Footer/Footer';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SignInWindow from './../HeaderContainer/SignInWindow/SignInWindow';
 
-let Home = (props) => {
+let Home = ({ isMapApiLoaded }) => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
     const [fromLocationData, setFromLocationData] = useState({});
@@ -18,7 +18,7 @@ let Home = (props) => {
 
     return <>
         <SignInWindow fromLocationData={fromLocationData} from={from} open={isOpen} onClose={() => setIsOpen(false)} />
-        <HomeContent />
+        <HomeContent isMapApiLoaded={isMapApiLoaded} />
         <Footer />
     </>;
 };

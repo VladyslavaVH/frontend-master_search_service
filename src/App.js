@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import $ from 'jquery';
@@ -21,12 +21,13 @@ import EditJob from './components/Office/ClientOffice/EditJob';
 import SingleJob from './components/Jobs/SingleJob/SingleJob';
 import Masters from "./components/Masters/Masters";
 import MasterProfile from "./components/Masters/MasterProfile/MasterProfile";
-import MessageContent from "./components/Office/Messages/MessageContent/MessageContent";
+import Chat from "./components/Office/Messages/Chat/Chat";
 import ManageCandidates from "./components/Office/ClientOffice/ManageCandidates/ManageCandidates";
 import OrderConfirmation from "./components/OrderConfirmation";
 import Invoice from "./components/Invoice/Invoice";
 import { wrapperHeight, fullPageScrollbar } from "./amimations/amimations";
 import AdminPanel from "./components/Office/AdminPanel/AdminPanel";
+import MasterDocuments from './components/Office/AdminPanel/MasterDocuments';
 import SiteStatistics from './components/Office/AdminPanel/SiteStatistics';
 import DocVerification from './components/Office/AdminPanel/DocVerification';
 import EditFAQs from './components/Office/AdminPanel/EditFAQs';
@@ -36,6 +37,7 @@ import PersistLogin from "./features/auth/PersistLogin";
 import Unauthorized from "./components/Unauthorized";
 import { setPersist } from "./features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import { Loader } from '@googlemaps/js-api-loader'
 
 const ROLE = {
   ADMIN: process.env.REACT_APP_ADMIN_ROLE,
@@ -45,7 +47,7 @@ const ROLE = {
 
 const API_KEY = process.env.REACT_APP_KEY; 
 //const API_KEY = import.meta.env.REACT_APP_KEY;
-const MAP_API_JS = 'https://maps.googleapis.com/maps/api/js';
+const MAP_API_JS ='https://maps.googleapis.com/maps/api/js';
 require('slick-carousel');
 require('magnific-popup');
 
@@ -69,6 +71,21 @@ function App() {
   // Showing Button
   const pxShow = 600; // height on which the button will show
   const scrollSpeed = 500; // how slow / fast you want the button to scroll to top.
+
+  const [isMapApiLoaded, setIsMapApiLoaded] = useState(false)
+
+    useEffect(() => {
+        if (isMapApiLoaded || window.google) return;
+        const loader = new Loader({
+            apiKey: API_KEY,
+            version: 'beta',
+            libraries: [ 'marker', 'places', 'geometry']
+        })
+        loader.load().then(() => {
+          setIsMapApiLoaded(true);
+          console.log('google libs loaded')
+        })
+    }, [isMapApiLoaded])
 
   const backToTop = () => {
     $('body').append('<div id="backtotop"><a href="#"></a></div>');
@@ -112,16 +129,6 @@ function App() {
 
   useEffect(() => {
     dispatch(setPersist(localStorage.getItem('persist') || false));
-    /*if (!window.google) {
-      initMapScript().then(() => initAutocomplete());
-    }
-
-    // Autocomplete adjustment for homepage
-    if ($('.intro-banner-search-form')[0]) {
-        setTimeout(function(){ 
-            $(".pac-container").prependTo(".intro-search-field.with-autocomplete");
-        }, 300);
-    }*/
     
     backToTop();
     windowScroll();
@@ -168,7 +175,7 @@ function App() {
           <div className="clearfix"></div>
           <Routes>
             {/*public routes*/}
-            <Route path="/" element={<Home />} />    
+            <Route path="/" element={<Home isMapApiLoaded={isMapApiLoaded} />} />    
 
             <Route path="/jobs">
               <Route index element={<Jobs />} />
@@ -191,6 +198,7 @@ function App() {
                 <Route path="/admin-panel" element={<AdminPanel />} >
                   <Route path="statistics" element={<SiteStatistics />} />
                   <Route path="doc-verification" element={<DocVerification />} />
+                  <Route path="doc-verification/master-profile" element={<MasterDocuments />} />
                   <Route path="faqs-editing" element={<EditFAQs />} />
                   <Route path="add-category" element={<AddCategory />} />
                   <Route path="settings" element={<Settings />} />
@@ -205,8 +213,8 @@ function App() {
                   <Route path="manage-jobs/job/:title" element={<SingleJob />} />
       
                   <Route path="messages" element={<Messages />} >
-                    <Route path="user/:id" element={<MessageContent msgInfo={msgInfo} />} />
-                    <Route path="user/:firstname/:lastname" element={<MessageContent msgInfo={msgInfo} />} />
+                    <Route path="user/:id" element={<Chat />} />
+                    <Route path="user/:firstName/:lastName" element={<Chat />} />
                   </Route>
       
                   <Route path="manage-jobs" element={<ManageJobs />} />
@@ -218,9 +226,10 @@ function App() {
               <Route element={<RequireAuth allowedRole={ROLE.MASTER} />}>              
                 <Route path="/master-office" element={<MasterOffice />} >
                   <Route path="job/:title/:id" element={<SingleJob />} />
+                  <Route path="job/:title" element={<SingleJob />} />
       
                   <Route path="messages" element={<Messages />} >
-                    <Route path="user/:id" element={<MessageContent msgInfo={msgInfo} />} />
+                    <Route path="user/:firstName/:lastName" element={<Chat />} />
                   </Route>
                   
                   <Route path="pricing-plans" element={<PricingPlans />} />

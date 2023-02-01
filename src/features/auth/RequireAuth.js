@@ -1,6 +1,6 @@
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectCurrentToken, selectCurrentRole } from './authSlice';
+import { selectCurrentToken } from './authSlice';
 import jwt_decode from 'jwt-decode';
 
 const RequireAuth = ({ allowedRole }) => {

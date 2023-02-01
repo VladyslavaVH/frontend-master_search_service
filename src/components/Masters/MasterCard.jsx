@@ -4,8 +4,10 @@ import SignInWindow from "../HeaderContainer/SignInWindow/SignInWindow";
 import { NavLink } from 'react-router-dom';
 import { starRating } from '../../amimations/amimations';
 import { selectIsAuth, selectIsMaster } from './../../features/auth/authSlice';
+import { useTranslation } from 'react-i18next';
 
 let MasterCard = (props) => {
+    const { t } = useTranslation();
     const isAuth = useSelector(selectIsAuth); 
     const isMaster = useSelector(selectIsMaster);
     const [ isOpen, setIsOpen ] = useState(false);
@@ -16,7 +18,6 @@ let MasterCard = (props) => {
     //const imgPath = process.env.REACT_APP_IMG_PATH;
     const profilePhotosPath = process.env.REACT_APP_PROFILE_PHOTOS_PATH;
     const flagPath = process.env.REACT_APP_FLAG_PATH;
-    const userPlaceholder = null;
 
     useEffect(() => {
         if (document.getElementsByClassName('star').length == 0) {
@@ -35,11 +36,11 @@ let MasterCard = (props) => {
                     {!!+isAdminChecked && <div className="verified-badge"></div>}
 
                     {(isAuth && !isMaster) 
-                    ?<NavLink state={{ name: 'Master Profile', page: 'Master Profile', isMasterProfile: true }}
+                    ?<NavLink state={{ name: t('MasterProfile'), page: t('MasterProfile'), isMasterProfile: true }}
                         to={`/client-office/master-profile/${id}`}>
-                        <img src={`${profilePhotosPath}${avatar ? avatar : userPlaceholder}`} alt="" />
+                        <img src={`${profilePhotosPath}${avatar}`} alt="" />
                     </NavLink>
-                    :<img src={`${profilePhotosPath}${avatar ? avatar : userPlaceholder}`} alt="" />}
+                    :<img src={`${profilePhotosPath}${avatar}`} alt="" />}
                 
                 </div>
 
@@ -60,13 +61,13 @@ let MasterCard = (props) => {
             {isAuth
             ?<>
                 {!isMaster &&
-                <NavLink state={{ id: id, name: 'Master Profile', page: 'Master Profile', isMasterProfile: true}}
+                <NavLink state={{ id: id, name: t('MasterProfile'), page: t('MasterProfile'), isMasterProfile: true}}
                     to={`/client-office/master-profile`} className="button button-sliding-icon ripple-effect">
-                    View Profile <i className="icon-material-outline-arrow-right-alt"></i>
+                    {t('ViewProfile')} <i className="icon-material-outline-arrow-right-alt"></i>
                 </NavLink>}
             </>
             :<a onClick={() => setIsOpen(true)} className="button button-sliding-icon ripple-effect popup-with-zoom-anim log-in-button">
-                View Profile <i className="icon-material-outline-arrow-right-alt"></i>
+                {t('ViewProfile')} <i className="icon-material-outline-arrow-right-alt"></i>
             </a>}
             <SignInWindow open={isOpen} onClose={() => setIsOpen(false)} />
         </div> 

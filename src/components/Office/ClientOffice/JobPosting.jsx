@@ -15,6 +15,7 @@ import { usePostJobMutation } from "../../../features/jobs/jobsApiSlice";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const schema = yup
   .object()
@@ -32,6 +33,7 @@ const schema = yup
   .required();
 
 let JobPosting = (props) => {
+    const { t } = useTranslation();
     const { register, handleSubmit, reset, watch,
         formState: { errors },
     } = useForm({ resolver: yupResolver(schema) });
@@ -90,7 +92,7 @@ let JobPosting = (props) => {
             navigate('/client-office/manage-jobs', 
             { 
                 replace: true,
-                state: {name: 'Manage Jobs', page: 'Manage Jobs'} 
+                state: {name: t('ManageJobs'), page: t('ManageJobs')} 
             },
             );
             console.log('navigate');
@@ -109,7 +111,7 @@ let JobPosting = (props) => {
     
                     {/* <!-- Headline --> */}
                     <div className="headline">
-                        <h3><i className="icon-feather-folder-plus"></i> Job Submission Form</h3>
+                        <h3><i className="icon-feather-folder-plus"></i> {t('JobSubmissionForm')}</h3>
                     </div>
     
                     <div className="content with-padding padding-bottom-10">
@@ -117,7 +119,7 @@ let JobPosting = (props) => {
     
                             <div className="col-xl-4">
                                 <div className="submit-field">
-                                    <h5>Job Title</h5>
+                                    <h5>{t('JobTitle')}</h5>
                                     <input name="title" 
                                     {...register('title', { required: true })}
                                     type="text" className="with-border" placeholder="Cleaner" />
@@ -126,7 +128,7 @@ let JobPosting = (props) => {
     
                             <div className="col-xl-4">
                                 <div className="submit-field">
-                                    <h5>Job Category</h5>
+                                    <h5>{t('JobCategory')}</h5>
                                     {/* <Autocomplete
                                         id="category-input"
                                         sx={{ width: '100%', padding: 0, margin: 0, border: "none",
@@ -178,7 +180,7 @@ let JobPosting = (props) => {
                                         className="with-border" data-size="7" placeholder="Select Category" title="Select Category">
                                             {
                                                 isLoading 
-                                                ?<option>Loading...</option>
+                                                ?<option>{t('Loading')}...</option>
                                                 : categoriesOptions?.map(c => 
                                                     <option key={c.id} value={c.id}>{c.category}</option>
                                                 )
@@ -191,10 +193,10 @@ let JobPosting = (props) => {
     
                             <div className="col-xl-4">
                                 <div className="submit-field">
-                                    <h5>Location</h5>
+                                    <h5>{t('Location')}</h5>
                                     {/* <div className="input-with-icon">
                                         <div id="autocomplete-container">
-                                            <input id="autocomplete-input" className="with-border" type="text" placeholder="Type Address" />
+                                            <input id="autocomplete-input" className="with-border" type="text" placeholder={t('TypeAddress')} />
                                         </div>
                                         <i className="icon-material-outline-location-on"></i>
                                     </div> */}
@@ -211,7 +213,7 @@ let JobPosting = (props) => {
                                                         //{...register('location', { required: true })}
                                                         id="autocomplete-input" type="text"
                                                             {...getInputProps({
-                                                                placeholder: 'Type Address',
+                                                                placeholder: t('TypeAddress'),
                                                                 className: 'with-border',
                                                             })} />
                                                         <i className="icon-material-outline-location-on"></i>
@@ -219,7 +221,7 @@ let JobPosting = (props) => {
         
                                                     <ul className="autocomplete-dropdown-container" 
                                                     style={{ position: 'relative', marginTop: 0 }}>
-                                                        {loading && <li style={{ backgroundColor: '#ffffff', cursor: 'pointer', textAlign: 'center' }}>Loading...</li>}
+                                                        {loading && <li style={{ backgroundColor: '#ffffff', cursor: 'pointer', textAlign: 'center' }}>{t('Loading')}...</li>}
                                                         {suggestions.map((suggestion, i) => {
                                                             const className = suggestion.active
                                                                 ? 'suggestion-item--active'
@@ -248,7 +250,7 @@ let JobPosting = (props) => {
     
                             <div className="col-xl-4">
                                 <div className="submit-field">
-                                    <h5>Payment</h5>
+                                    <h5>{t('Payment')}</h5>
                                     <div className="row">
                                         <div className="col-xl-6">
                                             <div className="input-with-icon">
@@ -296,7 +298,7 @@ let JobPosting = (props) => {
     
                             <div className="col-xl-4">
                                 <div className="submit-field">
-                                    <h5>Date and Time</h5>
+                                    <h5>{t('DateAndTime')}</h5>
                                     <input name="jobDateTime"
                                     {...register('jobDateTime', { required: true })}
                                     type={'datetime-local'} />
@@ -305,7 +307,7 @@ let JobPosting = (props) => {
     
                             <div className="col-xl-12">
                                 <div className="submit-field">
-                                    <h5>Job Description</h5>
+                                    <h5>{t('JobDescription')}</h5>
                                     <textarea name="description"
                                     {...register('description')}
                                      cols="30" rows="5" className="with-border"></textarea>
@@ -316,12 +318,12 @@ let JobPosting = (props) => {
                                                 <input name="photos"
                                                     {...register('photos')}
                                                     className="uploadButton-input" type="file" accept="image/*" id="upload" multiple />
-                                                <label className="uploadButton-button ripple-effect" htmlFor="upload">Upload Photos</label>
+                                                <label className="uploadButton-button ripple-effect" htmlFor="upload">{t('UploadPhotos')}</label>
                                                 <span className="uploadButton-file-name">
                                                     {
                                                         errors.photos
                                                             ? errors.photos.messages
-                                                            : 'Images that might be helpful in describing your job'
+                                                            : t('ImagesThatMightBeHelpfulInDescribingYourJob')
                                                     }
                                                 </span>
                                             </div>
@@ -339,7 +341,7 @@ let JobPosting = (props) => {
                 <button type="submit" 
                 form="postJobForm"
                 onClick={() => console.log('click')}
-                 className="button ripple-effect big margin-top-30"><i className="icon-feather-plus"></i> Post a Job</button>
+                 className="button ripple-effect big margin-top-30"><i className="icon-feather-plus"></i> {t('PostAJob')}</button>
             </div>
         </form>
 

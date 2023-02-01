@@ -30,12 +30,12 @@ const PersistLogin = () => {
         }
 
         return () => isMounted = false;
-    }, []);
+    }, [refresh, token]);
 
     useEffect(() => {
         console.log('isLoading', isLoading);
         console.log('token', token);
-    }, [isLoading]);
+    }, [isLoading, token]);
     
     return (
         <>
