@@ -1,7 +1,7 @@
 {
   "name": "help2fix",
   "version": "0.1.0",
-  "private": true,
+  "homepage": ".",
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.15.1",
     "@googlemaps/markerclusterer": "^2.0.13",
@@ -51,7 +51,6 @@
     "redux-form": "^8.3.9",
     "redux-thunk": "^2.4.2",
     "semantic-ui-react": "^2.1.4",
-    "simplebar-react": "^2.4.3",
     "slick-carousel": "^1.8.1",
     "snowpack": "^3.8.8",
     "socket.io-client": "^4.5.4",
