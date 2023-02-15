@@ -17,10 +17,10 @@ let ManageJobs = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!isLoading) {
+        if (!isLoading && data.candidates) {
             dispatch(setCandidates(data.candidates));
         }
-    }, [isLoading, data?.candidates]);
+    }, [isLoading, data]);
 
     return <div className="row">
         <div className="col-xl-12">
