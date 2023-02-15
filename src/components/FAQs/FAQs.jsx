@@ -1,12 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Titlebar from "../Office/Titlebar";
 import Footer from "../Footer/Footer";
-import { useLocation, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useGetFaqsQuery } from "../../features/faqs/faqsApiSlice";
-import FAQ from './FAQ';
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 let FAQs = (props) => {
     const { data, isLoading } = useGetFaqsQuery();
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const [accordionData, setAccordionData] = useState([]);
+
+    useEffect(() => {
+        if (!isLoading && accordionData.length !== data.faqs.length) {
+            for (let i = 0; i < data.faqs.length; i++) {
+                accordionData.push(false);
+            }
+        }
+    }, [isLoading]);
+
+    const onAccordionClick = e => {
+        const accordionIndex = e.target.parentNode.getAttribute('data-index');
+        const tmp = accordionData[accordionIndex];
+        accordionData[accordionIndex] = !tmp;
+        setAccordionData([...accordionData]);
+    }
 
     return <>
         <div className="section">
@@ -21,9 +40,9 @@ let FAQs = (props) => {
                                         <h2>FAQs</h2>
 
                                         <nav id="breadcrumbs" className="dark">
-                                            <ul>
-                                                <li><NavLink to={'/'}>Home</NavLink></li>
-                                                <li><a>About us</a></li>
+                                            <ul style={{ cursor: 'pointer' }}>
+                                                <li><NavLink to={'/'}>{t('Home')}</NavLink></li>
+                                                <li><NavLink to={'/'}>{t("About")}</NavLink></li>
                                                 <li>FAQs</li>
                                             </ul>
                                         </nav>
@@ -33,27 +52,26 @@ let FAQs = (props) => {
                             </div>
                         </div>
 
-                        {!isLoading && data?.faqs?.map(f => <FAQ key={f.id} {...f} />)}
+                        <div className="accordion js-accordion">
 
-                        <div className="clearfix"></div>
-                        <div className="row">
-                            <div className="col-md-12">
-                                
-                                <div className="pagination-container margin-top-10 margin-bottom-20">
-                                    <nav className="pagination">
-                                        <ul>
-                                            <li><a href="#" className="current-page ripple-effect">1</a></li>
-                                            <li><a href="#" className="ripple-effect">2</a></li>
-                                            <li><a href="#" className="ripple-effect">3</a></li>
-                                            <li className="pagination-arrow"><a href="#" className="ripple-effect"><i className="icon-material-outline-keyboard-arrow-right"></i></a></li>
-                                        </ul>
-                                    </nav>
+                            {!isLoading && data?.faqs?.map((faq, i) =>
+                                <div key={faq.id} onClick={onAccordionClick} data-index={i} className={`accordion__item js-accordion-item ${accordionData[i] ? 'active' : ''}`}>
+                                    <div className="accordion-header js-accordion-header">{faq.question}</div>
+
+                                    <div className="accordion-body js-accordion-body" style={{ display: accordionData[i] ? 'block' : 'none' }}>
+
+                                        <div className="accordion-body__contents">
+                                            <div data-info="answer">{faq.answer}</div>
+                                        </div>
+
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
-                    </div>
+                        <div className="clearfix"></div>
 
+                    </div>
                 </div>
             </div>
 

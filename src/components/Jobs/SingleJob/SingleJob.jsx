@@ -11,9 +11,11 @@ import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
 import TimeAgo from './../../TimeAgo';
 import ApplyJob from "./ApplyJob";
+import { useTranslation } from 'react-i18next';
 
 
 const SingleJob = (props) => { 
+    const { t } = useTranslation();
     const [ isOpen, setIsOpen ] = useState(false);
     const location = useLocation();
     const isMaster = useSelector(selectIsMaster);
@@ -24,17 +26,36 @@ const SingleJob = (props) => {
 
     const { data: photos } = useGetJobPhotosQuery(location.state.id);
     const { data, isLoading } = useGetJobByIdQuery(location.state.id);
-    const { id, isMasterConfirmed, title, firstName, lastName, isVerified, minPayment, maxPayment, description, lat, lng, category, createTime } = data || {};
+    const { id, isMasterConfirmed, firstName, lastName, isVerified, minPayment, maxPayment, currency, description, lat, lng, category, createTime } = data || {};
 
     const { data: jobApply } = useGetMasterJobApplyStatusQuery(id);
+    const [addr, setAddr] = useState('');
 
     const similarJobs = [
-        {id: 1, icon: null, title: 'Barista and Cashier', clientName: 'Alexander', isClientVerified: false, category: 'Coffee', location: 'San Francisco', minPayment: 100, maxPayment: 300, postedDate: '2 days ago'},
-        {id: 2, icon: null, title: 'Restaurant Manager', clientName: 'Jude', isClientVerified: true, category: 'Coffee', location: 'San Francisco', minPayment: 300, maxPayment: 500, postedDate: '2 days ago'}
+        {id: 1, icon: null, clientName: 'Alexander', isClientVerified: false, category: 'Coffee', location: 'San Francisco', minPayment: 100, maxPayment: 300, postedDate: '2 days ago'},
+        {id: 2, icon: null, clientName: 'Jude', isClientVerified: true, category: 'Coffee', location: 'San Francisco', minPayment: 300, maxPayment: 500, postedDate: '2 days ago'}
     ];
 
+
     useEffect(() => {
-        console.log(data);
+        if (!isLoading && (lat && lng)) {
+            if (window.google) {
+
+                if (!window.myGeocoder) {
+                    window.myGeocoder = new window.google.maps.Geocoder();
+                }
+    
+                window.myGeocoder
+                .geocode({ location: { lat, lng } }, function(results, status) {
+                    if( status === window.google.maps.GeocoderStatus.OK ) {
+                        setAddr(results[0].formatted_address);
+                      } else {
+                        alert("Sorry - We couldn't find this location. Please try an alternative");
+                     }
+                })
+                .catch((e) => console.log("Geocoder failed due to: " + e + ` lat: ${lat} lng: ${lng}`));
+            }
+        }
     }, [isLoading]);
 
     useEffect(() => {
@@ -53,19 +74,19 @@ const SingleJob = (props) => {
                         <div className="single-page-header-inner">
                             <div className="left-side">
                                 <div className="header-details">
-                                    <h3>{title}</h3>
-                                    <h5>About the Client</h5>
+                                    <h3>{category}</h3>
+                                    <h5>{t('AboutTheClient')}</h5>
                                     <ul>
                                         <li><i className="icon-feather-user"></i> {`${firstName} ${lastName}`}</li>
                                         {false && <li><img className="flag" src={`${flagPath}gb.svg`} alt="" /> United Kingdom</li>}
-                                        {!!+isVerified && <li><div className="verified-badge-with-title">Verified</div></li>}
+                                        {!!+isVerified && <li><div className="verified-badge-with-title">{t('Verified')}</div></li>}
                                     </ul>
                                 </div>
                             </div>
                             <div className="right-side">
                                 <div className="salary-box">
-                                    <div className="salary-type">Annual payment</div>
-                                    <div className="salary-amount">${minPayment} - ${maxPayment}</div>
+                                    <div className="salary-type">{t('Payment')}</div>
+                                    <div className="salary-amount">{minPayment} - {maxPayment} {currency}</div>
                                 </div>
                             </div>
                         </div>
@@ -81,7 +102,7 @@ const SingleJob = (props) => {
                 <div className="col-xl-8 col-lg-8 content-right-offset">
                     
                     <div className="single-page-section">
-                        <h3 className="margin-bottom-25">Job Description</h3>
+                        <h3 className="margin-bottom-25">{t("JobDescription")}</h3>
                         <p>{description}</p>
                     </div>
 
@@ -121,34 +142,34 @@ const SingleJob = (props) => {
 
                         {(!(!!+isMasterConfirmed) && isMaster) && (jobApply?.status === null || jobApply?.status === undefined) &&
                             <>
-                                <a onClick={() => setIsOpen(true)} style={{ color: '#fff', cursor: 'pointer' }} className="apply-now-button popup-with-zoom-anim">Apply Now <i className="icon-material-outline-arrow-right-alt"></i></a>
+                                <a onClick={() => setIsOpen(true)} style={{ color: '#fff', cursor: 'pointer' }} className="apply-now-button popup-with-zoom-anim">{t("ApplyNow")} <i className="icon-material-outline-arrow-right-alt"></i></a>
                                 <ApplyJob jobId={location.state.id} open={isOpen} onClose={() => setIsOpen(false)} />
                             </>
                         }
 
                         <div className="sidebar-widget">
                             <div className="job-overview">
-                                <div className="job-overview-headline">Job Information</div>
+                                <div className="job-overview-headline">{t("JobInformation")}</div>
                                 <div className="job-overview-inner">
                                     <ul>
                                         <li>
                                             <i className="icon-material-outline-location-on"></i>
-                                            <span>Location</span>
-                                            <h5>{`lat: ${lat}, lng: ${lng}`}</h5>
+                                            <span>{t('Location')}</span>
+                                            <h5>{addr}</h5>
                                         </li>
                                         <li>
                                             <i className="icon-material-outline-business-center"></i>
-                                            <span>Category</span>
+                                            <span>{t('Category')}</span>
                                             <h5>{category}</h5>
                                         </li>
                                         <li>
-                                            <i className="icon-material-outline-local-atm"></i>
-                                            <span>Payment</span>
-                                            <h5>${minPayment} - ${maxPayment}</h5>
+                                            <i className="icon-line-awesome-money"></i>
+                                            <span>{t('Payment')}</span>
+                                            <h5>{minPayment} - {maxPayment} {currency}</h5>
                                         </li>
                                         <li>
                                             <i className="icon-material-outline-access-time"></i>
-                                            <span>Date Posted</span>
+                                            <span>{t('DatePosted')}</span>
                                             <h5><TimeAgo timestamp={createTime} /></h5>
                                         </li>
                                         {(!!+isMasterConfirmed) &&
@@ -157,8 +178,8 @@ const SingleJob = (props) => {
                                             <span>
                                                 {
                                                     (!!+jobApply?.status && jobApply.status)
-                                                    ? 'You'
-                                                    : 'Master'
+                                                    ? t('You')
+                                                    : t('Master')
                                                 }
                                             </span>
                                             <h5>Confirmed</h5>
@@ -169,8 +190,8 @@ const SingleJob = (props) => {
                                             {( !(!!+jobApply?.status) && !(!!+isMasterConfirmed)) &&
                                             <li>
                                                 <i className="icon-feather-user"></i>
-                                                <span>You</span>
-                                                <h5>Applied for this job</h5>
+                                                <span>{t('You')}</span>
+                                                <h5>{t("AppliedForThisJob")}</h5>
                                             </li>}
                                         </> }                                  
                                      </ul>

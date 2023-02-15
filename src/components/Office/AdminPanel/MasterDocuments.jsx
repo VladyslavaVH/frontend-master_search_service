@@ -4,8 +4,10 @@ import { inlineBG, starRating } from "../../../amimations/amimations";
 import { useGetFullMasterInfoQuery, useVerifyMasterMutation } from "../../../features/admin/adminApiSlice";
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
+import { useTranslation } from 'react-i18next';
 
 const MasterDocuments = (props) => {
+    const { t } = useTranslation();
     const [documents, setDocuments] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
@@ -68,7 +70,7 @@ const MasterDocuments = (props) => {
 
                     
                     <div className="single-page-section">
-                        <h3 className="margin-bottom-25">Documents</h3>
+                        <h3 className="margin-bottom-25">{t("Documents")}</h3>
                     
                     { !isLoading && documents.length > 0
                         ? <div style={{ display: 'flex', flexWrap: 'wrap', }}>
@@ -83,10 +85,10 @@ const MasterDocuments = (props) => {
                                 ))}
                             </PhotoProvider>
                         </div>
-                        : <p>The master didn't provide any documents</p>
+                        : <p>{t('TheMasterDidntProvideAnyDocuments')}</p>
                     }
 
-                        <a onClick={adminVerifyClick} className="button margin-top-25 ripple-effect button-sliding-icon" style={{ width: '155.396px', color: '#fff' }}>Verify <i className="icon-line-awesome-check"></i></a>
+                        <a onClick={adminVerifyClick} className="button margin-top-25 ripple-effect button-sliding-icon" style={{ width: '155.396px', color: '#fff' }}>{t("Verify")} <i className="icon-line-awesome-check"></i></a>
                     </div>
 
                 </div>

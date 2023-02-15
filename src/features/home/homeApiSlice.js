@@ -2,8 +2,8 @@ import { apiSlice } from "../../app/api/apiSlice";
 
 export const homeApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
-        getJobsMastersCount: builder.query({
-            query: () => '/jobs/masters/count',
+        getHomePageStatistics: builder.query({
+            query: () => '/home/statistics',
             keepUnusedDataFor: 5
         }),
         getPopularCategories: builder.query({
@@ -22,7 +22,7 @@ export const homeApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
-    useGetJobsMastersCountQuery,
+    useGetHomePageStatisticsQuery,
     useGetPopularCategoriesQuery,
     useGetRecentJobsListQuery,
     useGetHighestRatedMastersQuery,

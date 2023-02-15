@@ -1,54 +1,73 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from 'react-redux';
 import { useGetAllJobsListQuery } from "../../features/jobs/jobsApiSlice";
-import $ from 'jquery';
 import { useLocation, useParams, useSearchParams } from "react-router-dom";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 import OfficeFooter from "../Office/OfficeFooter";
-import SimpleBar from 'simplebar-react';
-import FiltersSidebar from "./FiltersSidebar";
-import { GoogleMapProvider } from '@ubilabs/google-maps-react-hooks';
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import FiltersSidebar from "./FiltersSidebar/FiltersSidebar";
 
-import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
 import JobListItem from "./JobListItem";
-import locations from '../../data/test_locations';
 import Map from "./Map";
+import Pagination from "./Pagination";
+import { useTranslation } from 'react-i18next';
 
-let Jobs = (props) => {
-	const { category } = useParams();
+let Jobs = ({ isMapApiLoaded }) => {
+	// const [center, setCenter] = useState({ 
+	// 	lat: 46.399904,   
+	// 	lng: 30.732074,
+	// });
+	const { t } = useTranslation();
 	const location = useLocation();
-	const { data: jobs, isLoading } = 
-	useGetAllJobsListQuery(location.state?.title, category);
-	
-	const { isLoaded } = useLoadScript({
-		googleMapsApiKey: process.env.REACT_APP_KEY,
-	});
-	
-	const [center, setCenter] = useState({ lat: 37.754929, lng: -122.429416 });
+	const { categoryId, title: category, pos, masterCategories } = location?.state || {};
+	const [center, setCenter] = useState(pos);
+    const [bounds, setBounds] = useState(null);
+	const [mapZoom] = useState(13);
+	const [page, setPage] = useState(1);
+	const [categories, setCategories] = useState(categoryId ? [categoryId] : []);
+	//const [categories, setCategories] = useState(masterCategories ? masterCategories : categoryId ? [categoryId] : []);
+	const [payment, setPayment] = useState({ minPayment: 100, maxPayment: 1000 });
+	const { data, isLoading } = 
+		useGetAllJobsListQuery(bounds ? { page, bounds, categories, payment, title: category } : skipToken);
+	const { jobs, total, lastPage } = data || {};
 
 	useEffect(() => {
+		if(!isLoading && data) {
+			setPage(data.page);
+		}
+	}, [isLoading]);
+	
+	useEffect(() => {
 		window.scrollTo(0, 0);
-		
-		if (navigator.geolocation) {
-			    navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        setCenter({
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude,
-                        });
-                    });
+
+		if (!pos) {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(
+					(position) => {
+					const pos = {
+						lat: position.coords.latitude,
+						lng: position.coords.longitude,
+					};
+			
+					setCenter(pos);
+					},
+					() => {
+					alert('Error: Geolocation failed');
+					}
+				);
+			} else {
+				// Browser doesn't support Geolocation
+				alert(`Browser doesn't support Geolocation`);
+			}
 		}
 	}, []);
 
-    return <div className="full-page-container with-map" style={{ maxHeight: '100vh' }}>
+    return <div className="full-page-container with-map" style={{ maxHeight: '95vh'}}>
 
-	<FiltersSidebar />
-	
+	<FiltersSidebar payment={payment} setPayment={setPayment} setCategories={setCategories} defaultCategory={categories[0]} setCenter={setCenter} isMapApiLoaded={isMapApiLoaded} />	
 
-	<div className="full-page-content-container">{/*data-simplebar*/}
+	<div style={{ maxHeight: '95vh' }} className="full-page-content-container">{/*data-simplebar*/}
 		<div className="full-page-content-inner">
 
-			<h3 className="page-title">Search Results</h3>
+			<h3 className="page-title">{t('SearchResults')}</h3>
 
 			<div className="listings-container compact-list-layout margin-top-35 margin-bottom-25">
 
@@ -61,49 +80,36 @@ let Jobs = (props) => {
 
 			</div>
 
-			{/* <!-- Pagination --> */}
 			<div className="clearfix"></div>
-			<div className="pagination-container margin-top-20 margin-bottom-20">
-				<nav className="pagination">
-					<ul>
-						<li className="pagination-arrow"><a href="#" className="ripple-effect"><i className="icon-material-outline-keyboard-arrow-left"></i></a></li>
-						<li><a href="#" className="ripple-effect">1</a></li>
-						<li><a href="#" className="ripple-effect current-page">2</a></li>
-						<li><a href="#" className="ripple-effect">3</a></li>
-						<li><a href="#" className="ripple-effect">4</a></li>
-						<li className="pagination-arrow"><a href="#" className="ripple-effect"><i className="icon-material-outline-keyboard-arrow-right"></i></a></li>
-					</ul>
-				</nav>
-			</div>
+			<Pagination total={total} setPage={setPage} currentPage={page} lastPage={lastPage} />
 			<div className="clearfix"></div>
-			{/* <!-- Pagination / End --> */}
 
 			<OfficeFooter />
 
 		</div>
 	</div>
 
-	<div className="full-page-map-container">
+	<div style={{ maxHeight: '95vh' }} className="full-page-map-container">
 		
 		<div className="filter-button-container">
 			<button className="enable-filters-button">
 				<i className="enable-filters-button-icon"></i>
-				<span className="show-text">Show Filters</span>
-				<span className="hide-text">Hide Filters</span>
+				<span className="show-text">{t('ShowFilters')}</span>
+				<span className="hide-text">{t('HideFilters')}</span>
 			</button>
-			<div className="filter-button-tooltip">Click to expand sidebar with filters!</div>
+			<div className="filter-button-tooltip">{t('ClickToExpandSidebarWithFilters')}</div>
 		</div>
 		
-		{/* <!-- Map --> */}
-		{!isLoaded && <div>Loading...</div>}
-		{/* <GoogleMap id="map" zoom={12} center={center}
-		mapTypeId={'roadmap'} streetView={true}>
-			{
-				locations?.map(l =>
-					<MarkerF position={{ lat: l.lat, lng: l.lng }} />)
-			}
-		</GoogleMap> */}
-		<Map />
+		{
+			(center && !isLoading) &&
+			<Map
+				jobs={jobs}
+				mapZoom={mapZoom}
+				setBounds={setBounds}
+				bounds={bounds}
+				center={center}
+				isMapApiLoaded={isMapApiLoaded} />
+		}
 	</div>
 </div>;
 };

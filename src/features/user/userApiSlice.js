@@ -8,7 +8,8 @@ export const masterApiSlice = apiSlice.injectEndpoints({
         }),
         getMessages: builder.query({
             query: (receiverId) => `/conversations/conversation?receiverId=${receiverId}`,
-            keepUnusedDataFor: 5
+            keepUnusedDataFor: 5,
+            providesTags: ['message']
         }),
         changeAvatar: builder.mutation({
             query: formData => ({
@@ -22,7 +23,8 @@ export const masterApiSlice = apiSlice.injectEndpoints({
                 url: '/conversations',
                 method: 'POST',
                 body: formData
-            })
+            }),
+            invalidatesTags: ['message']
         }),    
     })
 });

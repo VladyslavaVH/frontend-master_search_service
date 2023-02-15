@@ -114,7 +114,7 @@
 /* ---------------------------------- */
 /* Forms Reset & Styles
 ------------------------------------- */
-input,
+input:not([type="range"]),
 input[type="text"],
 input[type="password"],
 input[type="email"],
@@ -139,6 +139,10 @@ select {
 	border-radius: 4px;
 	border: none;
 	box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.12);
+}
+
+#location-input {
+	box-shadow: none !important;
 }
 
 input::-webkit-outer-spin-button,
@@ -211,7 +215,7 @@ input {
 	transition: all 0.1s ease-in-out;
 }
 
-input:focus,
+input:focus:not([type="range"]),
 input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="email"]:focus,
@@ -224,7 +228,7 @@ textarea:focus {
 	box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.12);
 }
 
-input:-webkit-autofill:focus,
+input:-webkit-autofill:focus:not([type="range"]),
 input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 30px #fff inset !important;
     -webkit-text-fill-color: #808080 !important;
@@ -2489,7 +2493,7 @@ em.mm-counter+a.mm-fullsubopen+span {
 	margin-bottom: 0;
 }
 
-.newsletter input:focus {
+.newsletter input:focus:not([type="range"]) {
 	box-shadow: none;
 }
 
@@ -4193,6 +4197,9 @@ span.blog-item-tag {
 /*.full-page-container.with-map .full-page-sidebar .sidebar-search-button-container,*/
 .full-page-container.with-map .full-page-sidebar .full-page-sidebar-inner { width: 360px; }
 
+.full-page-container.with-map {
+	max-height: 90vh;
+}
 
 .full-page-sidebar.hidden-sidebar.enabled-sidebar {
 	visibility: visible;
@@ -4387,6 +4394,10 @@ span.blog-item-tag {
 	.full-page-container.with-map .full-page-content-inner .grid-layout .job-listing {
 	    width: calc(100% * (1/3) - 30px);
 	}
+
+	.full-page-container.with-map {
+		overflow-y: hidden;
+	}
 }
 
 @media (max-width: 2560px) {
@@ -4397,6 +4408,10 @@ span.blog-item-tag {
 	/* Full Page With Map */
 	.full-page-container.with-map .full-page-content-inner .grid-layout .job-listing {
 	    width: calc(100% * (1/2) - 30px);
+	}
+
+	.full-page-container.with-map {
+		overflow-y: hidden;
 	}
 }
 
@@ -4410,6 +4425,10 @@ span.blog-item-tag {
 	.full-page-container.with-map .full-page-sidebar .full-page-sidebar-inner { width: 340px; }
 	.full-page-container.with-map .full-page-content-inner .grid-layout .job-listing {
 	    width: calc(100% * (1/2) - 30px);
+	}
+
+	.full-page-container.with-map {
+		overflow-y: hidden;
 	}
 }
 
@@ -4455,6 +4474,7 @@ span.blog-item-tag {
 @media (max-width: 1099px) {
 	.full-page-content-inner .grid-layout .job-listing {
 	    width: calc(100% - 30px);
+		overflow: hidden;
 	}
 	.full-page-sidebar {
 		flex: 0 0 340px;
@@ -4501,6 +4521,17 @@ span.blog-item-tag {
 	}
 
 	.full-page-container .simplebar-track { display: none; }
+
+	.full-page-container.with-map {
+		overflow-y: scroll;
+		margin-top: 6vh;
+		-ms-overflow-style: none;
+  		scrollbar-width: none;
+	}
+
+	.full-page-container.with-map::-webkit-scrollbar {
+		display: none;
+	}
 }
 
 @media (max-width: 992px) {
@@ -4557,6 +4588,10 @@ span.blog-item-tag {
 		float: none;
 		left: -10px;
 		margin-top: 10px;
+	}
+
+	.full-page-content-inner {
+		overflow: hidden;
 	}
 
 }
@@ -6960,6 +6995,17 @@ table.basic-table { margin-bottom: 0; }
 
 .ripple-effect-dark span.ripple-overlay { background: #000; opacity: 0.07; }
 
+a.ripple-effect {
+	color: '#fff';
+}
+
+a.ripple-effect:hover {
+	background-color: '#333';
+    color: '#fff';
+    box-shadow: '0 2px 8px rgb(0 0 0 / 20%)';
+	cursor: pointer;
+}
+
 @keyframes ripple {
   0% {
 	 -webkit-transform: scale(4);
@@ -7735,7 +7781,7 @@ input:checked + .switch-button:before {
 }
 
 /* Field Styles */
-.intro-banner-search-form input:focus { box-shadow: none;}
+.intro-banner-search-form input:focus:not([type="range"]) { box-shadow: none;}
 .intro-banner-search-form input {
 	box-shadow: none;
 	font-size: 18px;
@@ -8677,7 +8723,7 @@ input:checked + .switch-button:before {
 	border-radius: 0;
 }
 
-.card-label > input:focus {
+.card-label > input:focus:not([type="range"]) {
 	box-shadow: none;
 	border-bottom: 1px solid #e0e0e0;	padding: 15px 0;
 }
@@ -8688,7 +8734,7 @@ input:checked + .switch-button:before {
 	-webkit-transform-origin: left;
 }
 
-.card-label > input:focus::placeholder {
+.card-label > input:focus:not([type="range"])::placeholder {
 transform: translateY(-18px);
 }
 
@@ -10854,7 +10900,7 @@ img.mfp-img {
 
 /* Chrome autocomplete highlight reset */
 .dialog-with-tabs input:-webkit-autofill,
-.dialog-with-tabs input:focus:-webkit-autofill {
+.dialog-with-tabs input:not([type="range"]):focus:-webkit-autofill {
     border: 1px solid #e0e0e0;
     -webkit-box-shadow: inset 0 0 0px 9999px white, 0 1px 4px rgba(0,0,0,0.07);
 }
@@ -13611,7 +13657,7 @@ body #submit_map {
   display: none;
 }
 
-.leaflet-control-geocoder-form input:focus {
+.leaflet-control-geocoder-form input:not([type="range"]):focus {
   outline: none;
 }
 
@@ -13983,7 +14029,7 @@ text-overflow: ellipsis; */
   display: none;
 }
 
-.leaflet-control-geocoder-form input:focus {
+.leaflet-control-geocoder-form input:not([type="range"]):focus {
   outline: none;
 }
 
@@ -15963,7 +16009,7 @@ ul.dashboard-box-list > li:hover {
 	margin: 0;
 }
 
-.messages-headline input:focus { box-shadow: none; }
+.messages-headline input:not([type="range"]):focus { box-shadow: none; }
 
 .messages-headline .input-with-icon i {
 	font-size: 18px;
@@ -17142,3 +17188,44 @@ ul.dashboard-box-list > li:hover {
 	.padding-left-90 { padding-left: 90px !important; }
 	.padding-left-95 { padding-left: 95px !important; }
 	.padding-left-100 { padding-left: 100px !important; }
+
+.select__menu-list::-webkit-scrollbar {
+	width: 5px;
+}
+.select__menu-list::-webkit-scrollbar-track {
+	background-color: rgba(0,0,0,0.0);
+	border-radius: 12px;
+}
+.select__menu-list::-webkit-scrollbar-thumb {
+	border-radius: 12px;
+	background-color: #d8d8d8;
+}
+.select__menu-list::-webkit-scrollbar-thumb:hover {
+	background-color: #c8c8c8;
+}
+
+/* marker infobox close button */
+.gm-ui-hover-effect {
+	background: none;
+    display: block;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    text-transform: none;
+    appearance: none;
+    position: absolute;
+    cursor: pointer;
+    user-select: none;
+    top: 5px;
+    right: 5px;
+    width: 27px;
+    height: 27px;
+    background-color: #f0f0f0;
+    color: #666;
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out;
+}
+
+.gm-ui-hover-effect span {
+	margin: 7px;
+}

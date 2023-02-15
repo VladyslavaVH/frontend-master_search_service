@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 const Login = ({ onClose, fromLocationData, from }) => {
     const { t } = useTranslation();
     const { register, handleSubmit } = useForm();
-    const [user, setUser] = useState('');
     const [password, setPassword] = useState('');
 
     const [login, { isLoading }] = useLoginMutation();
@@ -30,8 +29,9 @@ const Login = ({ onClose, fromLocationData, from }) => {
 
             if (from) {
                 navigate(from, { replace: true, state: {...fromLocationData} }, );
-            }
+            } 
             onClose();
+
         } catch (error) {
             console.error(error);
         }
@@ -51,7 +51,7 @@ const Login = ({ onClose, fromLocationData, from }) => {
 
         <div className="welcome-text">
             <h3>{`${t('Greetings')}`}</h3>
-            <span>{t('DontHaveAnAccount')} <a href="#" className="register-tab">{t('SignUp')}</a></span>
+            <span>{t('DontHaveAnAccount')} <a data-signin="1" style={{ color: '#2a41e8', cursor: 'pointer' }}  className="register-tab">{t('SignUp')}</a></span>
         </div>
 
         <form onSubmit={ handleSubmit(onSubmit) } id="login-form">

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import $ from 'jquery';
 import { avatarSwitcher } from "../../../amimations/amimations";
 import { useSelector } from 'react-redux';
@@ -12,6 +12,7 @@ import CategoriesList from "./CategoriesList";
 import { useTranslation } from 'react-i18next';
 import nationalities from "./nationalities";
 import Select from 'react-select';
+import NationalitySelect from "./NationalitySelect";
 
 const schema = yup
     .object()
@@ -33,6 +34,7 @@ let Settings = (props) => {
     const { register, handleSubmit, reset, watch,
         formState: { errors },
     } = useForm({ resolver: yupResolver(schema) });
+    const [newNationality, setNationality] = useState(null);
 
     const isMaster = useSelector(selectIsMaster);
     const isAdmin = useSelector(selectIsAdmin);
@@ -243,7 +245,7 @@ let Settings = (props) => {
                                         <div className="col-xl-6">
                                             <div className="submit-field">
                                                 <h5>{t('Tagline')}</h5>
-                                                <input type="text" style={{ height: '60px'}} className="with-border" value={tagLine} onChange={() => { }} />
+                                                <input type="text" className="" value={tagLine} onChange={() => { }} />
                                             </div>
                                         </div>
 
@@ -253,12 +255,7 @@ let Settings = (props) => {
                                                 {/* <select className="selectpicker with-border" defaultChecked={'UA'} data-size="7" title="Select Job Type" data-live-search="true">
                                                     
                                                 </select> */}
-                                                <Select
-                                                    defaultValue={{ value: 'UA', label: 'Ukraine' }}
-                                                    options={nationalities}
-                                                    onChange={changeNationality}
-                                                    styles={{}}
-                                                 />
+                                                <NationalitySelect setNationality={setNationality} />
                                             </div>
                                         </div>
 

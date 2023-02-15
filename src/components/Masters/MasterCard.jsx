@@ -13,7 +13,32 @@ let MasterCard = (props) => {
     const [ isOpen, setIsOpen ] = useState(false);
     const { id, isAdminChecked, avatar, firstName, lastName, tagLine, rating, 
     nationality, lat, lng } = props;
-    const [location, setLocation] = useState({lat: 0, lng: 0});
+    const [cityName, setCityName] = useState('');
+
+    useEffect(() => {
+        if (window.google && (lat && lng)) {
+
+            if (!window.myGeocoder) {
+                window.myGeocoder = new window.google.maps.Geocoder();
+            }
+
+            window.myGeocoder
+            .geocode({ location: { lat, lng } }, function(results, status) {
+                if( status === window.google.maps.GeocoderStatus.OK ) {
+                    let address = results[0].address_components;
+                    for (let p = address.length-1; p >= 0; p--) {
+                      if ((address[p].types.indexOf("locality") != -1)
+                       && (address[p].types.indexOf("political") != -1)) {
+                        setCityName(address[p].long_name);
+                      }
+                    }
+                  } else {
+                    console.log("Sorry - We couldn't find this location. Please try an alternative");
+                 }
+            })
+            .catch((e) => console.log("Geocoder failed due to: " + e));
+        }
+    }, []);
 
     //const imgPath = process.env.REACT_APP_IMG_PATH;
     const profilePhotosPath = process.env.REACT_APP_PROFILE_PHOTOS_PATH;
@@ -23,8 +48,6 @@ let MasterCard = (props) => {
         if (document.getElementsByClassName('star').length == 0) {
             starRating();
         }
-
-        setLocation({lat, lng});
     }, []);
 
     return <div className="freelancer">
@@ -36,8 +59,8 @@ let MasterCard = (props) => {
                     {!!+isAdminChecked && <div className="verified-badge"></div>}
 
                     {(isAuth && !isMaster) 
-                    ?<NavLink state={{ name: t('MasterProfile'), page: t('MasterProfile'), isMasterProfile: true }}
-                        to={`/client-office/master-profile/${id}`}>
+                    ?<NavLink state={{ id: id, name: t('MasterProfile'), page: t('MasterProfile'), isMasterProfile: true}}
+                    to={`/client-office/master-profile`}>
                         <img src={`${profilePhotosPath}${avatar}`} alt="" />
                     </NavLink>
                     :<img src={`${profilePhotosPath}${avatar}`} alt="" />}
@@ -53,7 +76,7 @@ let MasterCard = (props) => {
                     <div className="star-rating" data-rating={rating}></div>
                 </div>
 
-                <strong className="margin-top-5"><i className="icon-material-outline-location-on"></i> {`lat: ${location.lat}, lng: ${location.lng}`}</strong>
+                {cityName.length > 0 && <strong className="margin-top-5"><i className="icon-material-outline-location-on"></i> {cityName}</strong>}
             </div>
         </div>
 
@@ -66,7 +89,7 @@ let MasterCard = (props) => {
                     {t('ViewProfile')} <i className="icon-material-outline-arrow-right-alt"></i>
                 </NavLink>}
             </>
-            :<a onClick={() => setIsOpen(true)} className="button button-sliding-icon ripple-effect popup-with-zoom-anim log-in-button">
+            :<a style={{ color: '#fff' }} onClick={() => setIsOpen(true)} className="button button-sliding-icon ripple-effect popup-with-zoom-anim log-in-button">
                 {t('ViewProfile')} <i className="icon-material-outline-arrow-right-alt"></i>
             </a>}
             <SignInWindow open={isOpen} onClose={() => setIsOpen(false)} />

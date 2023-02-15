@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import Candidate from './Candidate';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGetAllCandidatesByClientQuery, useGetMasterByIdQuery } from "../../../../features/masters/mastersApiSlice";
+import { useTranslation } from 'react-i18next';
 
 const ManageCandidates = (props) => {
+    const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
     const [candidates, setCandidates] = useState([]);
@@ -39,11 +41,11 @@ const ManageCandidates = (props) => {
                         {(location.state.masterId)
                             ?<>
                                 <i className="icon-feather-user-check"></i>
-                                Confirmed Master
+                                {t('ConfirmedMaster')}
                             </>
                             :<>
                                 <i className="icon-material-outline-supervisor-account"></i>
-                                {candidates?.length} Candidate{candidates?.length > 1 && 's'}
+                                {candidates?.length} {t('Candidate.part1')}{candidates?.length > 1 && t('Candidate.part2')}
                             </>
                         }
                     </h3>

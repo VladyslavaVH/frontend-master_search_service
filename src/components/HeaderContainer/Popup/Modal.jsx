@@ -50,6 +50,12 @@ export default function Modal({ open, onClose, tabs, children }) {
     transition: 'all 0.3s, font-weight 0s'
   };
 
+  const onSignInClick = e => {
+    if (e.target.getAttribute('data-signin')) {
+      setActiveTab(parseInt(e.target.getAttribute('data-signin')));      
+    }
+  }
+
   return ReactDOM.createPortal (
     <>
         <div style={OVERLAY_STYLES} onClick={onClose}></div>
@@ -61,7 +67,7 @@ export default function Modal({ open, onClose, tabs, children }) {
             </ul>}
             <button onClick={onClose} style={{...BTN_CLOSE, borderLeft: tabs ? '1px solid #e0e0e0' : '1px solid transparent' }} 
             title="Close" type="button"><i className='icon-line-awesome-close'></i></button>
-            {children[activeTab] || children}
+            <div onClick={onSignInClick}>{children[activeTab] || children}</div>
         </div>
     </>,
     document.getElementById('portal')

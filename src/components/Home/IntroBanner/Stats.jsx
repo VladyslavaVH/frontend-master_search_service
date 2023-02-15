@@ -2,14 +2,16 @@ import React, { useRef } from "react";
 import { useCountUp } from 'react-countup';
 import { useTranslation } from "react-i18next";
 
-const Stats = ({ jobsCount, mastersCount }) => {   
+const Stats = ({ jobsCount, mastersCount, usersCount }) => {   
     const { t } = useTranslation();
     const parameters = { separator: ',', duration: 2 };
     const jobsCountRef = useRef(null);
     const mastersCountRef = useRef(null);
+    const usersCountRef = useRef(null);
 
     useCountUp({ ref: jobsCountRef, end: jobsCount, ...parameters });
     useCountUp({ ref: mastersCountRef, end: mastersCount, ...parameters });
+    useCountUp({ ref: usersCountRef, end: usersCount, ...parameters });
 
     return <div className="row">
     <div className="col-md-12">
@@ -21,6 +23,10 @@ const Stats = ({ jobsCount, mastersCount }) => {
             <li>
                 <strong className="counter" ref={mastersCountRef}></strong>
                 <span>{t('Masters')}</span>
+            </li>
+            <li>
+                <strong className="counter" ref={usersCountRef}></strong>
+                <span>{t('Users')}</span>
             </li>
         </ul>
     </div>

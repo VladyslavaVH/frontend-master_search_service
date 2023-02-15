@@ -3,8 +3,16 @@ import { apiSlice } from "../../app/api/apiSlice";
 export const jobsApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getAllJobsList: builder.query({
-            query: (title, category) => `/jobs?${title ? `title=${title}&` : ''}${category ? `category=${category}` : ''}`,
-            keepUnusedDataFor: 5
+            query: ({ page, bounds, categories, payment, title }) => {
+                let categoriesQuery = '';
+
+                for (const i in categories) {
+                    categoriesQuery += `&category${i}=${categories[i]}`;
+                }
+
+                return `/jobs?page=${page}${(categories && categories.length > 0 ? categoriesQuery : '')}${title ? `&title=${title}` : ''}${bounds ? `&startLat=${bounds.lats.startLat}&endLat=${bounds.lats.endLat}&startLng=${bounds.lngs.startLng}&endLng=${bounds.lngs.endLng}` : ''}${payment ? `&minPayment=${payment.minPayment}&maxPayment=${payment.maxPayment}` : '' }`
+            },
+            keepUnusedDataFor: 1
         }),
         getJobListingByClient: builder.query({
             query: () => `/client/job/listing`,

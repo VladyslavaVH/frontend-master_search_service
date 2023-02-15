@@ -4,8 +4,10 @@ import { inlineBG, starRating } from "../../../amimations/amimations";
 import { useGetMasterByIdQuery } from "../../../features/masters/mastersApiSlice";
 import Comments from "./Comments/Comments";
 import Sidebar from "./Sidebar/Sidebar";
+import { useTranslation } from 'react-i18next';
 
 const MasterProfile = (props) => {
+    const { t } = useTranslation();
     const location = useLocation();
     const { data, isLoading } = useGetMasterByIdQuery(location.state.id);
     const { id, isVerified, avatar, firstName, lastName, tagLine, rating, jobsDoneCount, description, flag, country, lng, lat } = data || {};
@@ -56,7 +58,7 @@ const MasterProfile = (props) => {
 
                     {(description && description.length > 0) &&
                     <div className="single-page-section">
-                        <h3 className="margin-bottom-25">About Me</h3>
+                        <h3 className="margin-bottom-25">{t("AboutMe")}</h3>
                         <p>{description}</p>
                     </div>}
 

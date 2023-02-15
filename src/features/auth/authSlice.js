@@ -11,6 +11,7 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: {
         lang: 'en',
+        defaultLanguage: { value: 'en', label: 'English' },
         isAuth: false,
         user: null,
         token: null,
@@ -57,11 +58,14 @@ const authSlice = createSlice({
         setLanguage: (state, { payload }) => {
             state.lang = payload;
             document.documentElement.lang = state.lang;
-        }
+        },
+        setDefaultLanguage: (state, { payload }) => {
+            state.defaultLanguage = payload;
+        },
     }
 });
 
-export const { setAuth, logOut, setPersist, setLanguage } = authSlice.actions;
+export const { setAuth, logOut, setPersist, setLanguage, setDefaultLanguage } = authSlice.actions;
 
 export default authSlice.reducer;
 
@@ -75,3 +79,5 @@ export const selectPersist = (state) => state.auth.persist;
 export const selectIsAuth = (state) => state.auth.isAuth;
 export const selectIsAdmin = (state) => state.auth.isAdmin;
 export const selectIsMaster = (state) => state.auth.isMaster;
+
+export const selectDefaultLanguage = (state) => state.auth.defaultLanguage;

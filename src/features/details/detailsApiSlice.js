@@ -5,11 +5,16 @@ export const detailsApiSlice = apiSlice.injectEndpoints({
         getOptionCategories: builder.query({
             query: () => `/option/categories`,
             keepUnusedDataFor: 5
-        }),     
+        }), 
+        getOptionCurrencies: builder.query({
+            query: () => `/option/currencies`,
+            keepUnusedDataFor: 5
+        }), 
     })
 });
 
 export const {
     useGetOptionCategoriesQuery,
+    useGetOptionCurrenciesQuery
 } = detailsApiSlice
 

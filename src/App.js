@@ -10,10 +10,10 @@ import Messages from './components/Office/Messages/Messages';
 import PricingPlans from './components/Office/MasterOffice/PricingPlans';
 import Statistics from './components/Office/MasterOffice/Statistics';
 import Jobs from './components/Jobs/Jobs';
-import Support from './components/Support/Support';
+import ContactUs from './components/ContactUs/ContactUs';
 import FAQs from './components/FAQs/FAQs';
 import ClientOffice from './components/Office/ClientOffice/ClientOffice';
-import JobPosting from './components/Office/ClientOffice/JobPosting';
+import JobPosting from './components/Office/ClientOffice/JobPosting/JobPosting';
 import Checkout from "./components/Checkout/Checkout";
 import ManageJobs from './components/Office/ClientOffice/ManageJobs/ManageJobs';
 import Settings from './components/Office/Settings/Settings';
@@ -46,25 +46,7 @@ const ROLE = {
 }
 
 const API_KEY = process.env.REACT_APP_KEY; 
-//const API_KEY = import.meta.env.REACT_APP_KEY;
-const MAP_API_JS ='https://maps.googleapis.com/maps/api/js';
 require('slick-carousel');
-require('magnific-popup');
-
-
-/*function loadAsyncScript(src) {
-    return new Promise(resolve => {
-      const script = document.createElement('script');
-      Object.assign(script, {
-        type: 'text/javascript',
-        async: true,
-        src
-      });
-
-      script.addEventListener('load', () => resolve(script));
-      document.head.appendChild(script);
-    });
-}*/
 
 function App() {
   const dispatch = useDispatch();
@@ -79,7 +61,8 @@ function App() {
         const loader = new Loader({
             apiKey: API_KEY,
             version: 'beta',
-            libraries: [ 'marker', 'places', 'geometry']
+            libraries: [ 'marker', 'places', 'geometry'],
+            language: 'en'
         })
         loader.load().then(() => {
           setIsMapApiLoaded(true);
@@ -108,25 +91,6 @@ function App() {
     });
   };
 
-  // const initMapScript = () => {
-  //   if (window.google) {
-  //     return Promise.resolve();
-  //   }
-
-  //   const src = `${MAP_API_JS}?key=${API_KEY}&libraries=places&v=weekly`;
-  //   return loadAsyncScript(src);
-  // }
-
-  // function initAutocomplete() {
-  //   let options = {
-  //    types: ['(cities)'],
-  //    componentRestrictions: {country: "us"}
-  //   };
-
-  //   let input = document.getElementById('autocomplete-input');
-  //   let autocomplete = new window.google.maps.places.Autocomplete(input, options);
-  // }
-
   useEffect(() => {
     dispatch(setPersist(localStorage.getItem('persist') || false));
     
@@ -152,22 +116,6 @@ function App() {
     fullPageScrollbar();
   }, []);
 
-  const msgInfo = { id: 1, user: 'Cindy Forest', avatar: 'user-avatar-small-02.jpg', mainAvatar: 'user-avatar-small-01.jpg',
-  messages: [
-      { date: '28 June, 2019', messages: [
-          { isTyping: false, isMe: true, message: `Thanks for choosing my offer. I will start working on your project tomorrow.` },
-          { isTyping: false, isMe: false, message: `Great. If you need any further clarification let me know. 👍` },
-          { isTyping: false, isMe: true, message: `Ok, I will. 😉` },
-      ] },
-      { date: 'Yesterday', messages: [
-          { isTyping: false, isMe: true, message: `Hi Sindy, I just wanted to let you know that project is finished and I'm waiting for your approval.` },
-          { isTyping: false, isMe: false, message: `Hi Tom! Hate to break it to you, but I'm actually on vacation 🌴 until Sunday so I can't check it now. 😎` },
-          { isTyping: false, isMe: true, message: `Ok, no problem. But don't forget about last payment. 🙂` },
-          { isTyping: true, isMe: false, message: ``}
-      ] }
-  ]
-};
-
   return (
       <div className="App">
         <div id="wrapper">
@@ -177,19 +125,11 @@ function App() {
             {/*public routes*/}
             <Route path="/" element={<Home isMapApiLoaded={isMapApiLoaded} />} />    
 
-            <Route path="/jobs">
-              <Route index element={<Jobs />} />
-              <Route path=":title" element={<Jobs />} />
-              <Route path=":category" element={<Jobs />} />
-            </Route>
-
             <Route path="/masters" element={<Masters />} />    
             <Route path="*" element={<Page404 />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
-            <Route path="/support" element={<Support />} />
+            <Route path="/contact/us" element={<ContactUs isMapApiLoaded={isMapApiLoaded} />} />
             <Route path="/faqs" element={<FAQs />} />
-
-            <Route path="/jobs/:id" element={<Jobs />} />
 
             {/*protected routes*/}
             <Route element={<PersistLogin />}>
@@ -237,8 +177,16 @@ function App() {
                   <Route path="checkout" element={<Checkout />} />
                   <Route path="settings" element={<Settings />} />
                 </Route>
-              </Route>
+                
+                <Route path="/jobs/:category" 
+                  element={<Jobs isMapApiLoaded={isMapApiLoaded} />} />
+
+                <Route path="/jobs" 
+                  element={<Jobs isMapApiLoaded={isMapApiLoaded} />} />
+
+                <Route path="/jobs/job/:title" element={<SingleJob />} />
               
+            </Route>
             </Route>
 
             <Route path="/order-confirmation" element={<OrderConfirmation />} />

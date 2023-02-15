@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from 'react-router-dom';
 import { starRating } from "../../../../amimations/amimations";
 import { useDeleteCandidateMutation, useConfirmCandidateMutation } from "../../../../features/jobs/jobsApiSlice";
+import { useTranslation } from 'react-i18next';
 
 const Candidate = (props) => {
+    const { t } = useTranslation();
     const { id, jobFK, isConfirmed, isVerified, avatar, firstName, lastName, flag, country, email, phone, rating } = props;
 
     const [fullName, setFullName] = useState(`${firstName} ${lastName}`);
@@ -17,24 +19,6 @@ const Candidate = (props) => {
 
     const profilePhotosPath = process.env.REACT_APP_PROFILE_PHOTOS_PATH;
     const flagPath = process.env.REACT_APP_FLAG_PATH;
-    const userPlaceholder = null;
-
-    const popupSettings = {
-        type: 'inline',
-
-        fixedContentPos: false,
-        fixedBgPos: true,
-
-        overflowY: 'auto',
-
-        closeBtnInside: true,
-        closeMarkup: '<button title="%title%" type="button" className="mfp-close"></button>',
-        preloader: false,
-
-        midClick: true,
-        removalDelay: 300,
-        mainClass: 'my-mfp-zoom-in'
-    };
 
     useEffect(() => {
         if (document.getElementsByClassName('star').length == 0) {
@@ -73,12 +57,12 @@ const Candidate = (props) => {
 
                 <div className="freelancer-avatar">
                     {!!+isVerified && <div className="verified-badge"></div>}
-                    <NavLink state={{ id: id, name: fullName, page: 'Master Profile'}}
-                    to={`/client-office/master-profile`}><img src={`${profilePhotosPath}${avatar ? avatar : userPlaceholder}`} alt="candidate" /></NavLink>
+                    <NavLink state={{ id: id, name: fullName, page: t('MasterProfile')}}
+                    to={`/client-office/master-profile`}><img src={`${profilePhotosPath}${avatar}`} alt={t("Candidate.part1")} /></NavLink>
                 </div>
 
                 <div className="freelancer-name">
-                    <h4><NavLink state={{ id: id, name: fullName, page: 'Master'}}
+                    <h4><NavLink state={{ id: id, name: fullName, page: t('Master')}}
                     to={`/client-office/master-profile`}>{fullName} {flag && <img className="flag" src={`${flagPath}${flag}.svg`} alt="flag" title={country} data-tippy-placement="top" />}</NavLink></h4>
 
                     {email && <span className="freelancer-detail-item"><i className="icon-feather-mail"></i> {email}</span>}
@@ -94,16 +78,16 @@ const Candidate = (props) => {
                         {!!+isConfirmed &&
                             <>
                                 {/*href="#small-dialog" */}
-                                <NavLink state={{ targetUser: id, name: 'Messages', page: 'Messages' }}
+                                <NavLink state={{ targetUser: id, name: t('Messages'), page: t('Messages') }}
                                 to={`/client-office/messages/user/${firstName}/${lastName}`}
-                                className="popup-with-zoom-anim button dark ripple-effect"><i className="icon-feather-mail"></i> Send Message</NavLink>
+                                className="popup-with-zoom-anim button dark ripple-effect"><i className="icon-feather-mail"></i> {t("SendMessage")}</NavLink>
                                 {/* <SendMessagePopup popupSettings={popupSettings} />  */}
                             </>
                         }
                         {!(!!+isConfirmed) &&
                             <>
-                                <a onClick={removeCandidate} className="button gray ripple-effect ico" title="Remove Candidate" data-tippy-placement="top"><i className="icon-feather-trash-2"></i></a>
-                                <a onClick={confirmMaster} className="button gray ripple-effect ico" title="Accept Candidate" data-tippy-placement="top"><i className="icon-feather-check"></i></a>
+                                <a onClick={removeCandidate} className="button gray ripple-effect ico" title={`${t('Remove')} ${t("Candidate.part1")}`} data-tippy-placement="top"><i className="icon-feather-trash-2"></i></a>
+                                <a onClick={confirmMaster} className="button gray ripple-effect ico" title={`${t("Accept")} ${t("Candidate.part1")}`} data-tippy-placement="top"><i className="icon-feather-check"></i></a>
                             </>
                         }
                     </div>

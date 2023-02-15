@@ -3,8 +3,10 @@ import { NavLink } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import useLogout from './../../../hooks/useLogout';
+import { useTranslation } from 'react-i18next';
 
 let Sidebar = (props) => {
+    const { t } = useTranslation();
     const logout = useLogout();
     const { messages, unreadMessages, setLogout } = props;
 
@@ -21,44 +23,44 @@ let Sidebar = (props) => {
                         <span className="hamburger-inner"></span>
                     </span>
                 </span>
-                <span className="trigger-title">Admin Panel Navigation</span>
+                <span className="trigger-title">{t("AdminPanelNavigation")}</span>
             </a>
             
             {/* <!-- Navigation --> */}
             <div className="dashboard-nav">
                 <div className="dashboard-nav-inner">
 
-                    <ul data-submenu-title="Start">
+                    <ul data-submenu-title={t("Start")}>
                         <li className={location.pathname.includes('statistics') ? 'active' : ''}>
-                            <NavLink state={{ name: 'Admin panel', page: 'Statistics'}}
+                            <NavLink state={{ name: t('AdminPanel'), page: t('Statistics')}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/admin-panel/statistics'>
                                 <i className="icon-material-outline-dashboard"></i>
-                                Statistics
+                                {t("Statistics")}
                             </NavLink>
                         </li>
                         <li className={location.pathname.includes('doc-') ? 'active' : ''}>
-                            <NavLink state={{ name: 'Admin panel', page: 'Verification of documents'}}
+                            <NavLink state={{ name: t('AdminPanel'), page: t('VerificationOfDocuments')}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/admin-panel/doc-verification'>
                                 <i className="icon-feather-user-check"></i> 
-                                Verify the documents
+                                {t("VerifyTheDocuments")}
                             </NavLink>
                         </li>
                         <li className={location.pathname.includes('faqs') ? 'active' : ''}>
-                            <NavLink state={{ name: 'Admin panel', page: 'FAQs Editing'}}
+                            <NavLink state={{ name: t('AdminPanel'), page: `FAQs ${t('Editing')}`}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/admin-panel/faqs-editing'>
                                 <i className="icon-line-awesome-edit"></i> 
-                                Edit FAQs
+                                {t("Edit")} FAQs
                             </NavLink>
                         </li>                       
                         <li className={location.pathname.includes('add-category') ? 'active' : ''}>
-                            <NavLink state={{ name: 'Admin panel', page: 'Adding job categories'}}
+                            <NavLink state={{ name: t('AdminPanel'), page: t('AddingJobCategories')}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/admin-panel/add-category'>
                                 <i className="icon-line-awesome-plus-square-o"></i> 
-                                Add Job Category
+                                {t("AddJobCategory")}
                             </NavLink>
                         </li>                       
                     </ul>
@@ -75,7 +77,7 @@ let Sidebar = (props) => {
                         <li>
                             <NavLink to='/' onClick={async () => await logout()}>
                                 <i className="icon-material-outline-power-settings-new"></i> 
-                                Logout
+                                {t("Logout")}
                             </NavLink>
                         </li>
                     </ul>

@@ -1,32 +1,83 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import NumberVerification from './NumberVerification';
-import { registerAPI } from '../../../api/api';
+import { useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
+import PhoneInput from 'react-phone-input-2';
+import "react-phone-input-2/lib/style.css";
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { auth } from '../../../utils/firebase.config';
+import { PHONE_INPUT_STYLE, PHONE_INPUT_BUTTON_STYLE, PHONE_INPUT_CONTAINER_STYLE } from './styles';
+
+import { ReactComponent as MySpinner } from '../../.././amimations/mySpinner.svg';
 
 const Registration = ({ onClose }) => {
     const { t } = useTranslation();
+    const [regData, setRegData] = useState(null);
     const { register, handleSubmit } = useForm();
+    const [loading, setLoading] = useState(false);//? false
     const [isNumberVer, setIsNumberVer] = useState(false);//? set false
-    const [phone, setPhone] = useState(null);
-    const [isClientChecked, setIsClientChecked] = useState(true)
+    const [phone, setPhone] = useState(null);//? set null
+    const [isClientChecked, setIsClientChecked] = useState(true);
 
-    const onSubmit = (data) => {
-        registerAPI.register(data)
-        .then(response => {
-            if (response.status == 201) {
-                console.log('Successfully registered');
-                //setPhone(data.phone);
-                //setIsNumberVer(true);
-            } else {
-                console.log('Failed to register');
-            }
+    function onCaptchVerify() {
+        if (!window.recaptchaVerifier) {
+          window.recaptchaVerifier = new RecaptchaVerifier(
+            "recaptcha-container",
+            {
+              size: "invisible",
+              callback: (response) => {
+                //onSignup();
+              },
+              "expired-callback": () => {},
+            },
+            auth
+          );
+        }
+    }
+
+    const sendOTP = (phoneNumber) => {
+        console.log("sendOTP", phoneNumber);
+
+        setLoading(true);
+        onCaptchVerify();
+
+        const appVerifier = window.recaptchaVerifier;        
+
+        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        .then((confirmationResult) => {
+            window.confirmationResult = confirmationResult;
+            setLoading(false);
+            console.log("OTP sended successfully!");
+            setIsNumberVer(true);
+        })
+        .catch((error) => {
+            console.log(error);
+            setLoading(false);
         });
+    }
+
+    const onSubmit = async (data) => { 
+        try {
+            const formatPhone = "+" + phone;
+            setPhone(formatPhone);   
+
+            let newData = {
+                ...data,
+                phone: formatPhone
+            };
+            delete newData.passwordRepeat;
+            setRegData(newData);
+
+            sendOTP(formatPhone);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return <div className="popup-tab-content" id="register">
         {isNumberVer
-        ? <NumberVerification onClose={onClose} phone={phone} />
+        ? <NumberVerification onClose={onClose} regData={regData} phone={phone} resendOTP={() => sendOTP(phone)} />
         : <>
             <form onSubmit={handleSubmit(onSubmit)} id="register-account-form">
                 <div className="welcome-text">
@@ -65,13 +116,28 @@ const Registration = ({ onClose }) => {
                     {...register('lastName', { required: true })} className="input-text with-border" name="lastName" id="lastName-register" />
                 </div>
 
-                <div className="input-with-icon-left">
+                {/* <div className="input-with-icon-left">
                     <i className="icon-feather-phone"></i>
                     <input type="tel" title="Only + and numbers"
                         {...register('phone', { required: true })} className="input-text with-border"
                         pattern='^\+(?:[0-9] ?){6,14}[0-9]$'
                         name="phone" id="phone" placeholder="+38011111111" required />
-                </div>
+                </div> */}
+
+                <PhoneInput 
+                disableDropdown={true}
+                preferredCountries={['ua', 'us', 'cz']}
+                inputProps={{
+                    name: 'phone',
+                    required: true,
+                    autoFocus: true,                    
+                }}
+                inputStyle={PHONE_INPUT_STYLE}                
+                containerStyle={PHONE_INPUT_CONTAINER_STYLE}
+                buttonStyle={PHONE_INPUT_BUTTON_STYLE}
+                country={"ua"} 
+                value={phone} 
+                onChange={setPhone} />
 
                 <div className="input-with-icon-left" title="Should be at least 8 characters long" data-tippy-placement="bottom">
                     <i className="icon-material-outline-lock"></i>
@@ -84,8 +150,26 @@ const Registration = ({ onClose }) => {
                 </div>
             </form>
 
-            <button type="submit" form="register-account-form" className="margin-top-10 button full-width button-sliding-icon ripple-effect">{t("Register")} <i className="icon-material-outline-arrow-right-alt"></i></button>
+            {loading
+            ? <div>
+                <span className='button full-width button-sliding-icon ripple-effect'>
+                    <MySpinner style={{
+                        display: 'inline-block',
+                        marginBottom: '-10px',
+                    }} />
+                    {t("Register")}
+                </span>
+            </div>
+            :<button type="submit" form="register-account-form" className="margin-top-10 button full-width button-sliding-icon ripple-effect">
+                
+                {t("Register")} 
+                <i className="icon-material-outline-arrow-right-alt"></i>
+            </button>
+            }
         </>}
+
+        <div className="margin-top-40"
+            id="recaptcha-container"></div>
     </div>;
 };
 

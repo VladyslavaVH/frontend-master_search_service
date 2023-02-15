@@ -14,16 +14,6 @@ const SearchBar = ({isMapApiLoaded}) => {
     const [where, setWhere] = useState('');
     const [job, setJob] = useState('');
 
-    function initAutocomplete() {
-        // var options = {
-        //  types: ['(cities)'],
-        //  // componentRestrictions: {country: "us"}
-        // };
-
-        // var input = document.getElementById('autocomplete-input');
-        // var autocomplete = new google.maps.places.Autocomplete(input, options);
-    }
-
     useEffect(() => {
 
 
@@ -70,18 +60,18 @@ const SearchBar = ({isMapApiLoaded}) => {
                     onSelect={handleSelect}>
                     {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
                         <div className="intro-search-field with-autocomplete">
-                            <label htmlFor="autocomplete-input" className="field-title ripple-effect">Where?</label>
+                            <label htmlFor="autocomplete-input" className="field-title ripple-effect">{t("Where")}</label>
                             <div className="input-with-icon">
                                 <input id="autocomplete-input" type="text"
                                     {...getInputProps({
-                                        placeholder: 'Place',
+                                        placeholder: t('Place'),
                                         // className: 'location-search-input',
                                     })} />
                                 <i className="icon-material-outline-location-on"></i>
                             </div>
 
                             <ul className="autocomplete-dropdown-container">
-                                {loading && <li style={{ backgroundColor: '#ffffff', cursor: 'pointer', textAlign: 'center'}}>Loading...</li>}
+                                {loading && <li style={{ backgroundColor: '#ffffff', cursor: 'pointer', textAlign: 'center'}}>{t('Loading')}...</li>}
                                 {suggestions.map((suggestion, i) => {
                                     const className = suggestion.active
                                         ? 'suggestion-item--active'
@@ -108,17 +98,19 @@ const SearchBar = ({isMapApiLoaded}) => {
                 {/* <!-- Search Field --> */}
                 <div className="intro-search-field">
                     <label htmlFor="intro-keywords" className="field-title ripple-effect">{t('WhatJobYouWant')}</label>
-                    <input id="intro-keywords" type="text" placeholder={t('JobTitle')} onChange={(e) => setJob(e.target.value)} />
+                    <input id="intro-keywords" type="text" placeholder={t('Category')} onChange={(e) => setJob(e.target.value)} />
                     <ul id="intro-keywords-dropdown" className="autocomplete-dropdown-container"></ul>
                 </div>
 
                 {/* <!-- Button --> */}
                 <div className="intro-search-button">
                     <button className="button ripple-effect" 
-                    onClick={() => { navigate(`/jobs?${job ? `title=${job}&` : ''}`, 
-                    { state: {
-                        title: job
-                     } }) }}>{t('Search')}</button>
+                    onClick={() => navigate(`/jobs/${job}`, { 
+                        state: {
+                            title: job,
+                            pos: {...coordinates}
+                        }
+                    }) }>{t('Search')}</button>
                 </div>
             </div>
         </div>

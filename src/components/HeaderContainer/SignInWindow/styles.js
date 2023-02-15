@@ -1,0 +1,52 @@
+export const PHONE_INPUT_STYLE = {
+    border: '1px solid #e0e0e0',
+    boxShadow: '0 1px 4px 0px rgb(0 0 0 / 5%)',
+    paddingLeft: '65px',
+    height: '48px',
+    MozAppearance: 'textfield',
+    //padding: '0 20px',
+    outline: 'none',
+    fontSize: 16,
+    color: '#808080',
+    maxWidth: '100%',
+    width: '100%',
+    boxSizing: 'border-box',
+    display: 'block',
+    backgroundColor: '#fff',
+    fontWeight: 500,
+    opacity: 1,
+    borderRadius: '4px',
+    margin: 0,
+    overflow: 'visible',
+};
+
+export const PHONE_INPUT_BUTTON_STYLE = {
+    position: 'absolute',
+    top: 0,
+    paddingLeft: '7px',
+    color: '#a0a0a0',
+    textAlign: 'center',
+    lineHeight: '48px',
+    width: '48px',
+    height: '48px',
+    fontSize: '19px',
+    backgroundColor: '#f8f8f8',
+    border: '1px solid #e0e0e0',
+    boxSizing: 'border-box',
+    display: 'block',
+    borderRadius: '4px 0 0 4px',
+    padding: 'auto'
+};
+
+export const PHONE_INPUT_CONTAINER_STYLE = { 
+    marginBottom: '22px',
+    position: 'relative',
+    display: 'block',
+    color: 'rgb(102, 102, 102)',
+    fontFamily: '"Nunito", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif',
+    textTransform: 'none',
+    fontSize: 16,
+    lineHeight: 27,
+    backgroundColor: '#fff',
+    textAlign: 'left',
+};

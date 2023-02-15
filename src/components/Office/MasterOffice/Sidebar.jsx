@@ -49,9 +49,9 @@ let Sidebar = (props) => {
                             </a>
                         </li>}
                         <li className={!isOpen && location.pathname.includes('jobs') ? 'active' : ''}>
-                            <NavLink to='/jobs'>
+                            <NavLink to='/jobs' state={{ masterCategories: user?.masterInfo?.categories }}>
                                 <i className="icon-material-outline-assignment"></i> 
-                                {t('ViewMyJobs')}
+                                {t('ViewJobs')}
                             </NavLink>
                         </li>
                         <li className={!isOpen && location.pathname.includes('messages') ? 'active' : ''}>
@@ -79,7 +79,7 @@ let Sidebar = (props) => {
                                 {t('Statistics')}
                             </NavLink>
                         </li>
-                        <li className={isOpen ? 'active' : ''} onClick={() => setIsOpen(true)}>
+                        {/* <li className={isOpen ? 'active' : ''} onClick={() => setIsOpen(true)}>
                             <a className={isOpen ? 'active' : ''}>
                                 <i className="icon-line-awesome-qrcode"></i>
                                 {t('JobQRScanner')}
@@ -87,7 +87,8 @@ let Sidebar = (props) => {
                             <Modal tabs={['Scan Job QR code']} open={isOpen} onClose={() => setIsOpen(false)} >
                                 <QrCodeScanner onClose={() => setIsOpen(false)} />
                             </Modal>
-                        </li>                        
+                        </li>
+                        */}
                     </ul>
 
                     <ul data-submenu-title="Account">

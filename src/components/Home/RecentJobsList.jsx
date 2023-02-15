@@ -3,9 +3,13 @@ import JobListItem from "../Jobs/JobListItem";
 import { NavLink } from 'react-router-dom';
 import { useGetRecentJobsListQuery } from "../../features/home/homeApiSlice";
 import { useTranslation } from "react-i18next";
+import { selectIsAuth, selectIsMaster } from "../../features/auth/authSlice";
+import { useSelector } from 'react-redux';
 
 const RecentJobsList = (props) => {
     const { t } = useTranslation();
+    const isAuth = useSelector(selectIsAuth);
+    const isMaster = useSelector(selectIsMaster);
     const { 
         data: jobs,
         isLoading,
@@ -21,7 +25,7 @@ const RecentJobsList = (props) => {
 
                     <div className="section-headline margin-top-0 margin-bottom-35">
                         <h3>{t('RecentJobs')}</h3>
-                        <NavLink to={`/jobs`} className="headline-link">{t('BrowseAllJobs')}</NavLink>
+                        {isAuth && isMaster && <NavLink to={`/jobs`} className="headline-link">{t('BrowseAllJobs')}</NavLink>}
                     </div>
 
                     <div className="listings-container compact-list-layout margin-top-35">

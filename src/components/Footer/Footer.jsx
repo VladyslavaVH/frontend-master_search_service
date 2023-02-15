@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import SignInWindow from "../HeaderContainer/SignInWindow/SignInWindow";
 //import 'bootstrap/dist/css/bootstrap.min.css';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { useDispatch, useSelector } from "react-redux";
-import { setLanguage } from "../../features/auth/authSlice";
+import { setLanguage, setDefaultLanguage } from "../../features/auth/authSlice";
 import { useTranslation, Trans } from 'react-i18next';
-import { selectCurrentUser, selectIsAuth, selectIsMaster, selectIsAdmin } from "../../features/auth/authSlice";
+import { selectCurrentUser, selectIsAuth, selectIsMaster, selectIsAdmin, selectDefaultLanguage } from "../../features/auth/authSlice";
 // import AsyncSelect from 'react-select/async';
 import { NavLink } from 'react-router-dom';
+import { FooterDropdownIndicator, Option, FOOTER_LANG_SELECT_STYLES } from '../../amimations/selectDetails';
 
 let Footer = (props) => {
     const { t, i18n } = useTranslation();
@@ -19,6 +20,7 @@ let Footer = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const SITE_NAME = process.env.REACT_APP_SITE_NAME;
     const [YEAR, setYear] = useState(2023);
+    const defaultLanguage = useSelector(selectDefaultLanguage);
     const [languages] = useState([
         { value: 'en', label: 'English' },
         { value: 'uk', label: 'Українська' },
@@ -27,6 +29,7 @@ let Footer = (props) => {
 
     const changeLanguage = selectedLanguage => {
         dispatch(setLanguage(selectedLanguage.value));
+        dispatch(setDefaultLanguage(selectedLanguage));
         i18n.changeLanguage(selectedLanguage.value);
     }
 
@@ -45,7 +48,8 @@ let Footer = (props) => {
                                 <div className="footer-rows-left">
                                     <div className="footer-row">
                                         <div className="footer-row-inner footer-logo">
-                                            <img src="/images/logo2.png" alt="" />
+                                            {/* <img src="/images/logo2.png" alt="" /> */}
+                                            <h1>HELP 2 FIX</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -79,21 +83,20 @@ let Footer = (props) => {
                                             <div className="clearfix"></div>
                                         </div>
                                     </div>
-
+ 
                                     <div className="footer-row">
                                         <div className="footer-row-inner">
                                             <Select
-                                                defaultValue={{ value: 'en', label: 'English' }}
+                                                defaultValue={defaultLanguage}
+                                                value={defaultLanguage}
                                                 options={languages}
-                                                onChange={changeLanguage} />
+                                                onChange={changeLanguage}
+                                                components={{
+                                                    DropdownIndicator: FooterDropdownIndicator,
+                                                    Option
+                                                }}
+                                                styles={FOOTER_LANG_SELECT_STYLES} />
                                         </div>
-                                        {/* <div className="footer-row-inner">
-                                            <select defaultValue='English' className="selectpicker language-switcher" data-selected-text-format="count" data-size="5">
-                                                <option>English</option>
-                                                <option>Українська</option>
-                                                <option>Czech</option>
-                                            </select>
-                                        </div> */}
                                     </div>
                                 </div>
 
@@ -174,12 +177,12 @@ let Footer = (props) => {
                                 <h3>{t('HelpfulLinks')}</h3>
                                 <ul>
                                     <li style={{ cursor: 'pointer' }}>
-                                        <NavLink to='/support'><span>{t('Support')}</span></NavLink>
+                                        <NavLink to='/contact/us'><span>{t('ContactUs')}</span></NavLink>
                                     </li>
                                     <li style={{ cursor: 'pointer' }}>
                                         <NavLink to='/faqs'><span>FAQs</span></NavLink>
                                     </li>
-                                    <li style={{ cursor: 'pointer' }}><a href="#"><span>{t('PrivacyPolicy')}</span></a></li>
+                                    <li style={{ cursor: 'pointer' }}><a href=""><span>{t('PrivacyPolicy')}</span></a></li>
                                     {/* <li><a href="#"><span>Terms of Use</span></a></li> */}
                                 </ul>
                             </div>
@@ -188,25 +191,21 @@ let Footer = (props) => {
                         <div className="col-xl-2 col-lg-2 col-md-3">
                             <div className="footer-links">
                                 <h3>{t('Account')}</h3>
-                                <ul>
-                                    <li style={{ cursor: 'pointer' }}><a onClick={() => !isAuth && setIsOpen(true)}><span>{t('LogIn')}</span></a></li>
+                                <ul style={{ cursor: 'pointer' }}>
+                                    <li><a onClick={() => !isAuth && setIsOpen(true)}><span>{t('LogIn')}</span></a></li>
                                     {isAuth
-                                        ?<>
+                                        ?<li>
                                         {isMaster
-                                            ? <li style={{ cursor: 'pointer' }}>
-                                                <NavLink state={{ name: `${t('Howdy')}, ${user.firstName}!`, page: t('Statistics'), span: `${t('Greetings')}` }}
+                                            ? <NavLink state={{ name: `${t('Howdy')}, ${user.firstName}!`, page: t('Statistics'), span: t('Greetings') }}
                                                     to='/master-office/statistics' className={({ isActive }) => { return isActive ? 'current' : '' }}>
                                                     <span>{t('MyAccount')}</span>
-                                                </NavLink>
-                                            </li>
-                                            : <li style={{ cursor: 'pointer' }}>
-                                                <NavLink state={{ name: `${t('ManageJobs')}`, page: `${t('ManageJobs')}` }} className={({ isActive }) => { return isActive ? 'current' : '' }}
+                                               </NavLink>
+                                            :  <NavLink state={{ name: t('ManageJobs'), page: t('ManageJobs') }} className={({ isActive }) => { return isActive ? 'current' : '' }}
                                                     to='/client-office/manage-jobs'>
                                                     <span>{t('MyAccount')}</span>
-                                                </NavLink>
-                                            </li>
+                                               </NavLink>
                                         }
-                                    </>
+                                    </li>
                                     : <li style={{ cursor: 'pointer' }}><a onClick={() => setIsOpen(true)}><span>{t('MyAccount')}</span></a></li>}
                                 </ul>
                             </div>
@@ -236,8 +235,9 @@ let Footer = (props) => {
             </div>
 
         </div>
+
         <SignInWindow open={isOpen} onClose={() => setIsOpen(false)} />
-    </footer>;
+    </footer>; 
 };
 
 export default Footer;

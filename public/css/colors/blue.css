@@ -189,6 +189,7 @@
      background: rgba(42,65,232,0.13);
 }
  .pagination ul li a.current-page {
+    color: #fff;
      box-shadow: 0 2px 8px rgba(42,65,232,0.25) 
 }
  .sidebar-search-button-container button {

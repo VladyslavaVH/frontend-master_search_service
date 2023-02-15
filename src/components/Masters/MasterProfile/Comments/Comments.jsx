@@ -1,13 +1,15 @@
 import React from 'react';
 import { useGetCommentsByMasterIdQuery } from '../../../../features/masters/mastersApiSlice';
 import Comment from './Comment';
+import { useTranslation } from 'react-i18next';
 
 const Comments = ({ id }) => {
+    const { t } = useTranslation();
     const { data: comments, isLoading } = useGetCommentsByMasterIdQuery(id);
     return <>
         <div className="boxed-list margin-bottom-60">
             <div className="boxed-list-headline">
-                <h3><i className="icon-material-outline-thumb-up"></i> Work History and Feedback</h3>
+                <h3><i className="icon-material-outline-thumb-up"></i> {t('WorkHistoryAndFeedback')}</h3>
             </div>
             <ul className="boxed-list-ul">
                 {
@@ -17,7 +19,7 @@ const Comments = ({ id }) => {
             </ul>
 
             {/* <!-- Pagination --> */}
-            {
+            {/* {
                 comments?.length > 3 &&
                 <>
                     <div className="clearfix"></div>
@@ -32,7 +34,7 @@ const Comments = ({ id }) => {
                     </div>
                     <div className="clearfix"></div>
                 </>
-            }
+            } */}
             {/* <!-- Pagination / End --> */}
 
         </div>

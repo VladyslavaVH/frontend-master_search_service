@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useGetFaqsQuery } from '../../../features/faqs/faqsApiSlice';
 import { useChangeFaqsMutation } from '../../../features/admin/adminApiSlice';
+import { useTranslation } from 'react-i18next';
 
 const EDIT_BTN_STYLES = { 
     width: '100px', 
@@ -11,6 +12,7 @@ const EDIT_BTN_STYLES = {
 };
 
 const EditFAQs = (props) => {
+    const { t } = useTranslation();
     const [accordionData, setAccordionData] = useState([]);
     const { data, isLoading } = useGetFaqsQuery();
     const [newFaqs, setNewFaqs] = useState([]);
@@ -85,15 +87,15 @@ const EditFAQs = (props) => {
     
                         <div className="accordion-body__contents">
                             <div className='margin-bottom-15'>
-                                <div style={{ color: '#2a41e8' }}><i className='icon-line-awesome-question'>Question:</i></div>
+                                <div style={{ color: '#2a41e8' }}><i className='icon-line-awesome-question'>{t("Question")}:</i></div>
                                 <div data-info="question">{faq.question}</div>
-                                <button onClick={editFaqs} type='button' className="button ripple-effect button-sliding-icon" style={EDIT_BTN_STYLES}>Edit <i className="icon-feather-edit"></i></button>
+                                <button onClick={editFaqs} type='button' className="button ripple-effect button-sliding-icon" style={EDIT_BTN_STYLES}>{t("Edit")} <i className="icon-feather-edit"></i></button>
                             </div>
                             <hr />
                             <div>
-                                <div style={{ color: '#2a41e8' }}><i className='icon-material-outline-question-answer'></i> Answer:</div>
+                                <div style={{ color: '#2a41e8' }}><i className='icon-material-outline-question-answer'></i> {t("Answer")}:</div>
                                 <div data-info="answer">{faq.answer}</div>
-                                <button onClick={editFaqs} type='button' className="button ripple-effect button-sliding-icon" style={EDIT_BTN_STYLES}>Edit <i className="icon-feather-edit"></i></button>
+                                <button onClick={editFaqs} type='button' className="button ripple-effect button-sliding-icon" style={EDIT_BTN_STYLES}>{t("Edit")} <i className="icon-feather-edit"></i></button>
                             </div>
                         </div>
     
@@ -102,7 +104,7 @@ const EditFAQs = (props) => {
             }
         </div>
 
-        <button onClick={saveChanges} type='button' className="button ripple-effect button-sliding-icon margin-top-15" style={{ width: '170px' }}>Save changes <i className="icon-feather-check"></i></button>
+        <button onClick={saveChanges} type='button' className="button ripple-effect button-sliding-icon margin-top-15" style={{ width: '170px' }}>{t('SaveChanges')}<i className="icon-feather-check"></i></button>
     </>;
 };
 

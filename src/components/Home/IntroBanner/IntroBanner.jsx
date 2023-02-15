@@ -1,13 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import $ from 'jquery';
 import Stats from "./Stats";
 import SearchBar from './SearchBar';
 import IntroHeadline from "./IntroHeadline";
 import { inlineBG } from "../../../amimations/amimations";
-import { useGetJobsMastersCountQuery } from "../../../features/home/homeApiSlice";
+import { useGetHomePageStatisticsQuery } from "../../../features/home/homeApiSlice";
+import { selectIsAuth, selectIsMaster } from "../../../features/auth/authSlice";
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import SignInWindow from './../../HeaderContainer/SignInWindow/SignInWindow';
 
 const IntroBanner = ({isMapApiLoaded}) => {
-    const { data, isLoading } = useGetJobsMastersCountQuery();
+    const { t } = useTranslation();
+    const { data, isLoading } = useGetHomePageStatisticsQuery();
+    const [ isOpen, setIsOpen ] = useState(false);
+    const isAuth = useSelector(selectIsAuth);
+    const isMaster = useSelector(selectIsMaster);
 
     const imgPath = process.env.REACT_APP_IMG_PATH;
 
@@ -30,9 +38,31 @@ const IntroBanner = ({isMapApiLoaded}) => {
 
             <IntroHeadline />
 
-            <SearchBar isMapApiLoaded={isMapApiLoaded} />
+            {
+                isAuth
+                ? <>
+                    {
+                        isMaster && <SearchBar isMapApiLoaded={isMapApiLoaded} />
+                    }
+                </>
+                : <>
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="margin-top-35">
+                                <button onClick={() => setIsOpen(true)} style={{ marginRight: '35px', paddingRight: '20px' }} className="button ripple-effect">
+                                    {t('PostAJob')}
+                                </button>
+                                <button onClick={() => setIsOpen(true)} className="button ripple-effect">
+                                    {t('BecomeAMaster')}
+                                </button>
+                                <SignInWindow open={isOpen} onClose={() => setIsOpen(false)} />
+                            </div>
+                        </div>
+                    </div>
+                </>
+            }
 
-            {!isLoading && <Stats jobsCount={data?.jobsCount || 0} mastersCount={data?.mastersCount || 0} />}
+            {!isLoading && <Stats jobsCount={data?.jobsCount || 0} mastersCount={data?.mastersCount || 0} usersCount={data?.usersCount || 0} />}
 
         </div>
     </div>;
