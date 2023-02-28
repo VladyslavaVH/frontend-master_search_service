@@ -15784,11 +15784,14 @@ ul.dashboard-box-list > li:hover {
 	.dashboard-sidebar .simplebar-content { overflow-x: hidden; }
 
 	.dashboard-nav-inner {
+		overflow: hidden !important;
 		padding: 30px 0;
 		margin-bottom: 0;
 	}
 
 	.dashboard-sidebar {
+		margin-top: 76px !important;
+		overflow: hidden !important;
 		flex: 1;
 		width: 100%;
 	    background-color: transparent;
@@ -15912,6 +15915,10 @@ ul.dashboard-box-list > li:hover {
 		flex: 1 1 calc(50% - 15px);
 		max-width: calc(50% - 15px);
 		margin: 0 15px 15px 0;
+	}
+
+	.dashboard-sidebar .dashboard-sidebar-inner {
+		overflow: hidden !important;
 	}
 }
 

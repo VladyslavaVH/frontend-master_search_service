@@ -5,50 +5,34 @@ import Message from './Message';
 import { useLocation, useParams } from "react-router-dom";
 import { useGetMessagesQuery } from '../../../../features/user/userApiSlice';
 import { useSelector } from "react-redux";
-import { selectCurrentUser, selectCurrentSocket } from './../../../../features/auth/authSlice';
+import { selectCurrentUser } from './../../../../features/auth/authSlice';
+import { io } from 'socket.io-client';
 import { useTranslation } from 'react-i18next';
-import io from 'socket.io-client';
-
-//const socket = io("http://localhost:5000");
 
 const Chat = (props) => {
-    const [messages, setMessages] = useState([]);
-    const [isTyping, setIsTyping] = useState(false);
-
     const { t } = useTranslation();
     const user = useSelector(selectCurrentUser);
-    const socket = useSelector(selectCurrentSocket);
     const location = useLocation();
     const { firstName, lastName } = useParams();
     const { data, isLoading } = useGetMessagesQuery(location.state.userId);
+    const [messages, setMessages] = useState([]);
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const scrollRef = useRef();
-    //const socket = useRef();
+    const socket = useRef();
 
     useEffect(() => {
-        //socket.current = io(`ws://localhost:5000`);
-        //socket.current = io(`http://localhost:5000`);
-        if (socket) {
-            socket.on('getMessage', data => {
-                console.log('client data from getMessage', data);
-                setArrivalMessage({
-                    senderFK: data.senderFK,
-                    receiverFK: data.receiverFK,
-                    message: data.message,
-                    avatar: data.avatar,
-                    createdAt: Date.now()
-                });
+        socket.current = io(`ws://localhost:5000`);
+        socket.current.on('getMessage', data => {
+            console.log('client data from getMessage', data);
+            setArrivalMessage({
+                senderFK: data.senderFK,
+                receiverFK: data.receiverFK,
+                message: data.message,
+                avatar: data.avatar,
+                createdAt: Date.now()
             });
-
-            socket.on('displayTyping', typing => {
-                setIsTyping(typing);
-            })
-            
-        } else {
-            console.log('socket is not available');
-        }
-        
-    }, [socket]);
+        });
+    }, []);
 
     useEffect(() => {
         if (arrivalMessage) {
@@ -56,22 +40,20 @@ const Chat = (props) => {
         }
     }, [arrivalMessage]);
 
-    // useEffect(() => {
-    //     if (socket.current) {
-    //         if (user) {
-    //             socket.current.emit('sendUser', user.id);
-    //         }
+    useEffect(() => {
+        if (user) {
+            socket.current?.emit('sendUser', user.id);
+        }
 
-    //         socket.current.on('getUsers', users => {
-    //             console.log('from server get users');
-    //             console.log(users);
-    //         });
-    //     }        
-    // }, [user]);
+        socket.current?.emit('getUsers', users => {
+            console.log('from server get users');
+            console.log(users);
+        });
+    }, [user]);
 
     useEffect(() => {
+        setMessages([]);               
         if (!isLoading && user) {
-            setMessages([]);               
             setMessages(data);        
         }
     }, [isLoading, data]);
@@ -80,13 +62,13 @@ const Chat = (props) => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
-    }, [messages, isTyping]);
+    }, [messages]);
 
 
     return <div style={{ maxHeight: '730px' }} className="message-content">
         <div className="messages-headline">
             <h4>{`${firstName} ${lastName}`}</h4>
-            {false && <a href="#" className="message-action"><i className="icon-feather-trash-2"></i> {t('DeleteConversation')}</a>}
+            <a href="#" className="message-action"><i className="icon-feather-trash-2"></i> {t('DeleteConversation')}</a>
         </div>
 
         <div ref={scrollRef} className="message-content-inner">
@@ -96,10 +78,6 @@ const Chat = (props) => {
                     <Message key={i} {...m}
                     isMe={(user?.id == m?.senderFK)} />)
             }
-
-            {isTyping ?
-             <Message avatar={location.state.receiverAvatar} isTyping={true} />
-            : null}
         </div>
 
         <ReplyArea 

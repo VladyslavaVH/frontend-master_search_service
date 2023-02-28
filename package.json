@@ -2,7 +2,9 @@
   "name": "help2fix",
   "version": "0.1.0",
   "babel": {
-    "plugins": ["babel-plugin-styled-components"]
+    "plugins": [
+      "babel-plugin-styled-components"
+    ]
   },
   "private": true,
   "dependencies": {

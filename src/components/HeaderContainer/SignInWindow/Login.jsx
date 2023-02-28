@@ -7,10 +7,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectPersist, setPersist } from './../../../features/auth/authSlice';
 import { useTranslation } from "react-i18next";
+import NotificationDialog from './../Popup/NotificationDialog';
 
 const Login = ({ onClose, fromLocationData, from }) => {
     const { t } = useTranslation();
     const { register, handleSubmit } = useForm();
+    const [isOpen, setIsOpen] = useState(false)
     const [password, setPassword] = useState('');
 
     const [login, { isLoading }] = useLoginMutation();
@@ -33,6 +35,7 @@ const Login = ({ onClose, fromLocationData, from }) => {
             onClose();
 
         } catch (error) {
+            setIsOpen(true);
             console.error(error);
         }
     };
@@ -80,6 +83,9 @@ const Login = ({ onClose, fromLocationData, from }) => {
 
         <button className="button full-width button-sliding-icon ripple-effect" type="submit" form="login-form">{t("LogIn")} <i className="icon-material-outline-arrow-right-alt"></i></button>
 
+        <NotificationDialog open={isOpen} onClose={() => setIsOpen(false)}>
+            {t('IncorrectPhoneNumberOrPassword')}
+        </NotificationDialog>
     </div>;
 };
 

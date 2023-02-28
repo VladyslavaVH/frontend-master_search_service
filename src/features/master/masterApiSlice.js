@@ -8,7 +8,8 @@ export const masterApiSlice = apiSlice.injectEndpoints({
         }),
         getMasterConversations: builder.query({
             query: () => `/master/conversations`,
-            keepUnusedDataFor: 5
+            providesTags: ['message'],
+            keepUnusedDataFor: 5,
         }),  
         getMasterJobApplyStatus: builder.query({
             query: jobId => `/master/check/job/apply?jobId=${jobId}`,
@@ -21,6 +22,14 @@ export const masterApiSlice = apiSlice.injectEndpoints({
                 body: applyJobData
             })
         }),
+        changeProfileSettings: builder.mutation({
+            query: data => ({
+                url: `/master/change/profile/settings`,
+                method: 'POST',
+                body: {...data}
+            }),
+            invalidatesTags: ['settings']
+        }),
     })
 });
 
@@ -29,5 +38,6 @@ export const {
     useGetMasterConversationsQuery,
     useGetMasterJobApplyStatusQuery,
     useApplyJobMutation,
+    useChangeProfileSettingsMutation,
 } = masterApiSlice
 

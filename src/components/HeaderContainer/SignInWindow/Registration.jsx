@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import NumberVerification from './NumberVerification';
-import { useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import PhoneInput from 'react-phone-input-2';
 import "react-phone-input-2/lib/style.css";
@@ -10,6 +9,7 @@ import { auth } from '../../../utils/firebase.config';
 import { PHONE_INPUT_STYLE, PHONE_INPUT_BUTTON_STYLE, PHONE_INPUT_CONTAINER_STYLE } from './styles';
 
 import { ReactComponent as MySpinner } from '../../.././amimations/mySpinner.svg';
+import NotificationDialog from '../Popup/NotificationDialog';
 
 const Registration = ({ onClose }) => {
     const { t } = useTranslation();
@@ -19,6 +19,15 @@ const Registration = ({ onClose }) => {
     const [isNumberVer, setIsNumberVer] = useState(false);//? set false
     const [phone, setPhone] = useState(null);//? set null
     const [isClientChecked, setIsClientChecked] = useState(true);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [notificationText, setNotificationText] = useState('');
+
+    // useEffect(() => {
+    //     if (notificationText.length > 0) {
+    //         setIsOpen(true);            
+    //     }
+    // }, [notificationText]);
 
     function onCaptchVerify() {
         if (!window.recaptchaVerifier) {
@@ -52,13 +61,21 @@ const Registration = ({ onClose }) => {
             setIsNumberVer(true);
         })
         .catch((error) => {
-            console.log(error);
+            //alert(error);//? modal dialog about error
+            console.log(error.message);
+            setNotificationText(t('InvalidPhoneNumberFormat'));
+            setIsOpen(true);
             setLoading(false);
         });
     }
 
     const onSubmit = async (data) => { 
         try {
+
+            if (data.password !== data.passwordRepeat) {
+                throw new Error(t('InvalidPassword'));
+            }
+
             const formatPhone = "+" + phone;
             setPhone(formatPhone);   
 
@@ -71,6 +88,8 @@ const Registration = ({ onClose }) => {
 
             sendOTP(formatPhone);
         } catch (error) {
+            setNotificationText(error.message);
+            setIsOpen(true);
             console.error(error);
         }
     };
@@ -170,6 +189,10 @@ const Registration = ({ onClose }) => {
 
         <div className="margin-top-40"
             id="recaptcha-container"></div>
+
+        <NotificationDialog open={isOpen} onClose={() => setIsOpen(false)}>
+            {notificationText}
+        </NotificationDialog>
     </div>;
 };
 

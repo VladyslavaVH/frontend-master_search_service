@@ -1,67 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import { useGetOptionCategoriesQuery } from '../../../features/details/detailsApiSlice';
 import $ from 'jquery';
+import CategorySelect from './../ClientOffice/JobPosting/CategorySelect';
 
-const CategoriesList = ({ categories }) => {
+const CategoriesList = ({ setMasterCategories, categories }) => {
     const { data: optionCategories, isLoading } = useGetOptionCategoriesQuery();
-    const [newCategory, setNewCategory] = useState(null);
+    const [newCategoryFK, setCategoryFK] = useState(null);
     const [newCategoriesArr, setNewCategoriesArr] = useState([]);
 
     useEffect(() => {
-        let keywordsList = $(this).find(".keywords-list");
-        //removing keyword
-		$(document).on("click",".keyword-remove", function(){
-			$(this).parent().addClass('keyword-removed');
-
-			function removeFromMarkup(){
-			  $(".keyword-removed").remove();
-			}
-			setTimeout(removeFromMarkup, 500);
-			keywordsList.css({'height':'auto'}).height();
-
-            console.log(newCategoriesArr);
-            setNewCategoriesArr(newCategoriesArr?.filter(c => c.id != newCategory));
-            console.log(newCategoriesArr);
-		});
+        if (newCategoriesArr.length === 0) {
+            setNewCategoriesArr(categories);            
+        }
     }, []);
 
     useEffect(() => {
-        setNewCategoriesArr(categories);        
-    }, [categories]);
+        setMasterCategories(newCategoriesArr);
+    }, [newCategoriesArr]);
 
     // adding category
     function addKeyword() {
-        console.log(newCategoriesArr);
-        let newC = '';
+        let newC = null;
         for (const c of optionCategories) {
-            if (c.id == newCategory) {
-                newC = c;
+            if (c.id == newCategoryFK) {
+                if (!newCategoriesArr.find(nc => nc.id == newCategoryFK)) {
+                    newC = { ...c, desc: 'new' };
+                    setNewCategoriesArr(prev => [...prev, newC]);
+                }
                 break;
             }
         }
-        setNewCategoriesArr(prev => [...prev, newC]);
+    }
 
-        // let keywordsList = $(this).find(".keywords-list");
-        // let $newKeyword = 
-        // $("<span class='keyword'><span class='keyword-remove'></span><span class='keyword-text'>"+ newCategory +"</span></span>");
-        // keywordsList.append($newKeyword).trigger('resizeContainer');
+    const removeKeyword = (cFK) => {
+        let removedCategory = newCategoriesArr.find(nc => nc.id == cFK);
+        removedCategory = { ...removedCategory, desc: 'delete' };
+
+        let tmpArr = newCategoriesArr.filter(nc => nc.id != cFK);
+        setNewCategoriesArr([...tmpArr, removedCategory]);
     }
     
     return <div className="keywords-container">
         {!isLoading &&
         <div className="keyword-input-container margin-bottom-10">
-            <select className="keyword-input with-border" defaultChecked={1} placeholder="e.g. Plumbing, Electricity" onChange={(e) => setNewCategory(e.target.value)} >
-                {
-                    optionCategories?.map(c => 
-                        <option key={c.id} value={c.id}>{c.category}</option>
-                    )
-                }
-            </select>
-            <button onClick={() => addKeyword()} className="keyword-input-button ripple-effect"><i className="icon-material-outline-add"></i></button>
+            <CategorySelect setCategoryFK={setCategoryFK} />
+            <button type="button" onClick={() => addKeyword()} className="keyword-input-button ripple-effect"><i className="icon-material-outline-add"></i></button>
         </div>}
         <div className="keywords-list" style={{ width: '100%', height: 'max-content' }}>
-            {newCategoriesArr?.map(c =>
-            <span key={c?.id} className="keyword"><span className="keyword-remove"></span><span className="keyword-text">{c?.category}</span></span>)}
+            {newCategoriesArr?.map(c => {
+                if (c?.desc !== 'delete' ) {
+                    return <span key={c?.id} className="keyword"><span onClick={() => removeKeyword(c?.id)} className="keyword-remove"></span><span className="keyword-text">{c?.category}</span></span>
+                }                   
+            })}
         </div>
         <div className="clearfix"></div>
     </div>;

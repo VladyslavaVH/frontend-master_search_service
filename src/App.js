@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import $ from 'jquery';
@@ -37,7 +37,8 @@ import PersistLogin from "./features/auth/PersistLogin";
 import Unauthorized from "./components/Unauthorized";
 import { setPersist } from "./features/auth/authSlice";
 import { useDispatch } from "react-redux";
-import { Loader } from '@googlemaps/js-api-loader'
+import { Loader } from '@googlemaps/js-api-loader';
+import io from "socket.io-client";
 
 const ROLE = {
   ADMIN: process.env.REACT_APP_ADMIN_ROLE,
@@ -49,6 +50,7 @@ const API_KEY = process.env.REACT_APP_KEY;
 require('slick-carousel');
 
 function App() {
+  //const socket = useRef();
   const dispatch = useDispatch();
   // Showing Button
   const pxShow = 600; // height on which the button will show
@@ -56,19 +58,19 @@ function App() {
 
   const [isMapApiLoaded, setIsMapApiLoaded] = useState(false)
 
-    useEffect(() => {
-        if (isMapApiLoaded || window.google) return;
-        const loader = new Loader({
-            apiKey: API_KEY,
-            version: 'beta',
-            libraries: [ 'marker', 'places', 'geometry'],
-            language: 'en'
-        })
-        loader.load().then(() => {
-          setIsMapApiLoaded(true);
-          console.log('google libs loaded')
-        })
-    }, [isMapApiLoaded])
+  useEffect(() => {
+      if (isMapApiLoaded || window.google) return;
+      const loader = new Loader({
+          apiKey: API_KEY,
+          version: 'beta',
+          libraries: [ 'marker', 'places', 'geometry'],
+          language: 'en'
+      })
+      loader.load().then(() => {
+        setIsMapApiLoaded(true);
+        console.log('google libs loaded')
+      })
+  }, [isMapApiLoaded])
 
   const backToTop = () => {
     $('body').append('<div id="backtotop"><a href="#"></a></div>');

@@ -65,8 +65,8 @@ export default function Modal({ open, onClose, tabs, children }) {
                 {tabs?.map((tab, i) => <li className={i === activeTab ? 'active' : ''} key={i}
                 onClick={() => setActiveTab(i)}><a>{tab}</a></li>)}
             </ul>}
-            <button onClick={onClose} style={{...BTN_CLOSE, borderLeft: tabs ? '1px solid #e0e0e0' : '1px solid transparent' }} 
-            title="Close" type="button"><i className='icon-line-awesome-close'></i></button>
+            {onClose && <button onClick={onClose} style={{...BTN_CLOSE, borderLeft: tabs ? '1px solid #e0e0e0' : '1px solid transparent' }} 
+            title="Close" type="button"><i className='icon-line-awesome-close'></i></button>}
             <div onClick={onSignInClick}>{children[activeTab] || children}</div>
         </div>
     </>,

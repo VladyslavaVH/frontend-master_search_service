@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 const MasterDocuments = (props) => {
     const { t } = useTranslation();
-    const [documents, setDocuments] = useState([]);
+    const [documents, setDocuments] = useState([]); 
     const location = useLocation();
     const navigate = useNavigate();
     const [verifyMaster] = useVerifyMasterMutation();

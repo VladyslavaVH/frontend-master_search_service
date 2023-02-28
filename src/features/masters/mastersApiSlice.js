@@ -20,7 +20,8 @@ export const mastersApiSlice = apiSlice.injectEndpoints({
         }),
         getMasterCategories: builder.query({
             query: id => `/master/categories?masterId=${id}`,
-            keepUnusedDataFor: 5
+            keepUnusedDataFor: 2,
+            providesTags: ['settings']
         }),
         getCommentsByMasterId: builder.query({
             query: id => `/master/comments?masterId=${id}`,

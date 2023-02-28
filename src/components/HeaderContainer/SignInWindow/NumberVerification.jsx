@@ -30,7 +30,6 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP }) => {
     const [user, setUser] = useState(null);
     const { register, handleSubmit } = useForm();
 
-
     const onSubmit = (data) => {
         let code = '';
         for (const n in data) {
@@ -55,16 +54,45 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP }) => {
         });
     }
 
+    const focusNext = e => {
+        let target = e.srcElement || e.target;
+        let maxLength = parseInt(target.attributes["maxlength"].value, 10);
+        let myLength = target.value.length;
+        if (myLength >= maxLength) {
+            let next = target;
+            while (next = next.nextElementSibling) {
+                if (next == null)
+                    break;
+                if (next.tagName.toLowerCase() === "input") {
+                    next.focus();
+                    break;
+                }
+            }
+        }
+        // Move to previous field if empty (user pressed backspace)
+        else if (myLength === 0) {
+            let previous = target;
+            while (previous = previous.previousElementSibling) {
+                if (previous == null)
+                    break;
+                if (previous.tagName.toLowerCase() === "input") {
+                    previous.focus();
+                    break;
+                }
+            }
+        }
+    }
+
     return <>
         {token
         ? <Verified onClose={onClose} />
         : <>
             <div className="welcome-text">
-                <h3>Please check your phone</h3>
-                <span>We're send a code to <b>{phone}</b></span>
+                <h3>{t('PleaseCheckYourPhone')}</h3>
+                <span>{t('WeReSendACodeTo')} <b>{phone}</b></span>
             </div>
     
-            <form style={{ display: 'flex', justifyContent: 'space-evenly' }} onSubmit={handleSubmit(onSubmit)} id="phone-verification-form">
+            <form onKeyUp={focusNext} style={{ display: 'flex', justifyContent: 'space-evenly' }} onSubmit={handleSubmit(onSubmit)} id="phone-verification-form">
                 <input type="text" maxLength={1} {...register('0', { required: true })}
                     className="input-text with-border" style={INPUT_STYLES}
                     name="0" placeholder="_" required />
@@ -91,7 +119,7 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP }) => {
             </form>
     
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <span>Didn't have a code? <a onClick={resendOTP} className="register-tab" style={{ color: '#2a41e8', cursor: 'pointer' }}>Click to resend</a></span>
+                <span>{t("DidntHaveACode")} <a onClick={resendOTP} className="register-tab" style={{ color: '#2a41e8', cursor: 'pointer' }}>{t('ClickToResend')}</a></span>
             </div>
     
             {loading

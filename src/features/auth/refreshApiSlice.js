@@ -8,7 +8,8 @@ export const refreshApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
                 withCredentials: true
                 //body: { ...credentials }
-            })
+            }),
+            invalidatesTags: ['settings']
         }),
     })
 });

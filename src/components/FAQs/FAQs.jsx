@@ -42,7 +42,6 @@ let FAQs = (props) => {
                                         <nav id="breadcrumbs" className="dark">
                                             <ul style={{ cursor: 'pointer' }}>
                                                 <li><NavLink to={'/'}>{t('Home')}</NavLink></li>
-                                                <li><NavLink to={'/'}>{t("About")}</NavLink></li>
                                                 <li>FAQs</li>
                                             </ul>
                                         </nav>

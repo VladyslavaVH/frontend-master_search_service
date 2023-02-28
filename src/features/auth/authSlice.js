@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import jwtDecode from 'jwt-decode';
+import io from 'socket.io-client';
 
 const ROLE = {
     ADMIN: process.env.REACT_APP_ADMIN_ROLE, 
@@ -15,6 +16,7 @@ const authSlice = createSlice({
         isAuth: false,
         user: null,
         token: null,
+        socket: null,
         role: null,
         persist: false,
         isMaster: false,
@@ -46,11 +48,25 @@ const authSlice = createSlice({
                     state.isMaster = false;
                     break;
             }
+
+            state.socket = io(process.env.REACT_APP_BACKEND);
+            console.log('socket:', state.socket);
+
+            state.socket.emit('sendUser', state.user.id);
+
+            state.socket.on('getUsers', users => {
+                console.log('from server get users');
+                console.log(users);
+            });
         },
         logOut: (state) => {
             state.user = null;
             state.token = null;
             state.isAuth = false;
+            
+            state.socket.emit('logOut');
+            state.socket = null;
+
         },
         setPersist: (state, { payload }) => {
             state.persist = payload;
@@ -74,6 +90,7 @@ export const selectUnreadNotifications = (state) => state.auth.unreadNotificatio
 export const selectUnreadMessages = (state) => state.auth.unreadMessages;
 export const selectCurrentRole = (state) => state.auth.role;
 export const selectCurrentToken = (state) => state.auth.token;
+export const selectCurrentSocket = (state) => state.auth.socket;
 export const selectPersist = (state) => state.auth.persist;
 
 export const selectIsAuth = (state) => state.auth.isAuth;

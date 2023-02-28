@@ -96,30 +96,14 @@ let HeaderContainer = (props) => {
 								</NavLink>
 							</li>
 
-							{/* {isAuth
-								? <>{(!isMaster && !isAdmin) &&
-									<li>
-										<NavLink state={{ name: `${t('PostAJob')}`, page: `${t('PostAJob')}` }} className={({ isActive }) => { return isActive ? 'current' : '' }}
-											to='/client-office/job-posting'>
-											{ t('PostAJob') }
-										</NavLink>
-									</li>}
-								</>
-								: <li>
-									<a onClick={() => setIsOpen(true)} className="popup-with-zoom-anim log-in-button">
-									{ t('PostAJob') }
-									</a>
-								</li>} */}
+							<li>
+								<NavLink to='/faqs' end
+									className={({ isActive }) => { return isActive ? 'current' : '' }}>FAQs</NavLink>
+							</li>
 
-							<li><a>{ t('About') }</a>
-								<ul className="dropdown-nav">
-									<li>
-										<NavLink to='/contact/us'>{ t('ContactUs') }</NavLink>
-									</li>
-									<li>
-										<NavLink to='/faqs'>FAQs</NavLink>
-									</li>
-								</ul>
+							<li>
+								<NavLink to='/contact/us' end
+									className={({ isActive }) => { return isActive ? 'current' : '' }}>{ t('ContactUs') }</NavLink>
 							</li>
 
 							{
@@ -141,39 +125,39 @@ let HeaderContainer = (props) => {
 				</div>
 
 				<div className="right-side">
-					{isAuth
-						? <>
-							{(!isMaster && !isAdmin) &&
-						 	<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
-								className="header-widget hide-on-mobile">
-								<button onClick={() => navigate('/client-office/job-posting', { state: { name: `${t('PostAJob')}`, page: `${t('PostAJob')}` } })}
+					{(isAuth && !isMaster) && 
+					<div className="header-widget hide-on-mobile">
+						<div className="header-notifications" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+							{isAuth
+								? <>
+									{(!isMaster && !isAdmin) &&
+								 	<button onClick={() => navigate('/client-office/job-posting', { state: { name: `${t('PostAJob')}`, page: `${t('PostAJob')}` } })}
+										className="button ripple-effect">
+										{t('PostAJob')}
+									</button>}
+								 </>
+								: <button onClick={() => setIsOpen(true)}
 									className="button ripple-effect">
 									{t('PostAJob')}
 								</button>
-							</div>}
-						 </>
-						: <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
-							className="header-widget hide-on-mobile">
-							<button onClick={() => setIsOpen(true)}
-								className="button ripple-effect">
-								{t('PostAJob')}
-							</button>
+							}
 						</div>
-					}
+					</div>}
 					
-					<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
-					className="header-widget">
-						<Select
-							defaultValue={defaultLanguage}
-							value={defaultLanguage}
-							options={languages}
-							onChange={changeLanguage}
-							components={{
-								DropdownIndicator,
-								Option
-							}}
-							styles={SINGLE_SELECT_STYLES} 
-						/>
+					<div className="header-widget hide-on-mobile">
+						<div className="header-notifications" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+							<Select
+								defaultValue={defaultLanguage}
+								value={defaultLanguage}
+								options={languages}
+								onChange={changeLanguage}
+								components={{
+									DropdownIndicator,
+									Option
+								}}
+								styles={SINGLE_SELECT_STYLES} 
+							/>
+						</div >
 					</div>
 
 					{!isAuth &&

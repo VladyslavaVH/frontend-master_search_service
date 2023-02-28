@@ -6,6 +6,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import Snackbar from "node-snackbar";
 import $ from 'jquery';
 import { useTranslation } from "react-i18next";
+import io from "socket.io-client";
 
 const UserWindow = (props) => {
     const { t } = useTranslation();
@@ -23,6 +24,15 @@ const UserWindow = (props) => {
     const profilePhotosPath = process.env.REACT_APP_PROFILE_PHOTOS_PATH;
 
     useEffect(() => {
+        // socket.current = io(`http://localhost:5000`);
+
+        // socket.current.emit('sendUser', user.id);
+
+        // socket.current.on('getUsers', users => {
+        //     console.log('from server get users');
+        //     console.log(users);
+        // });
+
         if (isMaster) {
             navigate(`/master-office/statistics`, { replace: true, state: { name: `${t('Howdy')}, ${user?.firstName}!`, page: t('Statistics'), span: `${t('Greetings')}` } });
         } else {

@@ -41,8 +41,12 @@ const Map = ({ jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
             //bounds_changed
             window.google.maps.event.addListener(map, 'idle', function() {
                 const tmp = map.getBounds();
-                const lats = tmp.fb;
-                const lngs = tmp.Pa;
+                //console.log(tmp);
+                // const lats = tmp.fb;
+                // const lngs = tmp.Pa;
+
+                const lats = tmp.Xa;
+                const lngs = tmp.La;
 
                 setBounds({
                     lats: {

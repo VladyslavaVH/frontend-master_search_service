@@ -62,7 +62,7 @@ const IntroBanner = ({isMapApiLoaded}) => {
                 </>
             }
 
-            {!isLoading && <Stats jobsCount={data?.jobsCount || 0} mastersCount={data?.mastersCount || 0} usersCount={data?.usersCount || 0} />}
+            {!isLoading && <Stats jobsCount={data?.jobsCount || 0} usersCount={data?.usersCount || 0} />}
 
         </div>
     </div>;
