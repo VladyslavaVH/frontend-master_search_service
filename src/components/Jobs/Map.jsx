@@ -40,34 +40,23 @@ const Map = ({ jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
 
             //bounds_changed
             window.google.maps.event.addListener(map, 'idle', function() {
-                const tmp = map.getBounds();
-                //console.log(tmp);
-                // const lats = tmp.fb;
-                // const lngs = tmp.Pa;
-
-                const lats = tmp.Xa;
-                const lngs = tmp.La;
+                const bounds = map.getBounds();
+                const ne = bounds.getNorthEast(); // Coords of the northeast corner
+                const sw = bounds.getSouthWest(); // Coords of the southwest corner
 
                 setBounds({
                     lats: {
-                        startLat: lats.lo,
-                        endLat: lats.hi
+                        startLat: sw.lat(),
+                        endLat: ne.lat()
                     },
                     lngs: {
-                        startLng: lngs.lo,
-                        endLng: lngs.hi
+                        startLng: sw.lng(),
+                        endLng: ne.lng()
                     }
                 });
 
-                setCurBounds(tmp);
+                setCurBounds(bounds);
             });
-
-            window.google.maps.event.addListener(map, "click", e => {
-                //alert('click map container');
-                //clearMarkers(prevMarkersRef.current); //clear prev markers
-            });
-
-            //addMarkers(map);
         }
     }, []);
 
