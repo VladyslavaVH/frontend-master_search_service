@@ -140,7 +140,7 @@ let Footer = (props) => {
                                     {isAuth
                                         ? <>{(!isMaster && !isAdmin) && 
                                             <li style={{ cursor: 'pointer' }}>
-                                                <NavLink  state={{name: t('ManageJobs'), page: t('ManageJobs')}}
+                                                <NavLink  state={{name: 'ManageJobs', page: 'ManageJobs'}}
                                                 to='/client-office/manage-jobs'>
                                                    <span>{t('ManageJobs')}</span>
                                                 </NavLink>
@@ -155,7 +155,7 @@ let Footer = (props) => {
                                     {isAuth
                                         ? <>{(!isMaster && !isAdmin) &&
                                             <li style={{ cursor: 'pointer' }}>
-                                                <NavLink state={{ name: `${t('PostAJob')}`, page: `${t('PostAJob')}` }} className={({ isActive }) => { return isActive ? 'current' : '' }}
+                                                <NavLink state={{ name: 'PostAJob', page: 'PostAJob' }} className={({ isActive }) => { return isActive ? 'current' : '' }}
                                                     to='/client-office/job-posting'>
                                                     <span>{t('PostAJob')}</span>
                                                 </NavLink>
@@ -196,11 +196,11 @@ let Footer = (props) => {
                                     {isAuth
                                         ?<li>
                                         {isMaster
-                                            ? <NavLink state={{ name: `${t('Howdy')}, ${user.firstName}!`, page: t('Statistics'), span: t('Greetings') }}
+                                            ? <NavLink state={{ name: 'Howdy', page: 'Statistics', span: 'Greetings' }}
                                                     to='/master-office/statistics' className={({ isActive }) => { return isActive ? 'current' : '' }}>
                                                     <span>{t('MyAccount')}</span>
                                                </NavLink>
-                                            :  <NavLink state={{ name: t('ManageJobs'), page: t('ManageJobs') }} className={({ isActive }) => { return isActive ? 'current' : '' }}
+                                            :  <NavLink state={{ name: 'ManageJobs', page: 'ManageJobs' }} className={({ isActive }) => { return isActive ? 'current' : '' }}
                                                     to='/client-office/manage-jobs'>
                                                     <span>{t('MyAccount')}</span>
                                                </NavLink>

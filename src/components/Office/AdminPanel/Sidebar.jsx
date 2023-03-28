@@ -32,7 +32,7 @@ let Sidebar = (props) => {
 
                     <ul data-submenu-title={t("Start")}>
                         <li className={location.pathname.includes('statistics') ? 'active' : ''}>
-                            <NavLink state={{ name: t('AdminPanel'), page: t('Statistics')}}
+                            <NavLink state={{ name: 'AdminPanel', page: 'Statistics'}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/admin-panel/statistics'>
                                 <i className="icon-material-outline-dashboard"></i>
@@ -40,7 +40,7 @@ let Sidebar = (props) => {
                             </NavLink>
                         </li>
                         <li className={location.pathname.includes('doc-') ? 'active' : ''}>
-                            <NavLink state={{ name: t('AdminPanel'), page: t('VerificationOfDocuments')}}
+                            <NavLink state={{ name: 'AdminPanel', page: 'VerificationOfDocuments'}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/admin-panel/doc-verification'>
                                 <i className="icon-feather-user-check"></i> 
@@ -48,7 +48,7 @@ let Sidebar = (props) => {
                             </NavLink>
                         </li>
                         <li className={location.pathname.includes('faqs') ? 'active' : ''}>
-                            <NavLink state={{ name: t('AdminPanel'), page: `FAQs ${t('Editing')}`}}
+                            <NavLink state={{ name: 'AdminPanel', page: 'Editing'}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/admin-panel/faqs-editing'>
                                 <i className="icon-line-awesome-edit"></i> 
@@ -56,7 +56,7 @@ let Sidebar = (props) => {
                             </NavLink>
                         </li>                       
                         <li className={location.pathname.includes('add-category') ? 'active' : ''}>
-                            <NavLink state={{ name: t('AdminPanel'), page: t('AddingJobCategories')}}
+                            <NavLink state={{ name: 'AdminPanel', page: 'AddingJobCategories'}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/admin-panel/add-category'>
                                 <i className="icon-line-awesome-plus-square-o"></i> 

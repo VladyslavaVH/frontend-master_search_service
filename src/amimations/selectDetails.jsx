@@ -214,6 +214,7 @@ export const SINGLE_SELECT_STYLES = {
         maxHeight: '48px',
         minWidth: '110px',
         padding: 0,
+        paddingLeft: 20,
         cursor: 'pointer',
         backgroundColor: 'transparent',
         borderRadius: '4px',
@@ -224,7 +225,6 @@ export const SINGLE_SELECT_STYLES = {
         color: '#808080',
         width: 'max-content',
         border: 'none',
-        marginLeft: '18px',
     }),
     input: (baseStyles, state) => ({
         ...baseStyles,

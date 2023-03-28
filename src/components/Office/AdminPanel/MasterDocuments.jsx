@@ -13,7 +13,7 @@ const MasterDocuments = (props) => {
     const navigate = useNavigate();
     const [verifyMaster] = useVerifyMasterMutation();
     const { data, isLoading } = useGetFullMasterInfoQuery(location.state.id);
-    const { id, firstName, lastName, tagLine, passportFirstSide, passportSecondSide, individual_tax_number, phone, email, avatar, flag, country } = data || {};
+    const { id, firstName, lastName, tagLine, isAdminChecked, passportFirstSide, passportSecondSide, individual_tax_number, phone, email, avatar, flag, country } = data || {};
 
     useEffect(() => {
         inlineBG();
@@ -88,7 +88,8 @@ const MasterDocuments = (props) => {
                         : <p>{t('TheMasterDidntProvideAnyDocuments')}</p>
                     }
 
-                        <a onClick={adminVerifyClick} className="button margin-top-25 ripple-effect button-sliding-icon" style={{ width: '155.396px', color: '#fff' }}>{t("Verify")} <i className="icon-line-awesome-check"></i></a>
+                        {!isLoading && documents.length > 0 && !(!!+isAdminChecked) && 
+                        <a onClick={adminVerifyClick} className="button margin-top-25 ripple-effect button-sliding-icon" style={{ width: '155.396px', color: '#fff' }}>{t("Verify")} <i className="icon-line-awesome-check"></i></a>}
                     </div>
 
                 </div>

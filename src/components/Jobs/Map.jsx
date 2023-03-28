@@ -4,8 +4,12 @@ import SuperClusterAlgorithm from '../../utils/superClusterAlgorithm';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectIsAuth, selectIsMaster } from '../../features/auth/authSlice';
+import { useGetPermissionCheckQuery } from '../../features/master/masterApiSlice';
+import NotificationDialog from '../HeaderContainer/Popup/NotificationDialog';
+import { useTranslation } from 'react-i18next';
 
-const Map = ({ jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
+const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
+    const { t } = useTranslation();
     const [curBounds, setCurBounds] = useState(null);
     const [prevCenter, setPrevCenter] = useState(null);
     const isAuth = useSelector(selectIsAuth);
@@ -15,6 +19,8 @@ const Map = ({ jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
     const ref = useRef(null);
     const prevMarkersRef = useRef([]);
     const navigate = useNavigate();
+    const { data:permission } = useGetPermissionCheckQuery();
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     
     useEffect(() => {
         if (ref.current && !mapContainer) {            
@@ -77,13 +83,6 @@ const Map = ({ jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
                         setPrevCenter(center);
                     }   
                 } 
-                // else if (jobs.length == 1) {
-                //     const jobCenter = { lat: jobs[0].lat, lng: jobs[0].lng };
-                //     mapContainer?.setCenter(jobCenter);
-                //     mapContainer?.setZoom(mapZoom);
-
-                //     //setPrevCenter(jobCenter);
-                // }
             }           
 
             if (markerCluster && prevMarkersRef.current.length > 0) {
@@ -101,6 +100,17 @@ const Map = ({ jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
         *або після взаємодії з картою(zoom, рух карти) 
 
     оновлюємо кластер та маркери*/
+
+    useEffect(() => {
+        if (mapContainer && jobs) {
+            if (markerCluster && prevMarkersRef.current.length > 0) {
+                clearAllMarkersFromCluster();
+                clearMarkers(prevMarkersRef.current);
+            }
+
+            addMarkers(mapContainer, jobs);
+        }
+    }, [lang]);
 
     function createMarker(id, category, clientName, position, map, infoWindow) {
         /*and then, if you want to change the marker dynamically (like on mouseover), you can, for example:
@@ -129,6 +139,7 @@ const Map = ({ jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
         marker.addListener('click', () => {
             infoWindow.setPosition(position);
             const popup = document.createElement('div');
+                        
             popup.innerHTML = `
             <div data-job="${id}" data-title="${category}" class="job-listing-description">
                 <h3 class="job-listing-title" style="font-size: 16px;line-height: 24px;color: #333;font-weight: 500;font-family: "Nunito", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;text-transform: none;">${category}</h3>
@@ -142,10 +153,15 @@ const Map = ({ jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
                 let jobCategory = e.target.getAttribute('data-title') ||
                 e.target.parentNode.getAttribute('data-title');
 
-                if (isAuth && isMaster) {
-                    navigate(`/master-office/job/${jobCategory}`,
-                        { state: { id: jobId, name: 'Apply for a Job', page: 'Apply for a Job', isApply: true } }
-                    );
+                if (isAuth && isMaster ) {
+                    if (permission) {
+                        navigate(`/master-office/job/${jobCategory.replace('/', '-')}`,
+                            { state: { id: jobId, name: 'ApplyForAJob', page: 'ApplyForAJob', isApply: true } }
+                        );
+                    } else {
+                        setIsNotificationOpen(true);
+                    }
+                    
                 }
                 
             });
@@ -174,7 +190,10 @@ const Map = ({ jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
         });
         
         const markers = jobsArr?.map(({id, category, clientName, lat, lng }) => {
-            return createMarker(id, category, clientName, { lat, lng }, map, infoWindow);
+            let index = trCategoriesArr?.input?.indexOf(category);
+            return createMarker(id, 
+                trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : category, 
+                clientName, { lat, lng }, map, infoWindow);
         });
         prevMarkersRef.current = markers;
     
@@ -194,6 +213,9 @@ const Map = ({ jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
         {isMapApiLoaded
             ? <div id="map" ref={ref}></div>
             : <div>Loading...</div>}
+        <NotificationDialog open={isNotificationOpen} onClose={() => setIsNotificationOpen(false)}>
+            {t('MasterWithoutPermission')}
+        </NotificationDialog>
     </>;
 }
 

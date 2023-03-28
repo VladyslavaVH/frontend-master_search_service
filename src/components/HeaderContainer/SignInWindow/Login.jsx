@@ -12,7 +12,8 @@ import NotificationDialog from './../Popup/NotificationDialog';
 const Login = ({ onClose, fromLocationData, from }) => {
     const { t } = useTranslation();
     const { register, handleSubmit } = useForm();
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
 
     const [login, { isLoading }] = useLoginMutation();
@@ -50,6 +51,29 @@ const Login = ({ onClose, fromLocationData, from }) => {
         localStorage.setItem('persist', isPersist);
     }, [isPersist]);
 
+    const onPhoneChange = e => {
+        const re = /^[\+0-9\b]+$/;
+
+        if (e.keyCode !== 16) {
+            if (re.test(e.key)) {
+                
+                if (e.key === '+') {
+                    if (!phoneNumber.startsWith('+') && phoneNumber.indexOf('+') === -1 && phoneNumber.length === 0) {
+                        setPhoneNumber(phoneNumber + e.key);                                            
+                    }
+                } else {
+                    setPhoneNumber(phoneNumber + e.key); 
+                }
+                
+            }
+
+            if (e.keyCode === 8) {
+                setPhoneNumber(phoneNumber.slice(0, phoneNumber.length - 1));
+            }  
+        }
+
+    };
+
     return <div className="popup-tab-content" id="login">
 
         <div className="welcome-text">
@@ -60,8 +84,8 @@ const Login = ({ onClose, fromLocationData, from }) => {
         <form onSubmit={ handleSubmit(onSubmit) } id="login-form">
             <div className="input-with-icon-left">
                 <i className="icon-feather-phone"></i>
-                <input type="tel" title="Only + and numbers"
-                 {...register('phone', { required: true })}
+                <input type="tel" value={phoneNumber} onKeyDown={onPhoneChange} title="Only + and numbers"
+                 {...register('phone', { required: true })} autoComplete={"off"}
                 className="input-text with-border" name="phone" id="phone" placeholder={t('PhoneNumber')} required />
             </div>
 

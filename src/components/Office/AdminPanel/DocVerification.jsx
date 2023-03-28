@@ -22,6 +22,7 @@ const DocVerification = (props) => {
                 <th>{t("LastName")}</th>
                 <th>{t("Phone")}</th>
                 <th>{t("Email")}</th>
+                <th>{t("Verified")}</th>
                 <th>{t("More")}</th>
             </tr>
 
@@ -32,8 +33,11 @@ const DocVerification = (props) => {
                         <td data-label={t("Last Name")}>{m.lastName}</td>
                         <td data-label={t("Phone")}>{m.phone}</td>
                         <td data-label={t("Email")}>{m.email}</td>
+                        <td data-label={t("Verified")} style={{display: 'flex', justifyContent: 'center'}}>
+                            {!!+m.isAdminChecked && <i style={{color: '#2a41e8', fontSize: 20}} className='icon-material-outline-check'></i>}
+                        </td>
                         <td data-label={t("More")}>
-                            <NavLink state={{ id: m.id, name: t('NewMaster'), page: t('Documents') }}
+                            <NavLink state={{ id: m.id, name: 'Master', page: 'Documents' }}
                             to={'/admin-panel/doc-verification/master-profile'}>
                                 {t('Documents')}
                             </NavLink>

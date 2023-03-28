@@ -1,23 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import JobListing from "./JobListing";
 import { useGetJobListingByClientQuery } from "../../../../features/jobs/jobsApiSlice";
 import { setCandidates } from "../../../../features/jobs/clientJobsSlice";
 import { useTranslation } from 'react-i18next';
+import { selectCurrentLanguage } from "../../../../features/auth/authSlice";
+import { useSelector } from 'react-redux';
+import { fireCategoriesTr } from '../../../../utils/firebase.config';
 
 let ManageJobs = (props) => {
     const { t } = useTranslation();
-    // const jobs = [
-    //     { id: 1, title: 'Frontend React Developer', createTime: 'Posted on 10 July, 2019', endDate: 'Expiring on 10 August, 2019', status: 'Pending Approval', candidatesCount: 0 },
-    //     { id: 2, title: 'Full Stack PHP Developer', createTime: 'Posted on 28 June, 2019', endDate: 'Expiring on 28 July, 2019', status: 'Expiring', candidatesCount: 3 },
-    //     { id: 3, title: 'Node.js Developer', createTime: 'Posted on 16 May, 2019', endDate: null, status: 'Expired', candidatesCount: 7 }
-    // ];
+    const lang = useSelector(selectCurrentLanguage);
+    const [trCategoriesArr, setTrCategoriesArr] = useState(null);
 
     const { data, isLoading } = useGetJobListingByClientQuery();
     const dispatch = useDispatch();
 
     useEffect(() => {
         if (!isLoading) {
+            fireCategoriesTr(setTrCategoriesArr); 
             dispatch(setCandidates(data.candidates));
         }
     }, [isLoading, data?.candidates]);
@@ -32,9 +33,14 @@ let ManageJobs = (props) => {
 
                 <div className="content">
                     <ul className="dashboard-box-list">
-                        {!isLoading && data?.jobs?.map(j => 
-                            <JobListing key={j.id} {...j}
-                            candidates={data?.candidates?.filter(c => c.jobFK === j.id)} />)}
+                        {!isLoading && data?.jobs?.map(j => {
+                            let index = trCategoriesArr?.input?.indexOf(j.category);
+                            
+                            return <JobListing key={j.id} {...j}
+                            category={trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : j.category}
+                            defaultCategoryName={j.category}
+                            candidates={data?.candidates?.filter(c => c.jobFK === j.id)} />
+                        })}
                     </ul>
                 </div>
             </div>

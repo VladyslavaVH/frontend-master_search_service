@@ -30,6 +30,19 @@ export const masterApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['settings']
         }),
+        uploadDocuments: builder.mutation({
+            query: data => ({
+                url: `/master/upload/documents`,
+                method: 'POST',
+                body: data
+            }),
+            invalidatesTags: ['settings', 'files']
+        }),
+        getPermissionCheck: builder.query({
+            query: () => `/master/permission/check`,
+            providesTags: ['permission'],
+            keepUnusedDataFor: 1
+        }),
     })
 });
 
@@ -37,7 +50,9 @@ export const {
     useGetMasterStatisticsQuery,
     useGetMasterConversationsQuery,
     useGetMasterJobApplyStatusQuery,
+    useGetPermissionCheckQuery,
     useApplyJobMutation,
+    useUploadDocumentsMutation,
     useChangeProfileSettingsMutation,
 } = masterApiSlice
 

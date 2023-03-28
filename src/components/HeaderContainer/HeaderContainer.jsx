@@ -105,18 +105,6 @@ let HeaderContainer = (props) => {
 								<NavLink to='/contact/us' end
 									className={({ isActive }) => { return isActive ? 'current' : '' }}>{ t('ContactUs') }</NavLink>
 							</li>
-
-							{
-								isAuth && isAdmin
-									? <li>
-										<NavLink state={{ name: t("AdminPanel"), page: t('Statistics') }}
-										to='/admin-panel/statistics' className={({ isActive }) => { return isActive ? 'current' : '' }}>
-											{t("AdminPanel")}
-										</NavLink>
-									</li>
-									: null
-							}
-
 						</ul>
 					</nav>
 					<div className="clearfix"></div>
@@ -131,7 +119,7 @@ let HeaderContainer = (props) => {
 							{isAuth
 								? <>
 									{(!isMaster && !isAdmin) &&
-								 	<button onClick={() => navigate('/client-office/job-posting', { state: { name: `${t('PostAJob')}`, page: `${t('PostAJob')}` } })}
+								 	<button onClick={() => navigate('/client-office/job-posting', { state: { name: 'PostAJob', page: 'PostAJob' } })}
 										className="button ripple-effect">
 										{t('PostAJob')}
 									</button>}
@@ -173,7 +161,7 @@ let HeaderContainer = (props) => {
 							<MessagesWindow />
 						</div>}
 
-					{(isAuth && !isAdmin) &&
+					{isAuth &&
 						<div className="header-widget">
 							<UserWindow />
 						</div>}

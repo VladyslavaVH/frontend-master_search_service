@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useGetFaqsQuery } from '../../../features/faqs/faqsApiSlice';
 import { useChangeFaqsMutation } from '../../../features/admin/adminApiSlice';
 import { useTranslation } from 'react-i18next';
+import Success from './../Settings/Success';
+import Modal from './../../HeaderContainer/Popup/Modal';
+import { useCreateFaqMutation } from '../../../features/admin/adminApiSlice';
+import { logOut } from '../../../features/auth/authSlice';
 
 const EDIT_BTN_STYLES = { 
-    width: '100px', 
+    minWidth: '100px', 
     paddingTop: 0, 
     paddingBottom: 0, 
     color: '#fff',
@@ -13,10 +17,14 @@ const EDIT_BTN_STYLES = {
 
 const EditFAQs = (props) => {
     const { t } = useTranslation();
+    const [createFaq] = useCreateFaqMutation();
+    const [isSuccess, setIsSuccess] = useState(false);
     const [accordionData, setAccordionData] = useState([]);
     const { data, isLoading } = useGetFaqsQuery();
     const [newFaqs, setNewFaqs] = useState([]);
     const [changeFaqs] = useChangeFaqsMutation();
+    const [newQuestion, setNewQuestion] = useState('');
+    const [newAnswer, setNewAnswer] = useState('');
 
     useEffect(() => {
         if (!isLoading && accordionData.length !== data.faqs.length) {
@@ -25,7 +33,7 @@ const EditFAQs = (props) => {
                 setNewFaqs(data.faqs);
             }
         }
-    }, [isLoading]);
+    }, [isLoading, data]);
 
     const onAccordionClick = e => {
         const accordionIndex = e.target.parentNode.getAttribute('data-index');
@@ -73,8 +81,26 @@ const EditFAQs = (props) => {
         const res = await changeFaqs({ faqs: newFaqs }).unwrap();
         if (!res) return;
 
-        //console.log(res);
+        setIsSuccess(true);
     }
+
+    const createNewFaqClick = async () => {
+        try {
+            const data = {
+                newQuestion,
+                newAnswer
+            };
+
+            const res = await createFaq(data).unwrap();
+            console.log(res);
+
+            setNewQuestion('');
+            setNewAnswer('');
+            setIsSuccess(true);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return <>
         <div className="accordion js-accordion">
@@ -104,7 +130,43 @@ const EditFAQs = (props) => {
             }
         </div>
 
-        <button onClick={saveChanges} type='button' className="button ripple-effect button-sliding-icon margin-top-15" style={{ width: '170px' }}>{t('SaveChanges')}<i className="icon-feather-check"></i></button>
+        <button onClick={saveChanges} type='button' className="button ripple-effect button-sliding-icon margin-top-15" style={{ minWidth: '170px' }}>{t('SaveChanges')}<i className="icon-feather-check"></i></button>
+
+        <div className="container">
+            <div className="row">
+                <div className="col-xl-12">
+                    <div className="section-headline border-top margin-top-45 padding-top-45 margin-bottom-12">
+                        <h4>{t('CreateNewFAQ')}</h4>
+                    </div>
+                </div>
+
+                <div className="col-xl-12">
+                    <div className="section-headline margin-top-25 margin-bottom-12">
+                        <h5>{t('Question')}</h5>
+                    </div>
+                    <input value={newQuestion} onChange={(e) => {setNewQuestion(e.target.value)}}
+                    type='text' name='newQuestion'/>
+                </div>
+
+                <div className="col-xl-12">
+                    <div className="section-headline margin-top-25 margin-bottom-12">
+                        <h5>{t('Answer')}</h5>
+                    </div>
+                    <textarea value={newAnswer} onChange={e => setNewAnswer(e.target.value)}
+                    name="newAnswer" id="" cols="15" rows="5"></textarea>
+                </div>
+                <div className='col-xl-6 margin-top-15' style={{minWidth: '170px'}}>    
+                    <button onClick={createNewFaqClick} type="button" className="button ripple-effect">{t('Create')}</button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <Modal tabs={[t('Success')]} open={isSuccess}>
+            <Success mainText={t('YourDataHasBeenSuccessfullyUpdated')} onClose={() => setIsSuccess(false)} />
+        </Modal>
     </>;
 };
 

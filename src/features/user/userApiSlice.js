@@ -16,7 +16,8 @@ export const masterApiSlice = apiSlice.injectEndpoints({
                 url: '/user/change/avatar',
                 method: 'POST',
                 body: formData
-            })
+            }),
+            invalidatesTags: ['avatar']
         }),
         createNewMessage: builder.mutation({
             query: formData => ({
@@ -25,7 +26,7 @@ export const masterApiSlice = apiSlice.injectEndpoints({
                 body: formData
             }),
             invalidatesTags: ['message']
-        }),    
+        }),  
     })
 });
 

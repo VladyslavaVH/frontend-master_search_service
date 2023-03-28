@@ -42,14 +42,14 @@ let Sidebar = (props) => {
                             </a>
                         </li>}
                         <li className={(location.pathname.includes('job-posting')) ? 'active' : ''}>
-                            <NavLink state={{name: t('PostAJob'), page: t('PostAJob')}} className={({isActive}) => { return isActive ? 'current' : ''}}
+                            <NavLink state={{name: 'PostAJob', page: 'PostAJob'}} className={({isActive}) => { return isActive ? 'current' : ''}}
                             to='/client-office/job-posting'>
                                 <i className="icon-material-outline-business-center"></i>
                                 {t('PostAJob')}
                             </NavLink>
                         </li>
                         <li className={(location.pathname.includes('messages')) ? 'active' : ''}>
-                        <NavLink state={{name: t('Messages'), page: t('Messages')}}
+                        <NavLink state={{name: 'Messages', page: 'Messages'}}
                             to='/client-office/messages'>
                                 <i className="icon-material-outline-question-answer"></i> 
                                 {t('Messages')} 
@@ -58,7 +58,7 @@ let Sidebar = (props) => {
                         </li>
                         <li className={(location.pathname.includes('master')
                         || location.pathname.includes('manage')) ? 'active' : ''}>
-                            <NavLink  state={{name: t('ManageJobs'), page: t('ManageJobs')}}
+                            <NavLink  state={{name: 'ManageJobs', page: 'ManageJobs'}}
                             to='/client-office/manage-jobs'>
                                 <i className="icon-material-outline-assignment"></i> 
                                 {t('ManageJobs')}
@@ -68,7 +68,7 @@ let Sidebar = (props) => {
                     
                     <ul data-submenu-title={t('Account')}>
                         <li className={(location.pathname.includes('settings')) ? 'active' : ''}>
-                            <NavLink  state={{name: t('Settings'), page: t('Settings')}}
+                            <NavLink  state={{name: 'Settings', page: 'Settings'}}
                             to='/client-office/settings'>
                                 <i className="icon-material-outline-settings"></i>
                                 {t('Settings')}

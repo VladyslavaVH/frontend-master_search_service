@@ -6,7 +6,8 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import DisplayTime from './DisplayTime';
 import TimeAgo from "../TimeAgo";
 import { useTranslation } from "react-i18next";
-//import Geocode from 'react-geocode';
+import { useGetPermissionCheckQuery } from "../../features/master/masterApiSlice";
+import NotificationDialog from "../HeaderContainer/Popup/NotificationDialog";
 
 const JobListItem = (props) => {
     const { t } = useTranslation();
@@ -19,6 +20,8 @@ const JobListItem = (props) => {
         id, isVerified, clientName, lat, lng, category, createTime,
          isHomePage } = props;
     const [cityName, setCityName] = useState('');
+    const { data:permission } = useGetPermissionCheckQuery();
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
     useEffect(() => {
         if (window.google && (lat && lng)) {
@@ -45,15 +48,36 @@ const JobListItem = (props) => {
         }
     }, []);
 
+    const applyJobClickHandler = () => {
+        if (!isHomePage && isAuth && isMaster && location.pathname.includes('/jobs')) {
+            if (permission) {
+                navigate(`/master-office/job/${category.replace('/', '-')}`, { state: { id: id, name: 'ApplyForAJob', page: 'ApplyForAJob', isApply: true } });
+            } else {
+                setIsNotificationOpen(true);
+            }            
+        }
+    }
+
+    const applyButtonClickHandler = () => {
+        if (!isAuth) {
+            setIsOpen(true);
+            return;
+        }
+
+        if (isMaster) {
+            if (permission) {
+                navigate(`/master-office/job/${category.replace('/', '-')}`, { state: { id: id, name: 'ApplyForAJob', page: 'ApplyForAJob', isApply: true } });                
+            } else {
+                setIsNotificationOpen(true);
+            }
+        }
+    }
+
     return <div className={`job-listing${isHomePage ? ' with-apply-button' : ''}`}>
     
         <div className="job-listing-details">
     
-            <div onClick={() => {
-                if (!isHomePage && isAuth && isMaster && location.pathname.includes('/jobs')) {
-                    navigate(`/master-office/job/${category}`, { state: { id: id, name: t('ApplyForAJob'), page: t('ApplyForAJob'), isApply: true } })                    
-                }
-            }} 
+            <div onClick={applyJobClickHandler} 
             className="job-listing-description">
                 <h3 className="job-listing-title">{category}</h3>
     
@@ -75,20 +99,16 @@ const JobListItem = (props) => {
 
             {isHomePage &&
             <>
-                {(isAuth)
-                ?<>
-                    {isMaster &&
-                    <NavLink state={{ id: id, name: t('ApplyForAJob'), page: t('ApplyForAJob'), isApply: true }}
-                        to={`/master-office/job/${category}/${id}`}>
-                        <span className="list-apply-button ripple-effect">{t('ApplyNow')}</span>
-                    </NavLink>}
-                </>
-                :<a onClick={() => setIsOpen(true)} className="popup-with-zoom-anim log-in-button" style={{ cursor: 'pointer' }}>
+                <a onClick={applyButtonClickHandler} className="popup-with-zoom-anim log-in-button" style={{ cursor: 'pointer' }}>
                     <span className="list-apply-button ripple-effect">{t('ApplyNow')}</span>
-                </a>}
+                </a>
                 <SignInWindow open={isOpen} onClose={() => setIsOpen(false)} />
             </>}
         </div>
+
+        <NotificationDialog open={isNotificationOpen} onClose={() => setIsNotificationOpen(false)}>
+            {t('MasterWithoutPermission')}
+        </NotificationDialog>
     </div>
 };
 

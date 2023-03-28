@@ -9,6 +9,9 @@ import JobListItem from "./JobListItem";
 import Map from "./Map";
 import Pagination from "./Pagination";
 import { useTranslation } from 'react-i18next';
+import { fireCategoriesTr } from '../../utils/firebase.config';
+import { selectCurrentLanguage } from "../../features/auth/authSlice";
+import { useSelector } from 'react-redux';
 
 let Jobs = ({ isMapApiLoaded }) => {
 	// const [center, setCenter] = useState({ 
@@ -16,6 +19,8 @@ let Jobs = ({ isMapApiLoaded }) => {
 	// 	lng: 30.732074,
 	// });
 	const { t } = useTranslation();
+	const lang = useSelector(selectCurrentLanguage);
+	const [trCategoriesArr, setTrCategoriesArr] = useState(null);
 	const location = useLocation();
 	const { categoryId, title: category, pos, masterCategories } = location?.state || {};
 	const [center, setCenter] = useState(pos);
@@ -32,6 +37,7 @@ let Jobs = ({ isMapApiLoaded }) => {
 	useEffect(() => {
 		if(!isLoading && data) {
 			setPage(data.page);
+			fireCategoriesTr(setTrCategoriesArr); 
 		}
 	}, [isLoading]);
 	
@@ -62,7 +68,7 @@ let Jobs = ({ isMapApiLoaded }) => {
 
     return <div className="full-page-container with-map" style={{ maxHeight: '95vh'}}>
 
-	<FiltersSidebar payment={payment} setPayment={setPayment} setCategories={setCategories} defaultCategory={categories[0]} setCenter={setCenter} isMapApiLoaded={isMapApiLoaded} />	
+	<FiltersSidebar  payment={payment} setPayment={setPayment} setCategories={setCategories} defaultCategory={categories[0]} setCenter={setCenter} isMapApiLoaded={isMapApiLoaded} />	
 
 	<div style={{ maxHeight: '95vh' }} className="full-page-content-container">{/*data-simplebar*/}
 		<div className="full-page-content-inner">
@@ -72,10 +78,14 @@ let Jobs = ({ isMapApiLoaded }) => {
 			<div className="listings-container compact-list-layout margin-top-35 margin-bottom-25">
 
 				{!isLoading &&
-					jobs?.map(j => <JobListItem
-						key={j.id}
-						{...j}
-						isHomePage={false} />)
+					jobs?.map(j => {
+						let index = trCategoriesArr?.input?.indexOf(j.category);
+						return <JobListItem
+							key={j.id}
+							{...j}
+							category={trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : j.category}
+							isHomePage={false} />
+					})
 				}{/*single-job-html href on click*/}
 
 			</div>
@@ -103,6 +113,8 @@ let Jobs = ({ isMapApiLoaded }) => {
 		{
 			(center && !isLoading) &&
 			<Map
+				lang={lang}
+				trCategoriesArr={trCategoriesArr}
 				jobs={jobs}
 				mapZoom={mapZoom}
 				setBounds={setBounds}

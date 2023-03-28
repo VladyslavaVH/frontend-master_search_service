@@ -40,7 +40,7 @@ let Sidebar = (props) => {
             <div className="dashboard-nav">
                 <div className="dashboard-nav-inner">
 
-                    <ul data-submenu-title="Start">
+                    <ul data-submenu-title={t('Start')}>
                         {isApply && <li className={!isOpen &&
                             isApply ? 'active' : ''}>
                             <a>
@@ -55,7 +55,7 @@ let Sidebar = (props) => {
                             </NavLink>
                         </li>
                         <li className={!isOpen && location.pathname.includes('messages') ? 'active' : ''}>
-                            <NavLink state={{name: t('Messages'), page: t('Messages')}}
+                            <NavLink state={{name: 'Messages', page: 'Messages'}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/master-office/messages'>
                                 <i className="icon-material-outline-question-answer"></i> 
@@ -72,7 +72,7 @@ let Sidebar = (props) => {
                             </NavLink>
                         </li>}
                         <li className={!isOpen && location.pathname.includes('statistics') ? 'active' : ''}>
-                            <NavLink state={{ name: `${t('Howdy')}, ${user?.firstName}!`, page: t('Statistics'), span: t('Greetings')}}
+                            <NavLink state={{ name: 'Howdy', page: 'Statistics', span: 'Greetings'}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/master-office/statistics'>
                                 <i className="icon-material-outline-dashboard"></i>
@@ -91,9 +91,9 @@ let Sidebar = (props) => {
                         */}
                     </ul>
 
-                    <ul data-submenu-title="Account">
+                    <ul data-submenu-title={t('Account')}>
                         <li className={location.pathname.includes('settings') ? 'active' : ''}>
-                            <NavLink state={{name: t('Settings'), page: t('Settings')}}
+                            <NavLink state={{name: 'Settings', page: 'Settings'}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/master-office/settings'>
                                 <i className="icon-material-outline-settings"></i>

@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import { selectCurrentLanguage } from '../../../features/auth/authSlice';
 import { useGetOptionCategoriesQuery } from '../../../features/details/detailsApiSlice';
-import $ from 'jquery';
 import CategorySelect from './../ClientOffice/JobPosting/CategorySelect';
+import { useSelector } from 'react-redux';
+import { fireCategoriesTr } from './../../../utils/firebase.config';
 
 const CategoriesList = ({ setMasterCategories, categories }) => {
+    const lang = useSelector(selectCurrentLanguage);
+    const [trCategoriesArr, setTrCategoriesArr] = useState(null);
     const { data: optionCategories, isLoading } = useGetOptionCategoriesQuery();
     const [newCategoryFK, setCategoryFK] = useState(null);
     const [newCategoriesArr, setNewCategoriesArr] = useState([]);
+
+    useEffect(() => {
+        if (!isLoading) {
+            fireCategoriesTr(setTrCategoriesArr); 
+        }
+    }, [isLoading]);
 
     useEffect(() => {
         if (newCategoriesArr.length === 0) {
@@ -48,8 +58,9 @@ const CategoriesList = ({ setMasterCategories, categories }) => {
         </div>}
         <div className="keywords-list" style={{ width: '100%', height: 'max-content' }}>
             {newCategoriesArr?.map(c => {
+                let index = trCategoriesArr?.input?.indexOf(c.category);
                 if (c?.desc !== 'delete' ) {
-                    return <span key={c?.id} className="keyword"><span onClick={() => removeKeyword(c?.id)} className="keyword-remove"></span><span className="keyword-text">{c?.category}</span></span>
+                    return <span key={c?.id} className="keyword"><span onClick={() => removeKeyword(c?.id)} className="keyword-remove"></span><span className="keyword-text">{trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : c?.category}</span></span>
                 }                   
             })}
         </div>

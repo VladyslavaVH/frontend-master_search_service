@@ -16,7 +16,8 @@ export const jobsApiSlice = apiSlice.injectEndpoints({
         }),
         getJobListingByClient: builder.query({
             query: () => `/client/job/listing`,
-            keepUnusedDataFor: 5
+            keepUnusedDataFor: 5,
+            providesTags: ['job']
         }),        
         getJobById: builder.query({
             query: id => `/job?jobId=${id}`,
@@ -32,7 +33,8 @@ export const jobsApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 //headers: { 'Content-Type': 'multipart/form-data' },
                 body: jobData
-            })
+            }),
+            invalidatesTags: ['files', 'job']
         }),  
         editJob: builder.mutation({
             query: (id, jobData)  => ({

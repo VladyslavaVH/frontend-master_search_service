@@ -1,35 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RecaptchaVerifier, signOut, sendEmailVerification, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../../utils/firebase.config';
 
-const EmailVerification = ({ email }) => {
+const EmailVerification = ({  }) => {
     const { t } = useTranslation();
+    const [init, setInit] = useState(true);
+    const [email, setEmail] = useState('test@gmail.com');
+    const [password, setPassword] = useState('');
+    const [isEmailVer, setIsEmailVer] = useState(false);
+    const [user, setUser] = useState(null);
+
+    const onSubmit = e => {
+        e.preventDefault();
+
+
+    };
+
     return <div className="col-xl-12">
-        <div className="dashboard-box">
+        <div className="dashboard-box" style={{ boxShadow: '0 2px 8px rgba(255,0,0,0.2)' }}>
             <div className="headline">
-                <h3><i className="icon-feather-user-check"></i> {t("Verification")}</h3>
+                <h3><i style={{ color: 'red' }} className="icon-feather-user-check"></i> {t("Verification")}</h3>
             </div>
 
-            <div className="content with-padding padding-bottom-0">
-                <div className="row">
-                    <div className="col-xl-6">
-                        <div className="submit-field">
-                            <h5>Email</h5>
-                            <input type="text" className="with-border" value={email} onChange={() => { }} />
-                        </div>
+                <div className="content with-padding padding-bottom-0">
+                    <div className='col-xl-12 margin-bottom-15'>
+                        <form className='row' onSubmit={onSubmit} id="verificationForm">
+                            <input type="text" className="col-xl-6 col-md-6 with-border" placeholder='test@gmail.com'
+                            value={email} onChange={e => setEmail(e.target.value)} />
 
+                            <div className='col-xl-6 col-md-6'>
+                                <button className="button ripple-effect" type="submit" form='verificationForm'>
+                                    {t("Verify")}
+                                </button>
+                            </div>
+                        </form>
                     </div>
-
-                    <span className="col-xl-6" style={{ paddingTop: '0' }}>
-                        <div className="submit-field">
-                            <h5>{t("Unverified email")}</h5>
-                            <button className="button ripple-effect" type="button">{t("Verify")}
-                            </button>
-                        </div>
-                    </span>
                 </div>
-            </div>
         </div>
-    </div>;
+    </div>
 }
 
 export default EmailVerification;

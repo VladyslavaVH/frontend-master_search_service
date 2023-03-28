@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import CategorySelect from "./CategorySelect";
 import LocationsAutocomplete from "../../../Jobs/FiltersSidebar/LocationsAutocomplete";
 import CurrencySelect from "./CurrencySelect";
+import NotificationDialog from './../../../HeaderContainer/Popup/NotificationDialog';
 
 const INPUTS_SHADOW_STYLES = {
     border: 'none',
@@ -33,9 +34,29 @@ const schema = yup
 
 let JobPosting = (props) => {
     const { t } = useTranslation();
+    const [notificationText, setNotificationText] = useState('');
+    const [minP, setMinP] = useState(100);
+    const [maxP, setMaxP] = useState(1000);
+    const [isOpen, setIsOpen] = useState(false);
     const { register, handleSubmit, reset, watch,
         formState: { errors },
     } = useForm({ resolver: yupResolver(schema) });
+
+    useState(() => {
+        if (watch('photos')?.length > 0 && errors?.photos) {
+            setNotificationText(errors.photos.message);
+            setIsOpen(true);
+            reset();
+        }
+    }, [watch('photos'), errors, errors.photos]);
+
+    useEffect(() => {
+        if ( minP > maxP) {
+            setMinP(maxP - 1);
+            setNotificationText('NotValidPaymentData');
+            setIsOpen(true);
+        }
+    }, [minP, maxP])
     
     const navigate = useNavigate();
     const user = useSelector(selectCurrentUser);
@@ -47,20 +68,27 @@ let JobPosting = (props) => {
 
     const onSubmit = async data => {
         try {
+            if (minP == 0 || !minP || !maxP || maxP == 0 || (minP > maxP)) {
+                setMinP(maxP - 1);
+                setNotificationText('NotValidPaymentData');
+                setIsOpen(true);
+                return;
+            }
+
             let formData = new FormData();
             Object.keys(data?.photos).forEach(key => 
                 formData.append(data?.photos?.item(key).name, data?.photos?.item(key))
             );
 
-            let minPayment = parseInt(data?.minPayment);
-            let maxPayment = parseInt(data?.maxPayment);
+            //let minPayment = parseInt(data?.minPayment);
+            //let maxPayment = parseInt(data?.maxPayment);
 
             let jobPostData = {
                 clientFK: user.id,
                 ...data,
                 categoryFK,
-                minPayment,
-                maxPayment,
+                minPayment: minP,
+                maxPayment: maxP,
                 currencyFK,
                 ...jobLocation
             };
@@ -133,8 +161,11 @@ let JobPosting = (props) => {
                                     <h5>{t('MinPayment')}</h5>
                                     <input style={INPUTS_SHADOW_STYLES}
                                     name="minPayment" 
-                                    {...register('minPayment', { required: true })}
-                                     type="text" placeholder="100" />
+                                    value={minP}
+                                    onChange={e => setMinP(e.target.value)} 
+                                    //{...register('minPayment', { required: true })}
+                                     type="text" placeholder="100"
+                                     autoComplete="off" />
                                 </div>
                             </div>
 
@@ -143,8 +174,11 @@ let JobPosting = (props) => {
                                     <h5>{t('MaxPayment')}</h5>
                                     <input style={INPUTS_SHADOW_STYLES}
                                     name="maxPayment" 
-                                    {...register('maxPayment', { required: true })}
-                                    type="text" placeholder="1000" />
+                                    value={maxP}
+                                    onChange={e => setMaxP(e.target.value)} 
+                                    //{...register('maxPayment', { required: true })}
+                                    type="text" placeholder="1000"
+                                    autoComplete="off" />
                                 </div>
                             </div>
 
@@ -196,6 +230,10 @@ let JobPosting = (props) => {
             </div>
         </form>
 
+
+        <NotificationDialog type="warning" open={isOpen} onClose={() => setIsOpen(false)}>
+            {t(notificationText)}
+        </NotificationDialog>
     </div>
 ;
 }

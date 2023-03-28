@@ -17,7 +17,7 @@ const LocationsAutocomplete = ({ setCenter }) => {
         clearSuggestions,
         clearCache
     } = usePlacesAutocomplete();
-    const [locationPlaceholder, setLocationPlaceholder] = useState(t('Location'));
+    const [locationPlaceholder, setLocationPlaceholder] = useState('Location');
 
     const handleInputChange = newTextValue => setValue(newTextValue);
 
@@ -42,11 +42,13 @@ const LocationsAutocomplete = ({ setCenter }) => {
     return <AsyncSelect
         cacheOptions={true}
         loadOptions={handleLoadOptions}
-        loadingMessage={() => 'Loading...'}
+        loadingMessage={() => `${t('Loading')}...`}
         value={value}
         onInputChange={handleInputChange}
-        placeholder={locationPlaceholder}
+        placeholder={locationPlaceholder === 'Location' ? t('Location') : locationPlaceholder}
         onChange={handleSelect}
+        onFocus={() => setLocationPlaceholder('')}
+        onBlur={() => {locationPlaceholder.length === 0 && setLocationPlaceholder( t('Location') )}}
         isDisabled={!ready}
         isLoading={!ready}
         onSelectResetsInput={false}

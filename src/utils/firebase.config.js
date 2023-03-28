@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -13,4 +14,34 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+// Initialize Cloud Firestore and get a reference to the service
+export const db = getFirestore(app);
+
 export const auth = getAuth(app);
+
+export const fireCategoriesTr = async (setTrCategoriesArr) => {
+  const docRef = doc(db, "translations", "categories");
+  const docSnap = await getDoc(docRef);
+  const trCategories = docSnap.data();
+
+  setTrCategoriesArr(trCategories);
+}
+
+export const fireDescriptionsTr = async (setDescriptionsArr) => {
+  const docRef = doc(db, "translations", "descriptions");
+  const docSnap = await getDoc(docRef);
+  const trDescriptions = docSnap.data();
+
+  setDescriptionsArr(trDescriptions.translated);
+}
+
+export const fireSingleCategory = async (category, lang, setTranslatedCategory) => {
+  const docRef = doc(db, "translations", "categories");
+  const docSnap = await getDoc(docRef);
+  const trCategories = docSnap.data();
+  let index = trCategories?.input?.indexOf(category);
+
+  const trCategory = trCategories.translated[index][lang];
+
+  setTranslatedCategory(trCategory);
+}

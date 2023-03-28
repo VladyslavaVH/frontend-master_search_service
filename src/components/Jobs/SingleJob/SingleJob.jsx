@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { inlineBG } from "../../../amimations/amimations";
-import JobCard from "../JobCard";
-import PhotoCarousel from "../PhotoCarousel";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectIsMaster } from './../../../features/auth/authSlice';
+import { selectCurrentLanguage, selectIsMaster } from './../../../features/auth/authSlice';
 import { useGetJobByIdQuery, useGetJobPhotosQuery } from "../../../features/jobs/jobsApiSlice";
 import { useGetMasterJobApplyStatusQuery } from "../../../features/master/masterApiSlice";
 import { PhotoProvider, PhotoView } from 'react-photo-view';
@@ -12,10 +10,12 @@ import 'react-photo-view/dist/react-photo-view.css';
 import TimeAgo from './../../TimeAgo';
 import ApplyJob from "./ApplyJob";
 import { useTranslation } from 'react-i18next';
-
+import { fireSingleCategory } from '../../../utils/firebase.config';
 
 const SingleJob = (props) => { 
     const { t } = useTranslation();
+    const lang = useSelector(selectCurrentLanguage);
+
     const [ isOpen, setIsOpen ] = useState(false);
     const location = useLocation();
     const isMaster = useSelector(selectIsMaster);
@@ -28,14 +28,9 @@ const SingleJob = (props) => {
     const { data, isLoading } = useGetJobByIdQuery(location.state.id);
     const { id, isMasterConfirmed, firstName, lastName, isVerified, minPayment, maxPayment, currency, description, lat, lng, category, createTime } = data || {};
 
+    const [translatedCategory, setTranslatedCategory] = useState(category);
     const { data: jobApply } = useGetMasterJobApplyStatusQuery(id);
     const [addr, setAddr] = useState('');
-
-    const similarJobs = [
-        {id: 1, icon: null, clientName: 'Alexander', isClientVerified: false, category: 'Coffee', location: 'San Francisco', minPayment: 100, maxPayment: 300, postedDate: '2 days ago'},
-        {id: 2, icon: null, clientName: 'Jude', isClientVerified: true, category: 'Coffee', location: 'San Francisco', minPayment: 300, maxPayment: 500, postedDate: '2 days ago'}
-    ];
-
 
     useEffect(() => {
         if (!isLoading && (lat && lng)) {
@@ -57,6 +52,12 @@ const SingleJob = (props) => {
             }
         }
     }, [isLoading]);
+    
+    useEffect(() => {
+        if(!isLoading) {
+            fireSingleCategory(category, lang, setTranslatedCategory);
+        }
+    }, [isLoading, lang]);
 
     useEffect(() => {
         console.log(jobApply);
@@ -74,7 +75,7 @@ const SingleJob = (props) => {
                         <div className="single-page-header-inner">
                             <div className="left-side">
                                 <div className="header-details">
-                                    <h3>{category}</h3>
+                                    <h3>{translatedCategory}</h3>
                                     <h5>{t('AboutTheClient')}</h5>
                                     <ul>
                                         <li><i className="icon-feather-user"></i> {`${firstName} ${lastName}`}</li>
@@ -122,18 +123,6 @@ const SingleJob = (props) => {
                     </div>
                         
                     }
-
-                    {/* {isMaster &&
-                        <div className="single-page-section">
-                            <h3 className="margin-bottom-25">Similar Jobs</h3>
-
-                            <div className="listings-container grid-layout">
-                                {similarJobs?.map(j =>
-                                    <JobCard key={j.id}
-                                        {...j} />)}
-                            </div>
-                        </div>
-                    } */}
                 </div>
 
                 {/* <!-- Sidebar --> */}
@@ -160,7 +149,7 @@ const SingleJob = (props) => {
                                         <li>
                                             <i className="icon-material-outline-business-center"></i>
                                             <span>{t('Category')}</span>
-                                            <h5>{category}</h5>
+                                            <h5>{translatedCategory}</h5>
                                         </li>
                                         <li>
                                             <i className="icon-line-awesome-money"></i>
@@ -182,7 +171,7 @@ const SingleJob = (props) => {
                                                     : t('Master')
                                                 }
                                             </span>
-                                            <h5>Confirmed</h5>
+                                            <h5>{t('Confirmed')}</h5>
                                         </li>}
 
                                         {(jobApply?.status !== undefined) &&

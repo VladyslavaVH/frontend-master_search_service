@@ -19,6 +19,10 @@ import EmailVerification from "./MasterComponents/EmailVerification";
 import Documents from "./MasterComponents/Documents";
 import UploadDocuments from "./MasterComponents/UploadDocuments";
 import ProfileSettings from "./MasterComponents/ProfileSettings";
+import { setNewAvatar } from "../../../features/auth/authSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const schema = yup
     .object()
@@ -40,25 +44,27 @@ let Settings = (props) => {
     const { register, handleSubmit, reset, watch,
         formState: { errors },
     } = useForm({ resolver: yupResolver(schema) });
-    const [newNationality, setNationality] = useState(null);
 
     const isMaster = useSelector(selectIsMaster);
     const isAdmin = useSelector(selectIsAdmin);
     const { id, firstName, lastName, avatar, phone, email, isEmailVerified,
         masterInfo
     } = useSelector(selectCurrentUser);
+    const [avatarPhoto, setAvatarPhoto] = useState(avatar);
     const { data, isLoading } = useGetFullMasterInfoQuery(id);
     const { passportFirstSide, passportSecondSide, individual_tax_number } = data || {};
     const [documents, setDocuments] = useState([]);
-    const { tagLine, description, location, categories } = masterInfo || {};
+    const { tagLine, description, categories } = masterInfo || {};
     //const location = useLocation();
     const [changeAvatar] = useChangeAvatarMutation();
+    const dispatch = useDispatch();
 
     const profilePhotosPath = process.env.REACT_APP_PROFILE_PHOTOS_PATH;
     const mastersDocumentsPath = process.env.REACT_APP_MASTERS_DOCUMENTS_PATH;
 
     useEffect(() => {
-        if (!isLoading && documents.length < 3) {            
+        if (!isLoading && documents.length < 3) {      
+            console.log(data)      
             data.passportFirstSide && documents.push(`${mastersDocumentsPath}${passportFirstSide}`);
             data.passportSecondSide && documents.push(`${mastersDocumentsPath}${passportSecondSide}`);
             data.individual_tax_number && documents.push(`${mastersDocumentsPath}${individual_tax_number}`);
@@ -76,7 +82,7 @@ let Settings = (props) => {
             }
         });
 
-        avatarSwitcher();
+        //avatarSwitcher();
     }, []);
 
     const onAvatarChange = async ({ target }) => {
@@ -86,18 +92,19 @@ let Settings = (props) => {
 
             formData.append(target.files[0].name, target.files[0]);
 
-            await changeAvatar(formData)
-                .unwrap()
-                .then(() => window.location.reload(true));
+            const res = await changeAvatar(formData)
+                .unwrap();
+
+            dispatch(setNewAvatar(res.path));
+
+            setAvatarPhoto(res.path);
+
+            document.body.focus();
 
         } catch (error) {
             console.log(error);
         }
     };
-
-    const changeNationality = selectedNationality => {
-        console.log(selectedNationality);
-    }
 
     return <div className="row">
 
@@ -117,8 +124,8 @@ let Settings = (props) => {
                                 <div className="col-auto">
 
                                 <div className="avatar-wrapper" data-tippy-placement="bottom" title="Change Avatar">
-                                    <img className="profile-pic" src={`${profilePhotosPath}${avatar}`} alt="" />
-                                    <div className="upload-button" style={{ width: '100%' }}>
+                                    <img className="profile-pic" src={`${profilePhotosPath}${avatarPhoto}?`+ new Date().getTime()} alt="" />
+                                    <div className="upload-button">
                                         <input name="avatarPhoto"
                                             {...register('avatarPhoto')}
                                             className="file-upload" type="file" accept="image/*" onChange={onAvatarChange} />
@@ -187,29 +194,18 @@ let Settings = (props) => {
                     </div>
                 </div>
 
-                {
-                    isMaster 
-                    ? <ProfileSettings categories={categories} tagLine={tagLine} description={description} />
-                    : null
-                }
-
-                {/* {!!+isMaster && !(!!+isEmailVerified)
-                    ? <EmailVerification email={email} />
-                    : null
-                } */}
-
                 {!!+isMaster
                     ? <div className="col-xl-12">
-                        <div className="dashboard-box">
+                        <div className="dashboard-box" style={{ boxShadow: documents.length === 0 ? '0 2px 8px rgba(255,0,0,0.2)' : '' }}>
                             <div className="headline">
-                                <h3><i className="icon-material-outline-assignment"></i> {t("MyDocuments")}</h3>
+                                <h3><i style={{ color: documents.length === 0 ? 'red' : '' }} className="icon-material-outline-assignment"></i> {t("MyDocuments")}</h3>
                             </div>
 
                             <div className="content with-padding padding-bottom-0">
                                 <div className="row">
                                 {!isLoading && documents.length > 0
                                     ? <Documents documents={documents} />
-                                    : <UploadDocuments id={id} />
+                                    : <UploadDocuments setDocuments={setDocuments} />
                                 }
                                 </div>
                             </div>
@@ -218,7 +214,18 @@ let Settings = (props) => {
                     : null
                 }
 
-                
+                {
+                    isMaster 
+                    ? <ProfileSettings categories={categories} tagLine={tagLine} description={description} />
+                    : null
+                }
+
+                {!!+isMaster && !(!!+isEmailVerified)
+                    ? <EmailVerification email={email} />
+                    : null
+                }
+
+
             </>}
 
         {false && <PasswordChange />}

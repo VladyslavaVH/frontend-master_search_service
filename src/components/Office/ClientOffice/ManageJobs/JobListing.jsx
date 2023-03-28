@@ -6,13 +6,17 @@ import { useDeleteJobMutation } from "../../../../features/jobs/jobsApiSlice";
 import Modal from './../../../HeaderContainer/Popup/Modal';
 import QrCodeGenerator from "../../../Jobs/QrCode/QrCodeGenerator";
 import { useTranslation } from 'react-i18next';
+import Success from './../../Settings/Success';
 
 const JobListing = (props) => {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
+    const [isDelete, setIsDelete] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [deletedJob, setDeletedJob] = useState(false);
     const [translatedStatus, setTranslatedStatus] = useState('');
     const [modalTab] = useState(t('ConfirmTheWorkDone'));
-    const { id, category, qrCode, createTime, status, candidates } = props;
+    const { id, defaultCategoryName, category, qrCode, createTime, status, candidates } = props;
     const [confirmedMaster] = useState(candidates.find(c => (!!+c.isConfirmed) === true));
     const [deleteJob] = useDeleteJobMutation();
 
@@ -46,6 +50,14 @@ const JobListing = (props) => {
         window.location.reload(true);
     }
 
+    useEffect(() => {
+        if (isDelete) {
+            removeJob();
+            setIsSuccess(true);
+            setIsDelete(false);
+        }
+    }, [isDelete]);
+
     return <li>
         <div className="job-listing">
 
@@ -53,8 +65,8 @@ const JobListing = (props) => {
 
                 <div className="job-listing-description">
                     <h3 className="job-listing-title">
-                        <NavLink state={{ id: id, name: t('Job'), page: t('Job') }}
-                            to={`/client-office/manage-jobs/job/${category}`}>
+                        <NavLink state={{ id: id, name: 'Job', page: 'Job' }}
+                            to={`/client-office/manage-jobs/job/${defaultCategoryName.replaceAll('/', '-')}`}>
                             {category}
                         </NavLink> 
                         {!(confirmedMaster && candidates?.length > 0) && <span className={`dashboard-status-button ${statusColor}`}>{translatedStatus}</span>}
@@ -104,7 +116,43 @@ const JobListing = (props) => {
                 to={`/client-office/manage-jobs/edit/job/${category}`}
                 className="button gray ripple-effect ico" title="Edit" data-tippy-placement="top"><i className="icon-feather-edit"></i></NavLink>}
 
-            <a onClick={removeJob} className="button gray ripple-effect ico" title="Remove" data-tippy-placement="top"><i className="icon-feather-trash-2"></i></a>
+            <a onClick={() => setIsOpen(true)} className="button gray ripple-effect ico" title="Remove" data-tippy-placement="top"><i className="icon-feather-trash-2"></i></a>
+            
+            <Modal open={isOpen} onClose={() => setIsOpen(false)} tabs={[]} >
+                <div className="container">
+                    <div className="col margin-bottom-30 margin-top-20">
+                        <div className="">
+                            <div className="welcome-text">
+                                <h3><span>{t('DeleteCategory')} <strong style={{color: '#2a41e8'}} className='color'>{category}</strong>?</span></h3>
+                            </div>
+                            <div className='row'>
+                                <div className="col-xl-6 col-md-6">
+                                    <button onClick={() => {
+                                        setIsDelete(true);
+                                        setIsOpen(false);
+                                    }} className="button big full-width ripple-effect margin-top-10" type="button">
+                                        {t('Yes')} 
+                                    </button>
+                                </div>
+                                <div className="col-xl-6 col-md-6">
+                                    <button onClick={() => {
+                                        setIsOpen(false);
+                                    }} className="button big full-width ripple-effect margin-top-10" type="button">
+                                        {t('No')}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal tabs={[t('Success')]} open={isSuccess}>
+                <Success mainText={t('YourDataHasBeenSuccessfullyUpdated')} onClose={() => setIsSuccess(false)} />
+            </Modal>
+            
+            
+            
             {/* {candidates?.length > 0 && confirmedMaster
                 ? <>
                     <a onClick={() => setIsOpen(true)} className="button gray ripple-effect ico" title="QrCode" data-tippy-placement="top"><i className="icon-line-awesome-qrcode"></i></a>

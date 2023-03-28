@@ -5,15 +5,15 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const Category = (props) => {
-    const { id, name, description, count } = props;
+    const { id, name, description, count, defaultName } = props;
     const isAuth = useSelector(selectIsAuth);
     const isMaster = useSelector(selectIsMaster);
     const navigate = useNavigate();
 
     const onClick = () => {
         if (isAuth && isMaster) {
-            navigate(`/jobs/${name}`, { state: {
-                categoryId: id, category: name
+            navigate(`/jobs/${defaultName.replaceAll('/', '-')}`, { state: {
+                categoryId: id, category: defaultName
             }});
         }
     };

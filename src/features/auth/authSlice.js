@@ -20,7 +20,7 @@ const authSlice = createSlice({
         role: null,
         persist: false,
         isMaster: false,
-        isAdmin: false,
+        isAdmin: undefined,
         unreadNotifications: [],
         unreadMessages: []
     },
@@ -78,10 +78,13 @@ const authSlice = createSlice({
         setDefaultLanguage: (state, { payload }) => {
             state.defaultLanguage = payload;
         },
+        setNewAvatar: (state, { payload }) => {
+            state.user.avatar = payload;
+        },
     }
 });
 
-export const { setAuth, logOut, setPersist, setLanguage, setDefaultLanguage } = authSlice.actions;
+export const { setAuth, logOut, setPersist, setLanguage, setDefaultLanguage, setNewAvatar } = authSlice.actions;
 
 export default authSlice.reducer;
 
@@ -94,7 +97,8 @@ export const selectCurrentSocket = (state) => state.auth.socket;
 export const selectPersist = (state) => state.auth.persist;
 
 export const selectIsAuth = (state) => state.auth.isAuth;
-export const selectIsAdmin = (state) => state.auth.isAdmin;
-export const selectIsMaster = (state) => state.auth.isMaster;
+export const selectIsAdmin = (state) => state.auth.role === ROLE.ADMIN;
+export const selectIsMaster = (state) => state.auth.role === ROLE.MASTER;
 
 export const selectDefaultLanguage = (state) => state.auth.defaultLanguage;
+export const selectCurrentLanguage = (state) => state.auth.lang;

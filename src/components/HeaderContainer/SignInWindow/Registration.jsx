@@ -10,6 +10,7 @@ import { PHONE_INPUT_STYLE, PHONE_INPUT_BUTTON_STYLE, PHONE_INPUT_CONTAINER_STYL
 
 import { ReactComponent as MySpinner } from '../../.././amimations/mySpinner.svg';
 import NotificationDialog from '../Popup/NotificationDialog';
+import { useCheckPhoneMutation } from '../../../features/details/detailsApiSlice';
 
 const Registration = ({ onClose }) => {
     const { t } = useTranslation();
@@ -18,10 +19,14 @@ const Registration = ({ onClose }) => {
     const [loading, setLoading] = useState(false);//? false
     const [isNumberVer, setIsNumberVer] = useState(false);//? set false
     const [phone, setPhone] = useState(null);//? set null
+    const [checkPhone] = useCheckPhoneMutation();
     const [isClientChecked, setIsClientChecked] = useState(true);
 
-    const [isOpen, setIsOpen] = useState(false);
-    const [notificationText, setNotificationText] = useState('');
+    const [isErrorOpen, setIsErrorOpen] = useState(false);
+    const [errorText, setNotificationText] = useState('');
+
+    const [isWarningOpen, setIsWarningOpen] = useState(false);
+    const [warningText, setWarningText] = useState('');
 
     // useEffect(() => {
     //     if (notificationText.length > 0) {
@@ -29,7 +34,7 @@ const Registration = ({ onClose }) => {
     //     }
     // }, [notificationText]);
 
-    function onCaptchVerify() {
+    function onCaptchaVerify() {
         if (!window.recaptchaVerifier) {
           window.recaptchaVerifier = new RecaptchaVerifier(
             "recaptcha-container",
@@ -48,8 +53,7 @@ const Registration = ({ onClose }) => {
     const sendOTP = (phoneNumber) => {
         console.log("sendOTP", phoneNumber);
 
-        setLoading(true);
-        onCaptchVerify();
+        onCaptchaVerify();
 
         const appVerifier = window.recaptchaVerifier;        
 
@@ -64,7 +68,7 @@ const Registration = ({ onClose }) => {
             //alert(error);//? modal dialog about error
             console.log(error.message);
             setNotificationText(t('InvalidPhoneNumberFormat'));
-            setIsOpen(true);
+            setIsErrorOpen(true);
             setLoading(false);
         });
     }
@@ -72,13 +76,37 @@ const Registration = ({ onClose }) => {
     const onSubmit = async (data) => { 
         try {
 
-            if (data.password !== data.passwordRepeat) {
-                throw new Error(t('InvalidPassword'));
+            setLoading(true);
+
+            try {
+                if (data.password !== data.passwordRepeat) {
+                    throw new Error(t('InvalidTwicePasswordMessage'));
+                }
+
+                if (data.password.length < 8 || data.password.length > 20) {
+                    throw new Error(t('InvalidPassword'));
+                }
+            } catch (error) {
+                setWarningText(error.message);
+                setIsWarningOpen(true);
+                setLoading(false);
+                console.error(error);
+                return;
             }
 
-            const formatPhone = "+" + phone;
+            let formatPhone = phone;
+            if (!phone.startsWith('+')) {
+                formatPhone = "+" + phone;
+            }
             setPhone(formatPhone);   
 
+            const isPhoneExists = await checkPhone(formatPhone).unwrap();
+
+            if (isPhoneExists) {
+                throw new Error(t('PhoneExistsMessage'));
+            }
+
+            return;
             let newData = {
                 ...data,
                 phone: formatPhone
@@ -89,7 +117,8 @@ const Registration = ({ onClose }) => {
             sendOTP(formatPhone);
         } catch (error) {
             setNotificationText(error.message);
-            setIsOpen(true);
+            setIsErrorOpen(true);
+            setLoading(false);
             console.error(error);
         }
     };
@@ -160,12 +189,16 @@ const Registration = ({ onClose }) => {
 
                 <div className="input-with-icon-left" title="Should be at least 8 characters long" data-tippy-placement="bottom">
                     <i className="icon-material-outline-lock"></i>
-                    <input type="password" {...register('password', { required: true })} pattern={'^[0-9A-Za-z-_\.`~!@#$%^&*()+=\?]{8,20}$'} className="input-text with-border" name="password" id="password-register" placeholder={t("Password")} required />
+                    <input type="password" {...register('password', { required: true })} 
+                    // pattern={'^[0-9A-Za-z-_\.`~!@#$%^&*()+=\?]{8,20}$'} 
+                    className="input-text with-border" name="password" id="password-register" placeholder={t("Password")} required />
                 </div>
 
                 <div className="input-with-icon-left" title="Should be at least 8 characters long">
                     <i className="icon-material-outline-lock"></i>
-                    <input type="password" {...register('passwordRepeat', { required: true })} pattern={'^[0-9A-Za-z-_\.`~!@#$%^&*()+=\?]{8,20}$'} className="input-text with-border" name="passwordRepeat" id="password-repeat-register" placeholder={t("RepeatPassword")} required />
+                    <input type="password" {...register('passwordRepeat', { required: true })} 
+                    // pattern={'^[0-9A-Za-z-_\.`~!@#$%^&*()+=\?]{8,20}$'} 
+                    className="input-text with-border" name="passwordRepeat" id="password-repeat-register" placeholder={t("RepeatPassword")} required />
                 </div>
             </form>
 
@@ -190,8 +223,12 @@ const Registration = ({ onClose }) => {
         <div className="margin-top-40"
             id="recaptcha-container"></div>
 
-        <NotificationDialog open={isOpen} onClose={() => setIsOpen(false)}>
-            {notificationText}
+        <NotificationDialog open={isErrorOpen} onClose={() => setIsErrorOpen(false)}>
+            {errorText}
+        </NotificationDialog>
+
+        <NotificationDialog type='warning' open={isWarningOpen} onClose={() => setIsWarningOpen(false)}>
+            {warningText}
         </NotificationDialog>
     </div>;
 };

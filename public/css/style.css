@@ -6234,6 +6234,7 @@ span.bookmark-icon {
 	left: -18px;
 	font-size: 15px;
 	transform: translateY(-10%);
+	margin-top: 8px !important;
 }
 
 .numbered.color ol > li::before {
@@ -15739,7 +15740,7 @@ ul.dashboard-box-list > li:hover {
 }
 
 .avatar-wrapper .file-upload {
-	opacity: 0;
+	opacity: 0 !important;
 	/* pointer-events: none; */
 	position: absolute;
 	width: inherit;

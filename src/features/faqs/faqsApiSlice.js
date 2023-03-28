@@ -4,6 +4,7 @@ export const faqsApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getFaqs: builder.query({
             query: () => '/faqs',
+            providesTags: ['faqs'],
             keepUnusedDataFor: 5
         }),
     })
