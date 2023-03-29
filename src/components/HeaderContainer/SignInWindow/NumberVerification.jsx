@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import Verified from "./Verified";
 import { ReactComponent as MySpinner } from '../../.././amimations/mySpinner.svg';
@@ -21,6 +21,8 @@ const INPUT_STYLES = {
 
 const NumberVerification = ({ regData, phone, onClose, resendOTP }) => {
     const { t } = useTranslation();
+    const inputN0El = useRef(null);
+
     const [otp, setOTP] = useState(0);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -30,7 +32,13 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP }) => {
     const [user, setUser] = useState(null);
     const { register, handleSubmit } = useForm();
 
+    useEffect(() => {
+        inputN0El.current.focus();
+    }, []);
+
     const onSubmit = (data) => {
+        debugger;
+        console.log(data);
         let code = '';
         for (const n in data) {
             code += data[n];
@@ -95,27 +103,28 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP }) => {
             <form onKeyUp={focusNext} style={{ display: 'flex', justifyContent: 'space-evenly' }} onSubmit={handleSubmit(onSubmit)} id="phone-verification-form">
                 <input type="text" maxLength={1} {...register('0', { required: true })}
                     className="input-text with-border" style={INPUT_STYLES}
-                    name="0" placeholder="_" required />
+                    name="0" placeholder="_" required autoComplete="off"
+                    ref={inputN0El} />
     
                 <input type="text" maxLength={1} {...register('1', { required: true })}
                     className="input-text with-border" style={INPUT_STYLES}
-                    name="1" placeholder="_" required />
+                    name="1" placeholder="_" required autoComplete="off" />
     
                 <input type="text" maxLength={1} {...register('2', { required: true })}
                     className="input-text with-border" style={INPUT_STYLES}
-                    name="2" placeholder="_" required />
+                    name="2" placeholder="_" required autoComplete="off" />
     
                 <input type="text" maxLength={1} {...register('3', { required: true })}
                     className="input-text with-border" style={INPUT_STYLES}
-                    name="3" placeholder="_" required />
+                    name="3" placeholder="_" required autoComplete="off" />
     
                 <input type="text" maxLength={1} {...register('4', { required: true })}
                     className="input-text with-border" style={INPUT_STYLES}
-                    name="4" placeholder="_" required />
+                    name="4" placeholder="_" required autoComplete="off" />
     
                 <input type="text" maxLength={1} {...register('5', { required: true })}
                     className="input-text with-border" style={INPUT_STYLES}
-                    name="5" placeholder="_" required />
+                    name="5" placeholder="_" required autoComplete="off" />
             </form>
     
             <div style={{ display: 'flex', justifyContent: 'center' }}>

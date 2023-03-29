@@ -12,7 +12,8 @@ export const jobsApiSlice = apiSlice.injectEndpoints({
 
                 return `/jobs?page=${page}${(categories && categories.length > 0 ? categoriesQuery : '')}${title ? `&title=${title}` : ''}${bounds ? `&startLat=${bounds.lats.startLat}&endLat=${bounds.lats.endLat}&startLng=${bounds.lngs.startLng}&endLng=${bounds.lngs.endLng}` : ''}${payment ? `&minPayment=${payment.minPayment}&maxPayment=${payment.maxPayment}` : '' }`
             },
-            keepUnusedDataFor: 1
+            keepUnusedDataFor: 1,
+            providesTags: ['job']
         }),
         getJobListingByClient: builder.query({
             query: () => `/client/job/listing`,
@@ -21,11 +22,13 @@ export const jobsApiSlice = apiSlice.injectEndpoints({
         }),        
         getJobById: builder.query({
             query: id => `/job?jobId=${id}`,
-            keepUnusedDataFor: 5
+            keepUnusedDataFor: 5,
+            providesTags: ['job']
         }),        
         getJobPhotos: builder.query({
             query: id => `/job/photos?jobId=${id}`,
-            keepUnusedDataFor: 5
+            keepUnusedDataFor: 5,
+            invalidatesTags: ['job', 'files']
         }),  
         postJob: builder.mutation({
             query: jobData => ({
@@ -47,21 +50,24 @@ export const jobsApiSlice = apiSlice.injectEndpoints({
             query: id => ({
                 url: `/job?jobId=${id}`,
                 method: 'DELETE',
-            })
+            }), 
+            invalidatesTags: ['files', 'job']
         }),    
         deleteCandidate: builder.mutation({
             query: ({jobId, masterId}) => ({
                 url: `/client/job/candidate?jobId=${jobId}`,
                 method: 'DELETE',
                 body: {masterId}
-            })
+            }),
+            invalidatesTags: ['job']
         }),    
         confirmCandidate: builder.mutation({
             query: ({jobId, masterId}) => ({
                 url: `/client/job/candidate?jobId=${jobId}`,
                 method: 'PUT',
                 body: {masterId}
-            })
+            }),
+            invalidatesTags: ['job']
         }),    
     })
 });

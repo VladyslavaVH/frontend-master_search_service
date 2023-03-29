@@ -17,7 +17,7 @@ const JobListItem = (props) => {
     const isAuth = useSelector(selectIsAuth); 
     const isMaster = useSelector(selectIsMaster);
     const { minPayment, maxPayment, currency,
-        id, isVerified, clientName, lat, lng, category, createTime,
+        id, isVerified, clientName, lat, lng, category, createTime, days,
          isHomePage } = props;
     const [cityName, setCityName] = useState('');
     const { data:permission } = useGetPermissionCheckQuery();
@@ -90,14 +90,14 @@ const JobListItem = (props) => {
                         {/* <li><i className="icon-material-outline-business-center"></i> {category}</li> */}
                         <li><i className="icon-line-awesome-money"></i>{minPayment}-{maxPayment} {currency}</li>
                         <li><i className="icon-material-outline-access-time"></i> 
-                        {/* <DisplayTime days={days} createTime={createTime} /> */}
-                        <TimeAgo timestamp={createTime} />
+                        <DisplayTime days={days} createTime={createTime} />
+                        {/* <TimeAgo timestamp={createTime} /> */}
                         </li>
                     </ul>
                 </div>
             </div>
 
-            {isHomePage &&
+            {isHomePage && isMaster &&
             <>
                 <a onClick={applyButtonClickHandler} className="popup-with-zoom-anim log-in-button" style={{ cursor: 'pointer' }}>
                     <span className="list-apply-button ripple-effect">{t('ApplyNow')}</span>

@@ -11,6 +11,7 @@ import TimeAgo from './../../TimeAgo';
 import ApplyJob from "./ApplyJob";
 import { useTranslation } from 'react-i18next';
 import { fireSingleCategory } from '../../../utils/firebase.config';
+import DisplayTime from './../DisplayTime';
 
 const SingleJob = (props) => { 
     const { t } = useTranslation();
@@ -26,7 +27,7 @@ const SingleJob = (props) => {
 
     const { data: photos } = useGetJobPhotosQuery(location.state.id);
     const { data, isLoading } = useGetJobByIdQuery(location.state.id);
-    const { id, isMasterConfirmed, firstName, lastName, isVerified, minPayment, maxPayment, currency, description, lat, lng, category, createTime } = data || {};
+    const { id, isMasterConfirmed, firstName, lastName, isVerified, minPayment, maxPayment, currency, description, lat, lng, category, createTime, days } = data || {};
 
     const [translatedCategory, setTranslatedCategory] = useState(category);
     const { data: jobApply } = useGetMasterJobApplyStatusQuery(id);
@@ -159,7 +160,8 @@ const SingleJob = (props) => {
                                         <li>
                                             <i className="icon-material-outline-access-time"></i>
                                             <span>{t('DatePosted')}</span>
-                                            <h5><TimeAgo timestamp={createTime} /></h5>
+                                            {/* <h5><TimeAgo timestamp={createTime} /></h5> */}
+                                            <h5><DisplayTime days={days} createTime={createTime} /></h5>
                                         </li>
                                         {(!!+isMasterConfirmed) &&
                                         <li>

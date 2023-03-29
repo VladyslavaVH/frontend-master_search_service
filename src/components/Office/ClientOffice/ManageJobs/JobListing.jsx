@@ -7,6 +7,7 @@ import Modal from './../../../HeaderContainer/Popup/Modal';
 import QrCodeGenerator from "../../../Jobs/QrCode/QrCodeGenerator";
 import { useTranslation } from 'react-i18next';
 import Success from './../../Settings/Success';
+import DisplayTime from "../../../Jobs/DisplayTime";
 
 const JobListing = (props) => {
     const { t } = useTranslation();
@@ -47,7 +48,7 @@ const JobListing = (props) => {
 
     const removeJob = async () => {
         await deleteJob(id).unwrap(); 
-        window.location.reload(true);
+        //window.location.reload(true);
     }
 
     useEffect(() => {
@@ -74,7 +75,10 @@ const JobListing = (props) => {
 
                     <div className="job-listing-footer">
                         <ul>
-                            <li><i className="icon-material-outline-date-range"></i>{t('Posted')} <TimeAgo timestamp={createTime} /></li>
+                            <li><i className="icon-material-outline-date-range"></i>{t('Posted')} 
+                                {/* <TimeAgo timestamp={createTime} /> */}
+                                <DisplayTime createTime={createTime} />
+                            </li>
                             <li><i className="icon-material-outline-date-range"></i><ExpiringOn timestamp={createTime} /></li>
                         </ul>
                     </div>

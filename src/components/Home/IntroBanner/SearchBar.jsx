@@ -98,7 +98,7 @@ const SearchBar = ({isMapApiLoaded}) => {
                 {/* <!-- Search Field --> */}
                 <div className="intro-search-field">
                     <label htmlFor="intro-keywords" className="field-title ripple-effect">{t('WhatJobYouWant')}</label>
-                    <input id="intro-keywords" type="text" placeholder={t('Category')} onChange={(e) => setJob(e.target.value)} />
+                    <input id="intro-keywords" type="text" placeholder={t('Category')} onChange={(e) => setJob(e.target.value)} autoComplete="off" />
                     <ul id="intro-keywords-dropdown" className="autocomplete-dropdown-container"></ul>
                 </div>
 

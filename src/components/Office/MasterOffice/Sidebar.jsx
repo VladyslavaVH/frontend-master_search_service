@@ -72,7 +72,7 @@ let Sidebar = (props) => {
                             </NavLink>
                         </li>}
                         <li className={!isOpen && location.pathname.includes('statistics') ? 'active' : ''}>
-                            <NavLink state={{ name: 'Howdy', page: 'Statistics', span: 'Greetings'}}
+                            <NavLink state={{ name: 'Statistics', page: 'Statistics' }}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/master-office/statistics'>
                                 <i className="icon-material-outline-dashboard"></i>

@@ -29,12 +29,12 @@ let Titlebar = (props) => {
 					<li onClick={() => navigate('/')}><a>{t('Home')}</a></li>
 					<li onClick={() => {
 						if (isMaster) {
-							navigate(`/master-office/statistics`, { state: {
-								name: 'Howdy', page: 'Statistics', span: 'Greetings'
+							navigate(`/master-office`, { state: {
+								name: 'Howdy', span: 'Greetings'
 							} });
 						} else {
-							navigate(`/client-office/manage-jobs`, { state: {
-								name: 'ManageJobs', page: 'ManageJobs'
+							navigate(`/client-office`, { state: {
+								name: 'Howdy', span: 'Greetings'
 							} });
 						}
 					}}>{t('Office')}</li>
@@ -46,7 +46,7 @@ let Titlebar = (props) => {
 						} });
 					}
 				}}>{t('AdminPanel')}</li>}
-				<li>{props.page === 'Editing' ? `FAQs ${t(props.page)}` : t(props.page)}</li>
+				{props.page && <li>{props.page === 'Editing' ? `FAQs ${t(props.page)}` : t(props.page)}</li>}
 				{/* <li>{props.page}</li> */}
 			</ul>
 		</nav>

@@ -6209,7 +6209,8 @@ span.bookmark-icon {
 }
 
 .numbered ol li {
-	display: inline-block;
+	display: flex;
+	align-items: center;
 	padding: 6px 0;
 	width: 100%;
 }

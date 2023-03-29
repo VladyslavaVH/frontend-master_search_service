@@ -216,7 +216,10 @@ i18n
           Yes: 'Yes',
           No: 'No',
           CreateNewFAQ: 'Create new FAQ',
-          NotValidPaymentData: 'Not valid payment data'
+          NotValidPaymentData: 'Not valid payment data',
+          hrAgo: 'hours ago',
+          minAgo: 'minutes ago',
+          now: 'now',
         }
     },
     uk: {
@@ -419,6 +422,9 @@ i18n
           No: 'Ні',
           CreateNewFAQ: 'Створити новий FAQ',
           NotValidPaymentData: 'Недійсні платіжні дані',
+          hrAgo: 'години тому',
+          minAgo: 'хвилин тому',
+          now: 'зараз',
         }
       },
       cs: {
@@ -475,7 +481,7 @@ i18n
           Categories: 'Tsategoris',
           RecentJobs: 'Nejnovější aplikace',
           BrowseAllJobs: 'Zobrazit všechny aplikace',
-          daysAgo: 'před pár dny',
+          daysAgo: 'dny',
           OneDayAgo: 'před 1 dnem',
           ApplyNow: 'Odpověz teď',
           ApplyForAJob: 'Odpovězte na žádost',
@@ -621,6 +627,9 @@ i18n
           No: 'Ne',
           CreateNewFAQ: 'Vytvořit nové FAQ',
           NotValidPaymentData: 'NotValidPaymentData',
+          hrAgo: 'hodinami',
+          minAgo: 'minutami',
+          now: 'Nyní',
         }
       },
     }

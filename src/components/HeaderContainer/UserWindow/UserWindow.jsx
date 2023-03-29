@@ -28,12 +28,11 @@ const UserWindow = (props) => {
             navigate('/admin-panel/statistics', { replace: true, state: { name: 'Howdy', page: 'Statistics' } });
         } else {
             if (isMaster) {
-                navigate(`/master-office/statistics`, { replace: true, state: { name: 'Howdy', page: 'Statistics', span: 'Greetings' } });
+                navigate(`/master-office`, { replace: true, state: { name: 'Howdy', span: 'Greetings' } });
             } else {
-                navigate(`/client-office/manage-jobs`, { replace: true, state: { name: 'ManageJobs', page: 'ManageJobs' } });
+                navigate(`/client-office`, { replace: true, state: { name: 'Howdy', span: 'Greetings' } });
             }
-        }
-        
+        }        
         
         setFullName(`${firstName} ${lastName}`);
 
@@ -95,7 +94,7 @@ const UserWindow = (props) => {
 
             <ul className="user-menu-small-nav">
                 {isMaster && <li>
-                    <NavLink state={{ name: 'Howdy', page: 'Statistics', span: 'Greetings' }}
+                    <NavLink state={{ name: 'Statistics', page: 'Statistics' }}
                         to={`/master-office/statistics`}>
                         <i className="icon-material-outline-dashboard"></i> 
                         {t('Statistics')}
@@ -104,14 +103,14 @@ const UserWindow = (props) => {
                 {!isAdmin 
                 ? <li>
                     {isMaster
-                    ?  <NavLink state={{ name: 'Howdy', page: 'Statistics', span: 'Greetings' }}
-                            to='/master-office/statistics' className={({ isActive }) => { return isActive ? 'current' : '' }}>
+                    ?  <NavLink state={{ name: 'Howdy', span: 'Greetings' }}
+                            to='/master-office' className={({ isActive }) => { return isActive ? 'current' : '' }}>
                             <i className="icon-feather-user"></i> 
                             { t('Office') }
                         </NavLink> 
                     
-                    : <NavLink state={{ name: 'ManageJobs', page: 'ManageJobs' }} className={({ isActive }) => { return isActive ? 'current' : '' }}
-                            to='/client-office/manage-jobs'>
+                    : <NavLink state={{ name: 'Howdy', span: 'Greetings' }} className={({ isActive }) => { return isActive ? 'current' : '' }}
+                            to='/client-office'>
                             <i className="icon-feather-user"></i> 
                             { t('Office') }
                         </NavLink>

@@ -23,14 +23,13 @@ const schema = yup
       // name: yup.string().required(),
       // age: yup.number().required(),
       photos: yup.mixed()
-          .test("fileSize", "File Size is too large", (value) => {
-              return value.length && value[0].size <= 5242880;
-          })
-          .test("fileType", "Unsupported File Format", (value) => {
-              return value.length && ["image/jpeg", "image/png", "image/jpg"].includes(value[0].type)
-          })
-  })
-  .required();
+        //   .test("fileSize", "File Size is too large", (value) => {
+        //       return value.length && value[0].size <= 5242880;
+        //   })
+        //   .test("fileType", "Unsupported File Format", (value) => {
+        //       return value.length && ["image/jpeg", "image/png", "image/jpg"].includes(value[0].type)
+        //   })
+  });
 
 let JobPosting = (props) => {
     const { t } = useTranslation();
@@ -76,9 +75,12 @@ let JobPosting = (props) => {
             }
 
             let formData = new FormData();
-            Object.keys(data?.photos).forEach(key => 
-                formData.append(data?.photos?.item(key).name, data?.photos?.item(key))
-            );
+            if (data.photos) {
+                Object.keys(data.photos).forEach(key => 
+                    formData.append(data?.photos?.item(key).name, data?.photos?.item(key))
+                );
+            }
+            
 
             //let minPayment = parseInt(data?.minPayment);
             //let maxPayment = parseInt(data?.maxPayment);
@@ -92,7 +94,7 @@ let JobPosting = (props) => {
                 currencyFK,
                 ...jobLocation
             };
-            delete jobPostData.photos;
+            data.photos && delete jobPostData.photos;
 
             Object.keys(jobPostData).forEach(key => 
                 formData.append(key, jobPostData[key])
@@ -107,7 +109,7 @@ let JobPosting = (props) => {
             navigate('/client-office/manage-jobs', 
             { 
                 replace: true,
-                state: {name: t('ManageJobs'), page: t('ManageJobs')} 
+                state: {name: 'ManageJobs', page: 'ManageJobs'} 
             },
             );
             //console.log('navigate');
@@ -207,12 +209,19 @@ let JobPosting = (props) => {
                                                 <span className="uploadButton-file-name">
                                                     {
                                                         errors.photos
-                                                            ? errors.photos.messages
+                                                            ? errors.photos.message
                                                             : t('ImagesThatMightBeHelpfulInDescribingYourJob')
                                                     }
                                                 </span>
                                             </div>
-                                            : <strong>{watch('photos')[0].name}</strong>
+                                            : <div className="numbered color margin-top-28">
+                                                 <ol>
+                                                    {
+                                                        Array.from(watch('photos'))?.map(p => <li>{p.name}</li>)
+                                                    }
+                                                    {/* <strong>{watch('photos')[0].name}</strong> */}
+                                                </ol>
+                                            </div>
                                     }
                                 </div>
                             </div>
