@@ -192,7 +192,7 @@ const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, 
         const markers = jobsArr?.map(({id, category, clientName, lat, lng }) => {
             let index = trCategoriesArr?.input?.indexOf(category);
             return createMarker(id, 
-                trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : category, 
+                (trCategoriesArr?.translated && trCategoriesArr.translated[index]) ? trCategoriesArr.translated[index][lang] : category, 
                 clientName, { lat, lng }, map, infoWindow);
         });
         prevMarkersRef.current = markers;

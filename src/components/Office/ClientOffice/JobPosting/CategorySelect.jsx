@@ -26,7 +26,7 @@ const CategorySelect = ({ setCategoryFK }) => {
             let tmp = optionCategories.map(c => {
                 let index = trCategoriesArr?.input?.indexOf(c.category);
 
-                return { value: c.id, label: trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : c.category }
+                return { value: c.id, label: (trCategoriesArr?.translated && trCategoriesArr.translated[index]) ? trCategoriesArr.translated[index][lang] : c.category }
             });
 
             setOptionCategories(tmp);

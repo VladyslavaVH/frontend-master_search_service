@@ -60,7 +60,7 @@ const CategoriesList = ({ setMasterCategories, categories }) => {
             {newCategoriesArr?.map(c => {
                 let index = trCategoriesArr?.input?.indexOf(c.category);
                 if (c?.desc !== 'delete' ) {
-                    return <span key={c?.id} className="keyword"><span onClick={() => removeKeyword(c?.id)} className="keyword-remove"></span><span className="keyword-text">{trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : c?.category}</span></span>
+                    return <span key={c?.id} className="keyword"><span onClick={() => removeKeyword(c?.id)} className="keyword-remove"></span><span className="keyword-text">{(trCategoriesArr?.translated && trCategoriesArr.translated[index]) ? trCategoriesArr.translated[index][lang] : c?.category}</span></span>
                 }                   
             })}
         </div>

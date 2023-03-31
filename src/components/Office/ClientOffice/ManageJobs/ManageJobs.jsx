@@ -37,7 +37,7 @@ let ManageJobs = (props) => {
                             let index = trCategoriesArr?.input?.indexOf(j.category);
                             
                             return <JobListing key={j.id} {...j}
-                            category={trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : j.category}
+                            category={(trCategoriesArr?.translated && trCategoriesArr.translated[index]) ? trCategoriesArr.translated[index][lang] : j.category}
                             defaultCategoryName={j.category}
                             candidates={data?.candidates?.filter(c => c.jobFK === j.id)} />
                         })}

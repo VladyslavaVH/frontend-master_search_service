@@ -47,7 +47,7 @@ const Categories = (props) => {
                                 }
 
                                 return <Category key={c.id} {...c} 
-                                name={trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : c.name} defaultName={c.name}
+                                name={(trCategoriesArr?.translated && trCategoriesArr.translated[index]) ? trCategoriesArr.translated[index][lang] : c.name} defaultName={c.name}
                                 description={desc} />
                             })
                         }
