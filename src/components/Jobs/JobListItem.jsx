@@ -6,6 +6,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import DisplayTime from './DisplayTime';
 import TimeAgo from "../TimeAgo";
 import { useTranslation } from "react-i18next";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { useGetPermissionCheckQuery } from "../../features/master/masterApiSlice";
 import NotificationDialog from "../HeaderContainer/Popup/NotificationDialog";
 
@@ -20,7 +21,7 @@ const JobListItem = (props) => {
         id, isVerified, clientName, lat, lng, category, createTime, days,
          isHomePage } = props;
     const [cityName, setCityName] = useState('');
-    const { data:permission } = useGetPermissionCheckQuery();
+    const { data:permission } = useGetPermissionCheckQuery(!isAuth && skipToken);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
     useEffect(() => {

@@ -18,7 +18,6 @@ const DisplayTime = ({  createTime }) => {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         setDays(diffDays);
-        console.log(diffDays);
     }, [createTime]);
 
     return <>

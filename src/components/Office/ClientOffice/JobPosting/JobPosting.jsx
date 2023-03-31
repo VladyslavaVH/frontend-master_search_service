@@ -67,7 +67,7 @@ let JobPosting = (props) => {
 
     const onSubmit = async data => {
         try {
-            if (minP == 0 || !minP || !maxP || maxP == 0 || (minP > maxP)) {
+            if (minP == 0 || !minP || !maxP || maxP == 0 || (minP > maxP) || isNaN(minP) || isNaN(maxP)) {
                 setMinP(maxP - 1);
                 setNotificationText('NotValidPaymentData');
                 setIsOpen(true);
@@ -166,8 +166,8 @@ let JobPosting = (props) => {
                                     value={minP}
                                     onChange={e => setMinP(e.target.value)} 
                                     //{...register('minPayment', { required: true })}
-                                     type="text" placeholder="100"
-                                     autoComplete="off" />
+                                    type="number" placeholder="100"
+                                    autoComplete="off" />
                                 </div>
                             </div>
 
@@ -179,7 +179,7 @@ let JobPosting = (props) => {
                                     value={maxP}
                                     onChange={e => setMaxP(e.target.value)} 
                                     //{...register('maxPayment', { required: true })}
-                                    type="text" placeholder="1000"
+                                    type="number" placeholder="1000"
                                     autoComplete="off" />
                                 </div>
                             </div>

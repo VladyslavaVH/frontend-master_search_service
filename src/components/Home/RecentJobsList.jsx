@@ -27,6 +27,8 @@ const RecentJobsList = (props) => {
         }
     }, [isLoading]);
 
+    useEffect(() => console.log(trCategoriesArr), [trCategoriesArr]);
+
     return <div className="section gray margin-top-45 padding-top-65 padding-bottom-65">
         <div className="container">
             <div className="row">
@@ -43,7 +45,7 @@ const RecentJobsList = (props) => {
                                 let index = trCategoriesArr?.input?.indexOf(j.category);
 
                                 return <JobListItem key={j.id} {...j}
-                                category={trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : j.category}
+                                category={(trCategoriesArr?.translated && trCategoriesArr.translated[index]) ? trCategoriesArr.translated[index][lang] : j.category}
                                 isHomePage={true} />
                             })
                         }
