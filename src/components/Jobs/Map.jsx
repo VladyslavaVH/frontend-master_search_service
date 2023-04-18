@@ -23,7 +23,7 @@ const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, 
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     
     useEffect(() => {
-        if (ref.current && !mapContainer) {            
+        if (ref.current && !mapContainer) { 
             const map = new window.google.maps.Map(ref.current, {
                 center: center,
                 zoom: mapZoom,
@@ -64,9 +64,9 @@ const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, 
                 setCurBounds(bounds);
             });
         }
-    }, []);
+    }, [ref?.current]);
 
-    useEffect(() => {        
+    useEffect(() => { 
         if (mapContainer && jobs) {
             /**
              * оновлюємо кластер та маркери 

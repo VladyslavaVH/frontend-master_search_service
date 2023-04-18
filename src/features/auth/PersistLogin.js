@@ -26,6 +26,7 @@ const PersistLogin = () => {
         if (!token) {
             verifyRefreshToken();
         } else {
+            localStorage.setItem('isPersistent', true);
             setIsLoading(false);
         }
 
@@ -43,7 +44,7 @@ const PersistLogin = () => {
             ? <Outlet />
             : isLoading 
                 ? <div>Loading...</div>//spinner
-                : <Outlet />
+                : <Outlet context={{ isPersistLogin: true }} />
             }
         </>
     );

@@ -13,14 +13,21 @@ export const masterApiSlice = apiSlice.injectEndpoints({
         }),  
         getMasterJobApplyStatus: builder.query({
             query: jobId => `/master/check/job/apply?jobId=${jobId}`,
-            keepUnusedDataFor: 5
+            keepUnusedDataFor: 5,
+            providesTags: ['job']
+        }),  
+        getAdditionalMasterInfo: builder.query({
+            query: ({ jobId, masterId}) => `/master/additional/info?jobId=${jobId}&masterId=${masterId}`,
+            keepUnusedDataFor: 2,
+            providesTags: ['job']
         }),  
         applyJob: builder.mutation({
             query: ({ jobId, applyJobData }) => ({
                 url: `/master/apply?jobId=${jobId}`,
                 method: 'PUT',
                 body: applyJobData
-            })
+            }),
+            invalidatesTags: ['job']
         }),
         changeProfileSettings: builder.mutation({
             query: data => ({
@@ -43,6 +50,13 @@ export const masterApiSlice = apiSlice.injectEndpoints({
             providesTags: ['permission'],
             keepUnusedDataFor: 1
         }),
+        updateCurrentMasterLocation: builder.mutation({
+            query: coords => ({
+                url: '/master/update/current/location',
+                method: 'POST',
+                body: { ...coords }
+            }),
+        }),
     })
 });
 
@@ -50,9 +64,11 @@ export const {
     useGetMasterStatisticsQuery,
     useGetMasterConversationsQuery,
     useGetMasterJobApplyStatusQuery,
+    useGetAdditionalMasterInfoQuery,
     useGetPermissionCheckQuery,
     useApplyJobMutation,
     useUploadDocumentsMutation,
     useChangeProfileSettingsMutation,
+    useUpdateCurrentMasterLocationMutation,
 } = masterApiSlice
 

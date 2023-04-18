@@ -220,8 +220,22 @@ i18n
           hrAgo: 'hours ago',
           minAgo: 'minutes ago',
           now: 'now',
-        }
-    },
+          RespondToTheApplication: 'Respond to the application',
+          ProposedPayment: 'Proposed Payment',
+          SuggestedLeadTime: 'Suggested Lead Time',
+          ICanDoItIn: 'I can do it in',
+          EmptyPhoneNumberMessage: 'The phone number field is empty: please enter your phone number',
+          EmptyFieldsMessage: 'Empty fields: Please fill in all fields',
+          EmptyJobDateTime: 'Please fill in the date and time field',
+          EmptyMessage: 'Empty message',
+          AllowViewingOfMyGeolocation: 'Allow viewing of my geolocation',
+          ViewGeolocation: 'View geolocation',
+          ViewGeolocationTooltip: 'Your location is required to display job applications near you',
+          DeniedPermission: 'You previously declined permission to view your geolocation. To use all the features of the service, enable the permission to view your location for our site in the browser settings.',
+          ViewPermissionNotAllowed: 'To access viewing applications nearby, confirm permission to view your location in your account settings.',
+          EmptyAddress: 'Empty address',
+        }    
+      },
     uk: {
         translation: {
           Home: 'Головна',
@@ -425,7 +439,21 @@ i18n
           hrAgo: 'години тому',
           minAgo: 'хвилин тому',
           now: 'зараз',
-        }
+          RespondToTheApplication: 'Відгукнутись на заявку',
+          ProposedPayment: 'Запропонований платіж',
+          SuggestedLeadTime: 'Пропонований час виконання',
+          ICanDoItIn: 'Я впораюся за',
+          EmptyPhoneNumberMessage: 'Поле номера телефону порожнє: введіть свій номер телефону, будь ласка',
+          EmptyFieldsMessage: 'Пусті поля: Будь ласка, заповніть всі поля',
+          EmptyJobDateTime: 'Будь ласка, заповніть поле дати та часу',
+          EmptyMessage: 'Порожнє повідомлення',
+          AllowViewingOfMyGeolocation: 'Дозволити перегляд моєї геолокації',
+          ViewGeolocation: 'Перегляд геолокації',
+          ViewGeolocationTooltip: 'Ваше місцезнаходження потрібне для відображення заявок щодо роботи поблизу вас',
+          DeniedPermission: 'Раніше ви відхилили дозвіл на перегляд своєї геолокації. Щоб користуватися всіма можливостями сервісу, увімкніть дозвіл на перегляд вашого місцезнаходження для нашого сайту в налаштуваннях браузера.',
+          ViewPermissionNotAllowed: 'Для доступу до перегляду заявок поблизу, підтвердіть дозвіл на перегляд вашого місцезнаходження в налаштуваннях кабінету.',
+          EmptyAddress: 'Порожня адреса',
+        }      
       },
       cs: {
         translation: {
@@ -630,6 +658,20 @@ i18n
           hrAgo: 'hodinami',
           minAgo: 'minutami',
           now: 'Nyní',
+          RespondToTheApplication: 'Odpovězte na žádost',
+          ProposedPayment: 'Navrhovaná platba',
+          SuggestedLeadTime: 'Doporučená dodací lhůta',
+          ICanDoItIn: 'Zvládnu to za',
+          EmptyPhoneNumberMessage: 'Pole pro telefonní číslo je prázdné: zadejte prosím své telefonní číslo',
+          EmptyFieldsMessage: 'Prázdná pole: Vyplňte prosím všechna pole',
+          EmptyJobDateTime: 'Vyplňte prosím pole data a času',
+          EmptyMessage: 'Prázdná zpráva',
+          AllowViewingOfMyGeolocation: 'Povolit zobrazení mé geolokace',
+          ViewGeolocation: 'Zobrazit geolokaci',
+          ViewGeolocationTooltip: 'K zobrazení žádostí o zaměstnání ve vaší blízkosti je vyžadována vaše poloha',
+          DeniedPermission: 'Dříve jste odmítli oprávnění zobrazit svou geolokaci. Chcete-li využívat všechny funkce služby, povolte v nastavení prohlížeče oprávnění k zobrazení vaší polohy pro naše stránky.',
+          ViewPermissionNotAllowed: 'Chcete-li získat přístup k prohlížení aplikací v okolí, potvrďte oprávnění k zobrazení vaší polohy v nastavení účtu.',
+          EmptyAddress: 'Prázdná adresa',
         }
       },
     }

@@ -31,6 +31,51 @@ export function mmenuInit() {
     $(".mm-next").addClass("mm-fullsubopen");
 };
 
+export function stickyHeader() {
+
+    $(window).on('scroll load', function() {
+
+        if($(window).width() < '1099') { 
+            $("#header-container").removeClass("cloned");
+        }
+        
+        if($(window).width() > '1099') {
+
+            // CSS adjustment
+            $("#header-container").css({
+                position: 'fixed',
+            });
+    
+            let headerOffset = $("#header-container").height();
+
+            if($(window).scrollTop() >= headerOffset){
+                $("#header-container").addClass('cloned');
+                $(".wrapper-with-transparent-header #header-container").addClass('cloned').removeClass("transparent-header unsticky");
+            } else {
+                $("#header-container").removeClass("cloned");
+                $(".wrapper-with-transparent-header #header-container").addClass('transparent-header unsticky').removeClass("cloned");
+            }
+
+            // Sticky Logo
+            let transparentLogo = $('#header-container #logo img').attr('data-transparent-logo');
+            let stickyLogo = $('#header-container #logo img').attr('data-sticky-logo');
+
+            if( $('.wrapper-with-transparent-header #header-container').hasClass('cloned')) {
+                $("#header-container.cloned #logo img").attr("src", stickyLogo);
+            } 
+
+            if( $('.wrapper-with-transparent-header #header-container').hasClass('transparent-header')) {
+                $("#header-container #logo img").attr("src", transparentLogo);
+            } 
+
+            $(window).on('load resize', function() {
+                let headerOffset = $("#header-container").height();
+                $("#wrapper").css({'padding-top': headerOffset});
+            });
+        }
+    });
+};
+
 export function close_user_dropdown() {
     $('.header-notifications').removeClass("active");
 };
@@ -190,3 +235,4 @@ export function responsiveDashboardNavTrigger () {
     
     });
 };
+

@@ -15,7 +15,7 @@ let HomeContent = ({isMapApiLoaded}) => {
 
     <RecentJobsList />
 
-    {!isLoading && <MasterCarousel masters={masters} />}
+    {!isLoading && <MasterCarousel isMapApiLoaded={isMapApiLoaded} masters={masters} />}
 
     {/* {<Plans plans={plans} />} */}
   </>;

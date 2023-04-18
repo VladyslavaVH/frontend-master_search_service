@@ -11,12 +11,14 @@ let MasterCard = (props) => {
     const isAuth = useSelector(selectIsAuth); 
     const isMaster = useSelector(selectIsMaster);
     const [ isOpen, setIsOpen ] = useState(false);
-    const { id, isAdminChecked, avatar, firstName, lastName, tagLine, rating, 
+    const { isMapApiLoaded, id, isAdminChecked, avatar, firstName, lastName, tagLine, rating, 
     nationality, lat, lng } = props;
     const [cityName, setCityName] = useState('');
+    const [country, setCountry] = useState(null);
+    const [shortCountry, setShortCountry] = useState(null);
 
     useEffect(() => {
-        if (window.google && (lat && lng)) {
+        if (window.google && isMapApiLoaded && (lat && lng)) {
 
             if (!window.myGeocoder) {
                 window.myGeocoder = new window.google.maps.Geocoder();
@@ -26,19 +28,27 @@ let MasterCard = (props) => {
             .geocode({ location: { lat, lng } }, function(results, status) {
                 if( status === window.google.maps.GeocoderStatus.OK ) {
                     let address = results[0].address_components;
+                    //console.log(results);
+                    //console.log(address);
                     for (let p = address.length-1; p >= 0; p--) {
                       if ((address[p].types.indexOf("locality") != -1)
                        && (address[p].types.indexOf("political") != -1)) {
                         setCityName(address[p].long_name);
                       }
+
+                      if ((address[p].types.indexOf("country") != -1)
+                       && (address[p].types.indexOf("political") != -1)) {
+                        setCountry(address[p].long_name);
+                        setShortCountry(address[p].short_name);
+                      }
                     }
                   } else {
-                    console.log("Sorry - We couldn't find this location. Please try an alternative");
+                    console.error("Sorry - We couldn't find this location. Please try an alternative");
                  }
             })
-            .catch((e) => console.log("Geocoder failed due to: " + e));
+            .catch((e) => console.error("Geocoder failed due to: " + e));
         }
-    }, []);
+    }, [isMapApiLoaded]);
 
     //const imgPath = process.env.REACT_APP_IMG_PATH;
     const profilePhotosPath = process.env.REACT_APP_PROFILE_PHOTOS_PATH;
@@ -59,8 +69,8 @@ let MasterCard = (props) => {
                     {!!+isAdminChecked && <div className="verified-badge"></div>}
 
                     {(isAuth && !isMaster) 
-                    ?<NavLink state={{ id: id, name: t('MasterProfile'), page: t('MasterProfile'), isMasterProfile: true}}
-                    to={`/client-office/master-profile`}>
+                    ?<NavLink state={{ id: id, name: 'MasterProfile', page: 'MasterProfile', isMasterProfile: true}}
+                    to={`/client-office/master-profile?name=${`${firstName} ${lastName}`}&page=MasterProfile&id=${id}`}>
                         <img src={`${profilePhotosPath}${avatar}`} alt="" />
                     </NavLink>
                     :<img src={`${profilePhotosPath}${avatar}`} alt="" />}
@@ -68,7 +78,7 @@ let MasterCard = (props) => {
                 </div>
 
                 <div className="freelancer-name">
-                    <h4><a>{`${firstName} ${lastName}`} {nationality && <img className="flag" src={`${flagPath}${nationality.flag}.svg`} alt="" title={nationality.country} data-tippy-placement="top" />}</a></h4>
+                    <h4><a>{`${firstName} ${lastName}`} {(country && shortCountry) && <img className="flag" src={`${flagPath}${shortCountry}.svg`} alt="" title={country} data-tippy-placement="top" />}</a></h4>
                     <span>{tagLine}</span>
                 </div>
 
@@ -77,6 +87,7 @@ let MasterCard = (props) => {
                 </div>
 
                 {cityName.length > 0 && <strong className="margin-top-5"><i className="icon-material-outline-location-on"></i> {cityName}</strong>}
+                {<strong className="margin-top-5">&nbsp;</strong>}
             </div>
         </div>
 
@@ -84,8 +95,8 @@ let MasterCard = (props) => {
             {isAuth
             ?<>
                 {!isMaster &&
-                <NavLink state={{ id: id, name: t('MasterProfile'), page: t('MasterProfile'), isMasterProfile: true}}
-                    to={`/client-office/master-profile`} className="button button-sliding-icon ripple-effect">
+                <NavLink state={{ id: id, name: 'MasterProfile', page: 'MasterProfile', isMasterProfile: true}}
+                    to={`/client-office/master-profile?name=${`${firstName} ${lastName}`}&page=MasterProfile&id=${id}`} className="button button-sliding-icon ripple-effect">
                     {t('ViewProfile')} <i className="icon-material-outline-arrow-right-alt"></i>
                 </NavLink>}
             </>

@@ -27,8 +27,6 @@ const RecentJobsList = (props) => {
         }
     }, [isLoading]);
 
-    useEffect(() => console.log(trCategoriesArr), [trCategoriesArr]);
-
     return <div className="section gray margin-top-45 padding-top-65 padding-bottom-65">
         <div className="container">
             <div className="row">

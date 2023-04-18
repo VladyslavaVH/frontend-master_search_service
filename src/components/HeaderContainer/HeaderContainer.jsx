@@ -16,8 +16,10 @@ import Select from 'react-select';
 import { DropdownIndicator, Option, SINGLE_SELECT_STYLES } from '../../amimations/selectDetails';
 import { setLanguage, setDefaultLanguage, selectDefaultLanguage } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import MobileHeader from './Popup/MobileHeader';
 
 let HeaderContainer = (props) => {
+	const [isMobNavOpen, setIsMobNavOpen] = useState(false);
 	const { t, i18n } = useTranslation();
 	const dispatch = useDispatch();
 	const user = useSelector(selectCurrentUser);
@@ -63,6 +65,17 @@ let HeaderContainer = (props) => {
 				close_user_dropdown();
 			}
 		});
+
+		document.body.addEventListener('click', e => {
+			const clName = e.target.className;
+			if (clName != 'mmenu-trigger' &&
+				clName != 'hamburger hamburger--collapse' &&
+				clName != 'hamburger-box' &&
+				clName != 'hamburger-inner' && document.getElementById('wrapper').style.transform.substring(12, 15) != '0px') {
+				document.getElementById('wrapper').style.transform = 'translate3d(0px, 0, 0)';
+				setIsMobNavOpen(false);
+			} 
+		}, false);
 
 		// Close with ESC
 		$(document).on('keyup', function (e) {
@@ -113,8 +126,8 @@ let HeaderContainer = (props) => {
 				</div>
 
 				<div className="right-side">
-					{(isAuth && !isMaster) && 
-					<div className="header-widget hide-on-mobile">
+					{(isAuth && !isMaster && !isAdmin) && 
+					<div id="post-btn" className="header-widget hide-on-mobile">
 						<div className="header-notifications" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
 							{isAuth
 								? <>
@@ -132,7 +145,7 @@ let HeaderContainer = (props) => {
 						</div>
 					</div>}
 					
-					<div className="header-widget hide-on-mobile">
+					<div id="lang-select" className="header-widget hide-on-mobile">
 						<div className="header-notifications" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
 							<Select
 								defaultValue={defaultLanguage}
@@ -167,13 +180,15 @@ let HeaderContainer = (props) => {
 						</div>}
 
 					{/* <!-- Mobile Navigation Button --> */}
-					<span className="mmenu-trigger">
+					<span className="mmenu-trigger" onClick={() => setIsMobNavOpen(true)}>
 						<button className="hamburger hamburger--collapse" type="button">
 							<span className="hamburger-box">
 								<span className="hamburger-inner"></span>
 							</span>
 						</button>
 					</span>
+
+					<MobileHeader open={isMobNavOpen} onClose={() => setIsMobNavOpen(false)} />
 
 				</div>
 			</div>

@@ -670,3 +670,8 @@ export const LOCATION_AUTOCOMPLETE_STYLES = {
         backgroundColor: 'transparent',
     }),
 };
+
+export const INPUTS_SHADOW_STYLES = {
+    border: 'none',
+    boxShadow: '0 1px 4px 0px rgb(0 0 0 / 12%)'
+};

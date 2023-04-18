@@ -18,7 +18,7 @@ let MasterOffice = (props) => {
             <Sidebar />
             <div className="dashboard-content-container">{/*data-simplebar*/}
                 <div className="dashboard-content-inner">
-                    <Titlebar name={location.state.name} page={location.state.page} span={location.state?.span} />
+                    <Titlebar name={location.state?.name} page={location.state?.page} span={location.state?.span} />
                     <Outlet />
                     <OfficeFooter />
                 </div>

@@ -18,8 +18,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 body: { ...credentials }
             }), 
             invalidatesTags: ['settings']
-        }),
-             
+        }),             
     })
 });
 

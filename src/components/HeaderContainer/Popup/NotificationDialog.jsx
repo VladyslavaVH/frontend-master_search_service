@@ -1,30 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom';
-import $ from 'jquery';
 
 export default function NotificationDialog({ open = false, onClose, type = 'error', children}) {
-  useEffect(() => {
-    // $("a.close").removeAttr("href").on('click', function(){
-    //   function slideFade(elem) {
-    //     let fadeOut = { opacity: 0, transition: 'opacity 0.5s' };
-    //     elem.css(fadeOut).slideUp();     
-    //   }
-    //   slideFade($(this).parent());
-    // });
-  }, []);
+  if (open) {
+    document.getElementById('notification__portal').style.display = 'flex';
+  } else {
+    let displayNone = false;
+    for (const n of document.getElementById('notification__portal').children) {
+      if (n.style.display != 'none') {
+        displayNone = true;
+        break;
+      }
+    }
+
+    if (displayNone) {
+      document.getElementById('notification__portal').style.display = 'none';      
+    }
+  }
 
   //if (!open) return null;
 
   const POSITION_STYLES = {
-    position: 'fixed',
-    top: '15vh',
-    right: 0,
     zIndex: 10000,
     opacity: open ? 1 : 0, 
-    transition: 'opacity 0.5s',
+    transition: 'all 0.5s ease 0s',
     pointerEvents: open ? 'all' : 'none',
-    maxWidth: '40%',
-    display: 'block',
+    minWidth: '323px',
+    display: open ? 'block' : 'none',
   };
 
   return ReactDOM.createPortal (

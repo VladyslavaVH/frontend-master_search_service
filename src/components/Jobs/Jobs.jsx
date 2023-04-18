@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useGetAllJobsListQuery } from "../../features/jobs/jobsApiSlice";
-import { useLocation, useParams, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import OfficeFooter from "../Office/OfficeFooter";
 import FiltersSidebar from "./FiltersSidebar/FiltersSidebar";
@@ -10,7 +10,7 @@ import Map from "./Map";
 import Pagination from "./Pagination";
 import { useTranslation } from 'react-i18next';
 import { fireCategoriesTr } from '../../utils/firebase.config';
-import { selectCurrentLanguage } from "../../features/auth/authSlice";
+import { selectCurrentLanguage, selectCurrentLocation } from "../../features/auth/authSlice";
 import { useSelector } from 'react-redux';
 
 let Jobs = ({ isMapApiLoaded }) => {
@@ -22,6 +22,8 @@ let Jobs = ({ isMapApiLoaded }) => {
 	const lang = useSelector(selectCurrentLanguage);
 	const [trCategoriesArr, setTrCategoriesArr] = useState(null);
 	const location = useLocation();
+	const navigate = useNavigate();
+	const masterCurLocation = useSelector(selectCurrentLocation);
 	const { categoryId, title: category, pos, masterCategories } = location?.state || {};
 	const [center, setCenter] = useState(pos);
     const [bounds, setBounds] = useState(null);
@@ -46,25 +48,34 @@ let Jobs = ({ isMapApiLoaded }) => {
 
 		if (!pos) {
 			if (navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(
-					(position) => {
-					const pos = {
-						lat: position.coords.latitude,
-						lng: position.coords.longitude,
-					};
-			
-					setCenter(pos);
-					},
-					() => {
-					alert('Error: Geolocation failed');
+				navigator.permissions.query({ name: "geolocation" }).then((result) => {
+					if (result.state === "granted") {
+						navigator.geolocation.getCurrentPosition(
+							(position) => {
+								const userPos = {
+									lat: position.coords.latitude,
+									lng: position.coords.longitude,
+								};
+								window.vvgPos = userPos;
+								setCenter(userPos);
+							},
+							() => {
+								console.log('Error: Geolocation failed');
+								navigate(-1);
+							}
+						);
+					} else if (result.state === "prompt" || result.state === "denied") {
+						navigate('/master-office/settings', {state: { permission: true, name: 'Settings', page: 'Settings' }});
 					}
-				);
+				});
+				
 			} else {
 				// Browser doesn't support Geolocation
-				alert(`Browser doesn't support Geolocation`);
+				console.log(`Browser doesn't support Geolocation`);
+				navigate(-1);
 			}
 		}
-	}, []);
+	}, [pos, masterCurLocation]);
 
     return <div className="full-page-container with-map" style={{ maxHeight: '95vh'}}>
 
@@ -111,7 +122,7 @@ let Jobs = ({ isMapApiLoaded }) => {
 		</div>
 		
 		{
-			(center && !isLoading) &&
+			(center && !isLoading && isMapApiLoaded) &&
 			<Map
 				lang={lang}
 				trCategoriesArr={trCategoriesArr}

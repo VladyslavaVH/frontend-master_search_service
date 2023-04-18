@@ -42,13 +42,9 @@ const JobListing = (props) => {
         }
     }, []);
 
-    const editJobData = async () => {
-
-    };
-
     const removeJob = async () => {
         await deleteJob(id).unwrap(); 
-        //window.location.reload(true);
+        window.location.reload(true);
     }
 
     useEffect(() => {
@@ -67,10 +63,11 @@ const JobListing = (props) => {
                 <div className="job-listing-description">
                     <h3 className="job-listing-title">
                         <NavLink state={{ id: id, name: 'Job', page: 'Job' }}
-                            to={`/client-office/manage-jobs/job/${defaultCategoryName.replaceAll('/', '-')}`}>
+                            to={`/client-office/manage-jobs/job?category=${defaultCategoryName.replaceAll('/', '-')}&id=${id}`}>
                             {category}
                         </NavLink> 
-                        {!(confirmedMaster && candidates?.length > 0) && <span className={`dashboard-status-button ${statusColor}`}>{translatedStatus}</span>}
+
+                        {false && <>{!(confirmedMaster && candidates?.length > 0) && <span className={`dashboard-status-button ${statusColor}`}>{translatedStatus}</span>}</>}
                     </h3>
 
                     <div className="job-listing-footer">
@@ -79,7 +76,7 @@ const JobListing = (props) => {
                                 {/* <TimeAgo timestamp={createTime} /> */}
                                 <DisplayTime createTime={createTime} />
                             </li>
-                            <li><i className="icon-material-outline-date-range"></i><ExpiringOn timestamp={createTime} /></li>
+                            {false && <li><i className="icon-material-outline-date-range"></i><ExpiringOn timestamp={createTime} /></li>}
                         </ul>
                     </div>
                 </div>
@@ -97,7 +94,7 @@ const JobListing = (props) => {
                     name: confirmedMaster ? t('MyMaster') : t('ManageCandidates'), 
                     page: confirmedMaster ? t('MyMaster') : t('ManageCandidates')
                 }}
-                    to={`/client-office/manage-jobs/manage-candidates/${category}`} className="button ripple-effect">
+                    to={`/client-office/manage-jobs/manage-candidates?category=${category}&masterId=${confirmedMaster?.id}&id=${id}`} className="button ripple-effect">
                         {confirmedMaster 
                         ?<>
                             <i className="icon-feather-user-check"></i> 

@@ -3,17 +3,20 @@ import { NavLink, useLocation } from 'react-router-dom';
 import useLogout from "../../../hooks/useLogout";
 import { useGetMessagesQuery } from '../../../features/user/userApiSlice';
 import { useTranslation } from "react-i18next";
+import { useSelector } from 'react-redux';
+import { selectIsMaster } from "../../../features/auth/authSlice";
 
 let Sidebar = (props) => {
     const { t } = useTranslation();
-    const [isMasterProfile, setMasterProfile] = useState(null);
+    const isMaster = useSelector(selectIsMaster);
+    const [isMasterProfile, setMasterProfile] = useState(isMaster);
     const { data: unreadMessages } = useGetMessagesQuery();
     const location = useLocation();
     const logout = useLogout();
 
     useEffect(() => {
-        setMasterProfile(location.state.isMasterProfile);
-    })
+        setMasterProfile(isMaster);
+    }, [isMaster]);
 
     return <div className="dashboard-sidebar">
     <div className="dashboard-sidebar-inner" >{/*data-simplebar*/}

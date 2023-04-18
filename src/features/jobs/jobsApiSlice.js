@@ -44,7 +44,8 @@ export const jobsApiSlice = apiSlice.injectEndpoints({
                 url: `/job?jobId=${id}`,
                 method: 'PUT',
                 body: jobData
-            })
+            }),
+            invalidatesTags: ['job']
         }),  
         deleteJob: builder.mutation({
             query: id => ({

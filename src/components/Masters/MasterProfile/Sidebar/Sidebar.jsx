@@ -3,7 +3,7 @@ import { useGetRehiredJobCountQuery } from '../../../../features/masters/masters
 import Categories from './Categories';
 import { useTranslation } from 'react-i18next';
 
-const Sidebar = ({ jobsDoneCount, masterId }) => {
+const Sidebar = ({ proposedPayment, currency, executionTime, jobsDoneCount, masterId }) => {
     const { t } = useTranslation();
     const { data, isLoading } = useGetRehiredJobCountQuery(masterId);
 
@@ -14,6 +14,20 @@ const Sidebar = ({ jobsDoneCount, masterId }) => {
                 <div className="overview-item"><strong>{jobsDoneCount}</strong><span>{t("JobsDone")}</span></div>
                 {!isLoading && <div className="overview-item"><strong>{data.rehired}</strong><span>{t("Rehired")}</span></div>}
             </div>
+
+            {
+                /* 
+                    <div className="sidebar-widget">
+                        <h3>{t('ProposedPayment')}</h3>
+                        <div>{`${proposedPayment} ${currency}`}</div>
+                    </div>
+
+                    <div className="sidebar-widget">
+                        <h3>{t("SuggestedLeadTime")}</h3>
+                        <div>{executionTime}</div>
+                    </div>
+                */
+            }
 
             <Categories masterId={masterId} />
         </div>

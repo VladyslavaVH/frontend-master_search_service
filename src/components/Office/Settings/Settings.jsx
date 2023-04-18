@@ -23,6 +23,7 @@ import { setNewAvatar } from "../../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import LocationPermission from "./MasterComponents/LocationPermission";
 
 const schema = yup
     .object()
@@ -195,37 +196,38 @@ let Settings = (props) => {
                 </div>
 
                 {!!+isMaster
-                    ? <div className="col-xl-12">
-                        <div className="dashboard-box" style={{ boxShadow: documents.length === 0 ? '0 2px 8px rgba(255,0,0,0.2)' : '' }}>
-                            <div className="headline">
-                                <h3><i style={{ color: documents.length === 0 ? 'red' : '' }} className="icon-material-outline-assignment"></i> {t("MyDocuments")}</h3>
-                            </div>
+                    ? <>
+                    
+                        {true
+                            ? <LocationPermission />
+                            : null
+                        }
 
-                            <div className="content with-padding padding-bottom-0">
-                                <div className="row">
-                                {!isLoading && documents.length > 0
-                                    ? <Documents documents={documents} />
-                                    : <UploadDocuments setDocuments={setDocuments} />
-                                }
+                        <div className="col-xl-12">
+                            <div className="dashboard-box" style={{ boxShadow: documents.length === 0 ? '0 2px 8px rgba(255,0,0,0.2)' : '' }}>
+                                <div className="headline" style={{ borderBottomColor: documents.length === 0 ? 'rgba(255,0,0,0.2)' : '' }}>
+                                    <h3><i style={{ color: documents.length === 0 ? 'red' : '' }} className="icon-material-outline-assignment"></i> {t("MyDocuments")}</h3>
+                                </div>
+
+                                <div className="content with-padding padding-bottom-0">
+                                    <div className="row">
+                                        {!isLoading && documents.length > 0
+                                            ? <Documents documents={documents} />
+                                            : <UploadDocuments setDocuments={setDocuments} />
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    : null
-                }
 
-                {
-                    isMaster 
-                    ? <ProfileSettings categories={categories} tagLine={tagLine} description={description} />
-                    : null
-                }
+                        <ProfileSettings categories={categories} tagLine={tagLine} description={description} />
 
-                {!!+isMaster && !(!!+isEmailVerified)
-                    ? <EmailVerification email={email} />
-                    : null
-                }
-
-
+                        {!(!!+isEmailVerified)
+                            ? <EmailVerification email={email} />
+                            : null
+                        }
+                    </>
+                    : null}
             </>}
 
         {false && <PasswordChange />}

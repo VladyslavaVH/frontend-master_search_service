@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useCreateNewMessageMutation } from '../../../../features/user/userApiSlice';
 import { useTranslation } from 'react-i18next';
+import NotificationDialog from './../../../HeaderContainer/Popup/NotificationDialog';
 
 const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, receiverId }) => {
     const [newMessage, setNewMessage] = useState('');
+    const [notification, setNotification] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
     const [timer, setTimer] = useState(undefined);
     const { t } = useTranslation();
     const [createNewMessage] = useCreateNewMessageMutation();
@@ -25,6 +28,12 @@ const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, receiverId
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!newMessage || newMessage.length === 0) {
+            setNotification('EmptyMessage');
+            setIsOpen(true);
+            return;
+        }
 
         //socket?.current
         socket.emit('sendMessage', {
@@ -51,6 +60,10 @@ const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, receiverId
     value={newMessage}
     onChange={e => setNewMessage(e.target.value)}></textarea>
     <button onClick={handleSubmit} className="button ripple-effect">{t("Send")}</button>
+
+    <NotificationDialog type="warning" open={isOpen} onClose={() => setIsOpen(false)}>
+        {t(notification)}
+    </NotificationDialog>
 </div>;
 }
 

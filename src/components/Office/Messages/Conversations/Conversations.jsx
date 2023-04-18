@@ -8,18 +8,20 @@ import { useGetConversationsQuery } from '../../../../features/client/clientApiS
 // import { useGetConversationsQuery as getMasterConversations } from '../../../../features/master/masterApiSlice';
 import { useGetMasterConversationsQuery } from '../../../../features/master/masterApiSlice';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 const Conversations = (props) => {
     const { t } = useTranslation();
     const isMaster = useSelector(selectIsMaster);
     const user = useSelector(selectCurrentUser);
+    const [searchParams] = useSearchParams();
     const socket = useSelector(selectCurrentSocket);
     const { data: masterConversations } = useGetMasterConversationsQuery((isMaster && user) ? user.id : skipToken);
     const [conversations, setConversations] = useState([]);
     const [searchTextValue, setSearchTextValue] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const { data: clientConversations } = useGetConversationsQuery((!isMaster && user) ? user.id : skipToken);
-    const [activeConversation, setActiveConversation] = useState(null);
+    const [activeConversation, setActiveConversation] = useState(searchParams.get('targetUser'));
     
     useEffect(() => {
         setIsLoading(true);
@@ -63,7 +65,7 @@ const Conversations = (props) => {
                     return <Conversation key={c.id} {...c}
                     socket={socket}
                     setActiveConversation={setActiveConversation}
-                    isActive={(activeConversation === c.id)}
+                    isActive={(activeConversation == c.id)}
                     isMaster={isMaster} />
                 })
             }

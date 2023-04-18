@@ -11,11 +11,7 @@ import CategorySelect from "./CategorySelect";
 import LocationsAutocomplete from "../../../Jobs/FiltersSidebar/LocationsAutocomplete";
 import CurrencySelect from "./CurrencySelect";
 import NotificationDialog from './../../../HeaderContainer/Popup/NotificationDialog';
-
-const INPUTS_SHADOW_STYLES = {
-    border: 'none',
-    boxShadow: '0 1px 4px 0px rgb(0 0 0 / 12%)'
-};
+import { INPUTS_SHADOW_STYLES } from "../../../../amimations/selectDetails";
 
 const schema = yup
   .object()
@@ -36,6 +32,7 @@ let JobPosting = (props) => {
     const [notificationText, setNotificationText] = useState('');
     const [minP, setMinP] = useState(100);
     const [maxP, setMaxP] = useState(1000);
+    const [jobDateTime, setJobDateTime] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const { register, handleSubmit, reset, watch,
         formState: { errors },
@@ -50,11 +47,16 @@ let JobPosting = (props) => {
     }, [watch('photos'), errors, errors.photos]);
 
     useEffect(() => {
-        if ( minP > maxP) {
-            setMinP(maxP - 1);
-            setNotificationText('NotValidPaymentData');
-            setIsOpen(true);
+        if (minP < 0 || minP >= maxP || (minP == 0 && maxP == 0)) {
+            let min = maxP > 0 
+            ? minP < 0 
+                ? 0 
+                : maxP - 1 
+            : 0;
+            setMinP(min);
+            setMaxP(maxP <= 0 ? min + 1 : maxP);
         }
+
     }, [minP, maxP])
     
     const navigate = useNavigate();
@@ -67,9 +69,17 @@ let JobPosting = (props) => {
 
     const onSubmit = async data => {
         try {
-            if (minP == 0 || !minP || !maxP || maxP == 0 || (minP > maxP) || isNaN(minP) || isNaN(maxP)) {
-                setMinP(maxP - 1);
+            if (minP == 0 || !minP || !maxP || maxP == 0 || (minP >= maxP) || isNaN(minP) || isNaN(maxP)) {
+                let min = maxP > 0 ? maxP - 1 : 0;
+                setMinP(min);
+                setMaxP(maxP <= 0 ? min + 1 : maxP);
                 setNotificationText('NotValidPaymentData');
+                setIsOpen(true);
+                return;
+            }
+
+            if (!jobDateTime) {
+                setNotificationText('EmptyJobDateTime');
                 setIsOpen(true);
                 return;
             }
@@ -80,10 +90,6 @@ let JobPosting = (props) => {
                     formData.append(data?.photos?.item(key).name, data?.photos?.item(key))
                 );
             }
-            
-
-            //let minPayment = parseInt(data?.minPayment);
-            //let maxPayment = parseInt(data?.maxPayment);
 
             let jobPostData = {
                 clientFK: user.id,
@@ -92,6 +98,7 @@ let JobPosting = (props) => {
                 minPayment: minP,
                 maxPayment: maxP,
                 currencyFK,
+                jobDateTime,
                 ...jobLocation
             };
             data.photos && delete jobPostData.photos;
@@ -112,7 +119,6 @@ let JobPosting = (props) => {
                 state: {name: 'ManageJobs', page: 'ManageJobs'} 
             },
             );
-            //console.log('navigate');
             
         } catch (error) {
             console.error(error);
@@ -153,7 +159,9 @@ let JobPosting = (props) => {
                                     <h5>{t('DateAndTime')}</h5>
                                     <input style={INPUTS_SHADOW_STYLES}
                                     name="jobDateTime"
-                                    {...register('jobDateTime', { required: true })}
+                                    value={jobDateTime}
+                                    onChange={e => setJobDateTime(e.target.value)}
+                                    //{...register('jobDateTime', { required: true })}
                                     type={'datetime-local'} />
                                 </div>
                             </div>
@@ -165,8 +173,7 @@ let JobPosting = (props) => {
                                     name="minPayment" 
                                     value={minP}
                                     onChange={e => setMinP(e.target.value)} 
-                                    //{...register('minPayment', { required: true })}
-                                    type="number" placeholder="100"
+                                    type="number"
                                     autoComplete="off" />
                                 </div>
                             </div>
@@ -178,8 +185,7 @@ let JobPosting = (props) => {
                                     name="maxPayment" 
                                     value={maxP}
                                     onChange={e => setMaxP(e.target.value)} 
-                                    //{...register('maxPayment', { required: true })}
-                                    type="number" placeholder="1000"
+                                    type="number"
                                     autoComplete="off" />
                                 </div>
                             </div>
@@ -234,8 +240,7 @@ let JobPosting = (props) => {
             <div className="col-xl-12">
                 <button type="submit" 
                 form="postJobForm"
-                onClick={() => console.log('click')}
-                 className="button ripple-effect big margin-top-30"><i className="icon-feather-plus"></i> {t('PostAJob')}</button>
+                className="button ripple-effect big margin-top-30"><i className="icon-feather-plus"></i> {t('PostAJob')}</button>
             </div>
         </form>
 

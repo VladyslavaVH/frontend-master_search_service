@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import jwtDecode from 'jwt-decode';
 import io from 'socket.io-client';
 
-const ROLE = {
+export const ROLE = {
     ADMIN: process.env.REACT_APP_ADMIN_ROLE, 
     CLIENT: process.env.REACT_APP_CLIENT_ROLE, 
     MASTER: process.env.REACT_APP_MASTER_ROLE
@@ -34,21 +34,6 @@ const authSlice = createSlice({
             state.user = decoded?.userInfo?.user || undefined;
             state.role = decoded?.userInfo?.role || undefined;
 
-            switch (state.role) {
-                case ROLE.ADMIN:
-                    state.isAdmin = true;
-                    break;
-                case ROLE.CLIENT:
-                    state.isMaster = false;
-                    break;
-                case ROLE.MASTER:
-                    state.isMaster = true;
-                    break;
-                default:
-                    state.isMaster = false;
-                    break;
-            }
-
             state.socket = io(process.env.REACT_APP_BACKEND);
             console.log('socket:', state.socket);
 
@@ -66,6 +51,8 @@ const authSlice = createSlice({
             
             state.socket.emit('logOut');
             state.socket = null;
+            localStorage.removeItem('isPersistent');
+            localStorage.removeItem('persist');
 
         },
         setPersist: (state, { payload }) => {
@@ -81,10 +68,13 @@ const authSlice = createSlice({
         setNewAvatar: (state, { payload }) => {
             state.user.avatar = payload;
         },
+        setNewLocation: (state, { payload }) => {
+            state.user.masterInfo.location = payload;
+        },
     }
 });
 
-export const { setAuth, logOut, setPersist, setLanguage, setDefaultLanguage, setNewAvatar } = authSlice.actions;
+export const { setAuth, logOut, setPersist, setLanguage, setDefaultLanguage, setNewAvatar, setNewLocation } = authSlice.actions;
 
 export default authSlice.reducer;
 
@@ -94,6 +84,7 @@ export const selectUnreadMessages = (state) => state.auth.unreadMessages;
 export const selectCurrentRole = (state) => state.auth.role;
 export const selectCurrentToken = (state) => state.auth.token;
 export const selectCurrentSocket = (state) => state.auth.socket;
+export const selectCurrentLocation = (state) => state.auth.user?.masterInfo?.location;
 export const selectPersist = (state) => state.auth.persist;
 
 export const selectIsAuth = (state) => state.auth.isAuth;

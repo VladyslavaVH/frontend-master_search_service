@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectIsMaster, selectCurrentUser, selectIsAdmin } from "../../../features/auth/authSlice";
 import useLogout from './../../../hooks/useLogout';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useOutletContext } from 'react-router-dom';
 import Snackbar from "node-snackbar";
 import $ from 'jquery';
 import { useTranslation } from "react-i18next";
 
 const UserWindow = (props) => {
     const { t } = useTranslation();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [isActive, setIsActive] = useState(false);
     const [isOnline, setIsOnline] = useState(true);
     const user = useSelector(selectCurrentUser);
@@ -23,16 +23,20 @@ const UserWindow = (props) => {
     const profilePhotosPath = process.env.REACT_APP_PROFILE_PHOTOS_PATH;
 
     useEffect(() => {
-
-        if (isAdmin) {
-            navigate('/admin-panel/statistics', { replace: true, state: { name: 'Howdy', page: 'Statistics' } });
-        } else {
-            if (isMaster) {
-                navigate(`/master-office`, { replace: true, state: { name: 'Howdy', span: 'Greetings' } });
+        if (!localStorage.getItem('isPersistent')) {
+            if (isAdmin) {
+                navigate('/admin-panel/statistics', { replace: true, state: { name: 'Howdy', page: 'Statistics' } });
             } else {
-                navigate(`/client-office`, { replace: true, state: { name: 'Howdy', span: 'Greetings' } });
-            }
-        }        
+                if (isMaster) {
+                    navigate(`/master-office`, { replace: true, state: { name: 'Howdy', span: 'Greetings' } });
+                } else {
+                    navigate(`/client-office`, { replace: true, state: { name: 'Howdy', span: 'Greetings' } });
+                }
+            } 
+        } else {
+            localStorage.removeItem('isPersistent');
+        }
+         
         
         setFullName(`${firstName} ${lastName}`);
 

@@ -16,6 +16,8 @@ const Registration = ({ onClose }) => {
     const { t } = useTranslation();
     const [regData, setRegData] = useState(null);
     const { register, handleSubmit } = useForm();
+    const [firstName, setFirstName] = useState(null);
+    const [lastName, setLastName] = useState(null);
     const [loading, setLoading] = useState(false);//? false
     const [isNumberVer, setIsNumberVer] = useState(false);//? set false
     const [phone, setPhone] = useState(null);//? set null
@@ -28,11 +30,8 @@ const Registration = ({ onClose }) => {
     const [isWarningOpen, setIsWarningOpen] = useState(false);
     const [warningText, setWarningText] = useState('');
 
-    // useEffect(() => {
-    //     if (notificationText.length > 0) {
-    //         setIsOpen(true);            
-    //     }
-    // }, [notificationText]);
+    const [isPassword, setIsPassword] = useState(true);
+    const [isPasswordRepeat, setIsPasswordRepeat] = useState(true);
 
     function onCaptchaVerify() {
         if (!window.recaptchaVerifier) {
@@ -94,6 +93,14 @@ const Registration = ({ onClose }) => {
                 return;
             }
 
+            if (!firstName && firstName?.length == 0 && !lastName && lastName?.length == 0) {
+                throw new Error(t('EmptyFieldsMessage'))
+            }
+
+            if (!phone) {
+                throw new Error(t('EmptyPhoneNumberMessage'));
+            }
+
             let formatPhone = phone;
             if (!phone.startsWith('+')) {
                 formatPhone = "+" + phone;
@@ -106,10 +113,11 @@ const Registration = ({ onClose }) => {
                 throw new Error(t('PhoneExistsMessage'));
             }
 
-            return;
             let newData = {
                 ...data,
-                phone: formatPhone
+                phone: formatPhone,
+                firstName,
+                lastName
             };
             delete newData.passwordRepeat;
             setRegData(newData);
@@ -122,6 +130,21 @@ const Registration = ({ onClose }) => {
             console.error(error);
         }
     };
+
+    const isDigit = (char) => char >= '0' && char <= '9';
+
+    const isSymbol = (char) => {
+        const regex = /^[~:;.,!@#$%^&*()-_+="><?\/|]+$/gm;
+        return regex.test(char);
+    }
+
+    const onChange = val => {
+        const lastChar = val[val.length - 1];
+        if (isDigit(lastChar) || isSymbol(lastChar)) {
+            return val.substr(0, val.length - 1);
+        }
+        return val;
+    }
 
     return <div className="popup-tab-content" id="register">
         {isNumberVer
@@ -154,23 +177,19 @@ const Registration = ({ onClose }) => {
 
                 <div className="input-with-icon-left">
                     <i className="icon-feather-user"></i>
-                    <input type="text" title='Only letters' autoComplete='off' placeholder={t("FirstName")} required 
-                    {...register('firstName', { required: true })} className="input-text with-border" name="firstName" id="firstName-register" />
+                    <input type="text" title='Only letters' autoComplete='off' placeholder={t("FirstName")} 
+                    value={firstName} 
+                    onChange={e => setFirstName(onChange(e.target.value))}
+                    className="input-text with-border" name="firstName" id="firstName-register" />
                 </div>
 
                 <div className="input-with-icon-left">
                     <i className="icon-feather-user"></i>
-                    <input type="text" title='Only letters' autoComplete='off' placeholder={t("LastName")} required 
-                    {...register('lastName', { required: true })} className="input-text with-border" name="lastName" id="lastName-register" />
+                    <input type="text" title='Only letters' autoComplete='off' placeholder={t("LastName")} 
+                    value={lastName}
+                    onChange={e => setLastName(onChange(e.target.value))}
+                    className="input-text with-border" name="lastName" id="lastName-register" />
                 </div>
-
-                {/* <div className="input-with-icon-left">
-                    <i className="icon-feather-phone"></i>
-                    <input type="tel" title="Only + and numbers"
-                        {...register('phone', { required: true })} className="input-text with-border"
-                        pattern='^\+(?:[0-9] ?){6,14}[0-9]$'
-                        name="phone" id="phone" placeholder="+38011111111" required />
-                </div> */}
 
                 <PhoneInput 
                 disableDropdown={true}
@@ -187,18 +206,22 @@ const Registration = ({ onClose }) => {
                 value={phone} 
                 onChange={setPhone} />
 
-                <div className="input-with-icon-left" title="Should be at least 8 characters long" data-tippy-placement="bottom">
-                    <i className="icon-material-outline-lock"></i>
-                    <input type="password" {...register('password', { required: true })} 
-                    // pattern={'^[0-9A-Za-z-_\.`~!@#$%^&*()+=\?]{8,20}$'} 
-                    className="input-text with-border" name="password" id="password-register" placeholder={t("Password")} required />
+                <div className='input-with-eye-icon'>
+                    <div className="input-with-icon-left" title="Should be at least 8 characters long" data-tippy-placement="bottom">
+                        <i className="icon-material-outline-lock"></i>
+                        <input type={isPassword ? 'password' : 'text'} {...register('password', { required: true })} 
+                        className="input-text with-border" name="password" id="password-register" placeholder={t("Password")} required />
+                    </div>
+                    <i className={`icon-feather-eye${isPassword ? '' : '-off'}`} onClick={() => setIsPassword(!isPassword)}></i>
                 </div>
 
-                <div className="input-with-icon-left" title="Should be at least 8 characters long">
-                    <i className="icon-material-outline-lock"></i>
-                    <input type="password" {...register('passwordRepeat', { required: true })} 
-                    // pattern={'^[0-9A-Za-z-_\.`~!@#$%^&*()+=\?]{8,20}$'} 
-                    className="input-text with-border" name="passwordRepeat" id="password-repeat-register" placeholder={t("RepeatPassword")} required />
+                <div className='input-with-eye-icon'>
+                    <div className="input-with-icon-left" title="Should be at least 8 characters long">
+                        <i className="icon-material-outline-lock"></i>
+                        <input type={isPasswordRepeat ? 'password' : 'text'} {...register('passwordRepeat', { required: true })} 
+                        className="input-text with-border" name="passwordRepeat" id="password-repeat-register" placeholder={t("RepeatPassword")} required />
+                    </div>
+                    <i className={`icon-feather-eye${isPasswordRepeat ? '' : '-off'}`} onClick={() => setIsPasswordRepeat(!isPasswordRepeat)}></i>
                 </div>
             </form>
 

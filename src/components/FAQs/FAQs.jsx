@@ -29,7 +29,7 @@ let FAQs = (props) => {
 
     return <>
         <div className="section">
-            <div className="container">
+            <div className="container" style={{ marginTop: '-76px' }}>
                 <div className="row">
                     <div className="col-xl-12">
                         <div id="titlebar" className="gradient">

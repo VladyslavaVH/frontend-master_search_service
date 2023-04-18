@@ -7,9 +7,8 @@ import { selectIsAuth, selectIsMaster } from "../../features/auth/authSlice";
 import { useGetHighestRatedMastersQuery } from "../../features/home/homeApiSlice";
 import { useTranslation } from "react-i18next";
 
-const MasterCarousel = (props) => {
+const MasterCarousel = ({ isMapApiLoaded, masters }) => {
   const { t } = useTranslation();
-  const { masters } = props;
 
   const slickSettings = {
     infinite: false,
@@ -67,7 +66,7 @@ const MasterCarousel = (props) => {
         <div className="col-xl-12">
           <div className="default-slick-carousel freelancers-container freelancers-grid-layout">
             {masters?.map((m) =>
-              <MasterCard key={m.id} {...m} />)}
+              <MasterCard isMapApiLoaded={isMapApiLoaded} key={m.id} {...m} />)}
           </div>
         </div>
       </div>

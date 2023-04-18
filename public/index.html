@@ -23,18 +23,23 @@
   <script src="js/jquery-3.6.0.min.js"></script>
   <script src="js/jquery-migrate-3.3.2.min.js"></script>
   <script src="js/mmenu.min.js"></script>
+  <script src="js/tippy.all.min.js"></script>
+  <script src="js/counterup.min.js"></script>
+
 </head>
 
 <body>
   <!-- last commented script -->
   <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRaDVPxyha8RTaqKPBSTdrAVrBWYwV4-Y&libraries=places"></script> -->
-
+  <div id="mobnav__portal"></div>
   <div id="root">
     <div id="wrapper"></div>
   </div>
 
   <div id="portal"></div>
+
   <div id="notification__portal"></div>
+  
 
   <!-- Scripts
 ================================================== -->
@@ -50,6 +55,46 @@
 <script src="js/slick.min.js"></script> -->
 
 <!-- <script src="js/custom.js"></script> -->
+
+<script>
+  "use strict";
+
+  // $(document).ready(function() {    
+  //   function mmenuInit() {
+  //     let wi = $(window).width();
+  //     if(wi <= '1099') {
+
+  //         $(".mmenu-init" ).remove();
+  //         $("#navigation").clone().addClass("mmenu-init").insertBefore("#navigation").removeAttr('id').removeClass('style-1 style-2')
+  //                         .find('ul, div').removeClass('style-1 style-2 mega-menu mega-menu-content mega-menu-section').removeAttr('id');
+  //         $(".mmenu-init").find("ul").addClass("mm-listview");
+  //         $(".mmenu-init").find(".mobile-styles .mm-listview").unwrap();
+
+
+  //         $(".mmenu-init").mmenu({
+  //             "counters": true
+  //         }, {
+  //         // configuration
+  //         offCanvas: {
+  //             pageNodetype: "#wrapper"
+  //         }
+  //         });
+
+  //         let mmenuAPI = $(".mmenu-init").data( "mmenu" );
+  //         let $icon = $(".mmenu-trigger .hamburger");
+
+  //         $(".mmenu-trigger").on('click', function() {
+  //             console.log('hey');
+  //             mmenuAPI.open();
+  //         });
+
+  //     }
+  //     $(".mm-next").addClass("mm-fullsubopen");
+  //   };
+  //   mmenuInit();
+  //   $(window).resize(function() { mmenuInit(); });
+  // });
+</script>
 
 
 <!-- Google Autocomplete -->

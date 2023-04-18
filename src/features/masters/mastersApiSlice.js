@@ -16,7 +16,8 @@ export const mastersApiSlice = apiSlice.injectEndpoints({
         }),
         getAllCandidatesByClient: builder.query({
             query: id => `/client/job/candidates?userId=${id}`,
-            keepUnusedDataFor: 5
+            keepUnusedDataFor: 2,
+            providesTags: ['job']
         }),
         getMasterCategories: builder.query({
             query: id => `/master/categories?masterId=${id}`,

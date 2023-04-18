@@ -29,7 +29,7 @@ const Conversation = (props) => {
 
     return <li className={isActive ? 'active-message' : ''} onClick={onConversationClick}>
         <NavLink state={{ userId: id, receiverAvatar: avatar, name: 'Messages', page: 'Messages'}} 
-        to={`/${isMaster ? 'master' : 'client'}-office/messages/user/${firstName}/${lastName}`}>
+        to={`/${isMaster ? 'master' : 'client'}-office/messages?firstName=${firstName}&lastName=${lastName}&targetUser=${id}`}>
             <div className="message-avatar">
                 <i className={`status-icon status-${isOnline ? 'online' : 'offline'}`}></i>
                 <img src={`${profilePhotosPath}${avatar}`} alt="" />

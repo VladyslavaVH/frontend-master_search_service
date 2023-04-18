@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from "../../../features/auth/authSlice";
 import useLogout from './../../../hooks/useLogout';
@@ -7,20 +7,39 @@ import { useGetMessagesQuery } from '../../../features/user/userApiSlice';
 import Modal from "../../HeaderContainer/Popup/Modal";
 import QrCodeScanner from "../../Jobs/QrCode/QrCodeScanner";
 import { useTranslation } from 'react-i18next';
+import NotificationDialog from "../../HeaderContainer/Popup/NotificationDialog";
 
 let Sidebar = (props) => {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    const [notificationText, setNotificationText] = useState('');
     const { data: unreadMessages } = useGetMessagesQuery();
     const [isApply, setApply] = useState(null);
     const user = useSelector(selectCurrentUser);
     const logout = useLogout();
 
     const location = useLocation();    
+    const navigate = useNavigate();
 
     useEffect(() => {        
-        setApply(location.state.isApply)
+        setApply(location.state?.isApply)
     })
+
+    const viewJobsClick = () => {
+        navigator.permissions.query({ name: "geolocation" }).then((result) => {
+            if (result.state === "granted") {
+                navigate('/jobs', {state: { masterCategories: user?.masterInfo?.categories }});
+            } else if (result.state === "prompt" || result.state === "denied") {
+                setNotificationText('ViewPermissionNotAllowed');
+                setIsNotificationOpen(true);
+            } 
+
+            result.addEventListener("change", () => {
+              
+            });
+        });
+    };
 
     return <div className="dashboard-sidebar">
     <div className="dashboard-sidebar-inner" >{/*data-simplebar*/}
@@ -49,10 +68,10 @@ let Sidebar = (props) => {
                             </a>
                         </li>}
                         <li className={!isOpen && location.pathname.includes('jobs') ? 'active' : ''}>
-                            <NavLink to='/jobs' state={{ masterCategories: user?.masterInfo?.categories }}>
+                            <a onClick={viewJobsClick}>
                                 <i className="icon-material-outline-assignment"></i> 
                                 {t('ViewJobs')}
-                            </NavLink>
+                            </a>
                         </li>
                         <li className={!isOpen && location.pathname.includes('messages') ? 'active' : ''}>
                             <NavLink state={{name: 'Messages', page: 'Messages'}}
@@ -112,6 +131,9 @@ let Sidebar = (props) => {
             </div>
             {/* <!-- Navigation / End --> */}
 
+            <NotificationDialog type="notice" open={isNotificationOpen} onClose={() => setIsNotificationOpen(false)}>
+                {t(notificationText)}
+            </NotificationDialog>
         </div>
     </div>
 </div>;

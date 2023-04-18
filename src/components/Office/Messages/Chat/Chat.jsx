@@ -2,16 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import ReplyArea from "./ReplyArea";
 import TimeSign from './TimeSign';
 import Message from './Message';
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { useGetMessagesQuery } from '../../../../features/user/userApiSlice';
 import { useSelector } from "react-redux";
 import { selectCurrentUser, selectCurrentSocket } from './../../../../features/auth/authSlice';
 import { useTranslation } from 'react-i18next';
-import io from 'socket.io-client';
 
-//const socket = io("http://localhost:5000");
-
-const Chat = (props) => {
+const Chat = ({}) => {
     const [messages, setMessages] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
 
@@ -20,7 +17,8 @@ const Chat = (props) => {
     const socket = useSelector(selectCurrentSocket);
     const location = useLocation();
     const { firstName, lastName } = useParams();
-    const { data, isLoading } = useGetMessagesQuery(location.state.userId);
+    const [searchParams] = useSearchParams();
+    const { data, isLoading } = useGetMessagesQuery(location?.state?.userId ? location.state.userId : searchParams.get('targetUser'));
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const scrollRef = useRef();
     //const socket = useRef();
@@ -84,10 +82,10 @@ const Chat = (props) => {
 
 
     return <div style={{ maxHeight: '730px' }} className="message-content">
-        <div className="messages-headline">
-            <h4>{`${firstName} ${lastName}`}</h4>
+        {searchParams.get('lastName') != null &&<div className="messages-headline">
+             <h4>{`${firstName ? firstName : searchParams.get('firstName')} ${lastName ? lastName : searchParams.get('lastName')}`}</h4>
             {false && <a href="#" className="message-action"><i className="icon-feather-trash-2"></i> {t('DeleteConversation')}</a>}
-        </div>
+        </div>}
 
         <div ref={scrollRef} className="message-content-inner">
 
@@ -102,13 +100,14 @@ const Chat = (props) => {
             : null}
         </div>
 
+        {searchParams.get('lastName') != null &&
         <ReplyArea 
         avatar={user?.avatar}
         socket={socket}
         setMessages={setMessages} 
         messages={messages} 
         senderId={user?.id} 
-        receiverId={location.state.userId} />
+        receiverId={location?.state?.userId ? location.state.userId : searchParams.get('targetUser')} />}
     </div>;
 }
 

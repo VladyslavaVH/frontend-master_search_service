@@ -25,7 +25,7 @@ import Chat from "./components/Office/Messages/Chat/Chat";
 import ManageCandidates from "./components/Office/ClientOffice/ManageCandidates/ManageCandidates";
 import OrderConfirmation from "./components/OrderConfirmation";
 import Invoice from "./components/Invoice/Invoice";
-import { wrapperHeight, fullPageScrollbar } from "./amimations/amimations";
+import { wrapperHeight, fullPageScrollbar, stickyHeader } from "./amimations/amimations";
 import AdminPanel from "./components/Office/AdminPanel/AdminPanel";
 import MasterDocuments from './components/Office/AdminPanel/MasterDocuments';
 import SiteStatistics from './components/Office/AdminPanel/SiteStatistics';
@@ -38,7 +38,6 @@ import Unauthorized from "./components/Unauthorized";
 import { setPersist } from "./features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { Loader } from '@googlemaps/js-api-loader';
-import io from "socket.io-client";
 
 const ROLE = {
   ADMIN: process.env.REACT_APP_ADMIN_ROLE,
@@ -56,7 +55,7 @@ function App() {
   const pxShow = 600; // height on which the button will show
   const scrollSpeed = 500; // how slow / fast you want the button to scroll to top.
 
-  const [isMapApiLoaded, setIsMapApiLoaded] = useState(false)
+  const [isMapApiLoaded, setIsMapApiLoaded] = useState(false);
 
   useEffect(() => {
       if (isMapApiLoaded || window.google) return;
@@ -64,6 +63,8 @@ function App() {
           apiKey: API_KEY,
           version: 'beta',
           libraries: [ 'marker', 'places', 'geometry'],
+          //types: ['(cities)'],
+		      //componentRestrictions: {country: "us"}
           language: 'en'
       })
       loader.load().then(() => {
@@ -95,7 +96,8 @@ function App() {
 
   useEffect(() => {
     dispatch(setPersist(localStorage.getItem('persist') || false));
-    
+
+    stickyHeader();    
     backToTop();
     windowScroll();
     backtotopOnClick();
@@ -111,6 +113,10 @@ function App() {
     });
 
     $(window).on('load resize', function() {
+      let transparentHeaderHeight = $('.transparent-header').outerHeight();
+      $('.transparent-header-spacer').css({
+        height: transparentHeaderHeight,
+      });
       wrapperHeight();
       fullPageScrollbar();
     });
@@ -119,23 +125,25 @@ function App() {
   }, []);
 
   return (
-      <div className="App">
-        <div id="wrapper">
+      <div className="App" style={{ overflowX: 'hidden' }}>
+        <div id="wrapper" style={{ 
+          transitionProperty: 'transform',
+          transitionDuration: '0.3s',
+          transitionTimingFunction: 'ease',
+         }}>
           <HeaderContainer />
           <div className="clearfix"></div>
           <Routes>
-            {/*public routes*/}
-            <Route path="/" element={<Home isMapApiLoaded={isMapApiLoaded} />} />    
-
-            <Route path="/masters" element={<Masters />} />    
-            <Route path="*" element={<Page404 />} />
-            <Route path="/unauthorized" element={<Unauthorized />} />
-            <Route path="/contact/us" element={<ContactUs isMapApiLoaded={isMapApiLoaded} />} />
-            <Route path="/faqs" element={<FAQs />} />
-
-            {/*protected routes*/}
             <Route element={<PersistLogin />}>
-              
+              {/*public routes*/}
+              <Route path="/masters" element={<Masters />} />    
+              <Route path="*" element={<Page404 />} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
+              <Route path="/contact/us" element={<ContactUs isMapApiLoaded={isMapApiLoaded} />} />
+              <Route path="/faqs" element={<FAQs />} />
+              <Route path="/" element={<Home isMapApiLoaded={isMapApiLoaded} />} />
+        
+              {/*protected routes*/}              
               <Route element={<RequireAuth allowedRole={ROLE.ADMIN} />}>
                 <Route path="/admin-panel" element={<AdminPanel />} >
                   <Route path="statistics" element={<SiteStatistics />} />
@@ -149,18 +157,20 @@ function App() {
   
               <Route element={<RequireAuth allowedRole={ROLE.CLIENT} />}>
                 <Route path="/client-office" element={<ClientOffice />} >
-                  <Route path="master-profile" element={<MasterProfile />} />
+                  <Route path="master-profile" element={<MasterProfile isMapApiLoaded={isMapApiLoaded} />} />
                   <Route path="job-posting" element={<JobPosting />} />
-                  <Route path="manage-jobs/edit/job/:title" element={<EditJob />} />
-                  <Route path="manage-jobs/job/:title" element={<SingleJob />} />
+                  <Route path="manage-jobs/edit/job" element={<EditJob />} />
+                  <Route path="manage-jobs/job" element={<SingleJob isMapApiLoaded={isMapApiLoaded} />} />
       
                   <Route path="messages" element={<Messages />} >
+                    <Route path="" element={<Chat />} />
+                    <Route path="user" element={<Chat />} />
                     <Route path="user/:id" element={<Chat />} />
                     <Route path="user/:firstName/:lastName" element={<Chat />} />
                   </Route>
       
-                  <Route path="manage-jobs" element={<ManageJobs />} />
-                  <Route path="manage-jobs/manage-candidates/:jobTitle" element={<ManageCandidates />} />
+                  <Route path="manage-jobs" element={<ManageJobs isMapApiLoaded={isMapApiLoaded} />} />
+                  <Route path="manage-jobs/manage-candidates" element={<ManageCandidates isMapApiLoaded={isMapApiLoaded} />} />
                   <Route path="settings" element={<Settings />} />
                 </Route>
               </Route>

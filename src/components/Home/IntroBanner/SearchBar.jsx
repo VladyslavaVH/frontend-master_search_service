@@ -1,29 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import {
-    geocodeByAddress,
-    geocodeByPlaceId,
-    getLatLng,
-} from 'react-places-autocomplete';
+import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import PlacesAutocomplete from "react-places-autocomplete";
 import { useTranslation } from "react-i18next";
+import NotificationDialog from "../../HeaderContainer/Popup/NotificationDialog";
 
 const SearchBar = ({isMapApiLoaded}) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const [where, setWhere] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
+    const [text, setText] = useState('');
     const [job, setJob] = useState('');
-
-    useEffect(() => {
-
-
-        //    // Autocomplete adjustment for homepage
-        //    if ($('.intro-banner-search-form')[0]) {
-        //        setTimeout(function(){ 
-        //            $(".pac-container").prependTo(".intro-search-field.with-autocomplete");
-        //        }, 300);
-        //   }
-    }, []);
 
     const [address, setAddress] = useState('');
     const [coordinates, setCoordinates] = useState({
@@ -33,11 +20,25 @@ const SearchBar = ({isMapApiLoaded}) => {
 
     const handleSelect = async value => {
         const results = await geocodeByAddress(value);
-        const ll = await getLatLng(results[0]);
-        console.log(ll);
+        const latlng = await getLatLng(results[0]);
 
         setAddress(value);
-        setCoordinates(ll);
+        setCoordinates(latlng);
+    };
+
+    const onSearchBtnClick = () => {
+        if (address?.length > 0 && coordinates.lat && coordinates.lng) {
+            navigate(`/jobs/${job}`, { 
+                state: {
+                    title: job,
+                    pos: {...coordinates}
+                }
+            });
+        } else {
+            setText('EmptyAddress');
+            setIsOpen(true);
+        }
+        
     };
 
     return <div className="row">
@@ -105,15 +106,14 @@ const SearchBar = ({isMapApiLoaded}) => {
                 {/* <!-- Button --> */}
                 <div className="intro-search-button">
                     <button className="button ripple-effect" 
-                    onClick={() => navigate(`/jobs/${job}`, { 
-                        state: {
-                            title: job,
-                            pos: {...coordinates}
-                        }
-                    }) }>{t('Search')}</button>
+                    onClick={onSearchBtnClick}>{t('Search')}</button>
                 </div>
             </div>
         </div>
+
+        <NotificationDialog type="warning" open={isOpen} onClose={() => setIsOpen(false)}>
+            {t(text)}
+        </NotificationDialog>
     </div>;
 }
 

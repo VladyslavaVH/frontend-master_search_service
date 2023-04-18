@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { PhotoProvider, PhotoView } from 'react-photo-view';
-import { useGetFullMasterInfoQuery } from "../../../../features/admin/adminApiSlice";
 import { useTranslation } from 'react-i18next';
 
 const Documents = ({ documents }) => {
-    const { t } = useTranslation();
-
     return <div className="col-xl-12 padding-bottom-15" style={{ display: 'flex', flexWrap: 'wrap' }}>
     <PhotoProvider
         speed={() => 800}

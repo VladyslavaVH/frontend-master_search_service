@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { inlineBG } from "../../../amimations/amimations";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCurrentLanguage, selectIsMaster } from './../../../features/auth/authSlice';
 import { useGetJobByIdQuery, useGetJobPhotosQuery } from "../../../features/jobs/jobsApiSlice";
@@ -12,10 +12,19 @@ import ApplyJob from "./ApplyJob";
 import { useTranslation } from 'react-i18next';
 import { fireSingleCategory } from '../../../utils/firebase.config';
 import DisplayTime from './../DisplayTime';
+import { useSearchParams } from "react-router-dom";
 
 const SingleJob = (props) => { 
     const { t } = useTranslation();
     const lang = useSelector(selectCurrentLanguage);
+    const [searchParams] = useSearchParams();
+
+    // useEffect(() => {
+    //     console.log(searchParams.get('id'));
+    //     for (const entry of searchParams.entries()) {
+    //         console.log(entry);
+    //     }
+    // }, [searchParams]);
 
     const [ isOpen, setIsOpen ] = useState(false);
     const location = useLocation();
@@ -25,11 +34,11 @@ const SingleJob = (props) => {
     const flagPath = process.env.REACT_APP_FLAG_PATH;
     const jobPhotosPath = process.env.REACT_APP_JOB_PHOTOS_PATH;
 
-    const { data: photos } = useGetJobPhotosQuery(location.state.id);
-    const { data, isLoading } = useGetJobByIdQuery(location.state.id);
+    const { data: photos } = useGetJobPhotosQuery(location?.state?.id ? location.state.id : searchParams.get('id'));
+    const { data, isLoading } = useGetJobByIdQuery(location?.state?.id ? location.state.id : searchParams.get('id'));
     const { id, isMasterConfirmed, firstName, lastName, isVerified, minPayment, maxPayment, currency, description, lat, lng, category, createTime, days } = data || {};
 
-    const [translatedCategory, setTranslatedCategory] = useState(category);
+    const [translatedCategory, setTranslatedCategory] = useState(category ? category : searchParams.get('category'));
     const { data: jobApply } = useGetMasterJobApplyStatusQuery(id);
     const [addr, setAddr] = useState('');
 
@@ -46,17 +55,17 @@ const SingleJob = (props) => {
                     if( status === window.google.maps.GeocoderStatus.OK ) {
                         setAddr(results[0].formatted_address);
                       } else {
-                        alert("Sorry - We couldn't find this location. Please try an alternative");
+                        console.error("Sorry - We couldn't find this location. Please try an alternative");
                      }
                 })
-                .catch((e) => console.log("Geocoder failed due to: " + e + ` lat: ${lat} lng: ${lng}`));
+                .catch((e) => console.error("Geocoder failed due to: " + e + ` lat: ${lat} lng: ${lng}`));
             }
         }
     }, [isLoading]);
     
     useEffect(() => {
         if(!isLoading) {
-            fireSingleCategory(category, lang, setTranslatedCategory);
+            fireSingleCategory(category ? category : searchParams.get('category'), lang, setTranslatedCategory);
         }
     }, [isLoading, lang]);
 
@@ -133,7 +142,7 @@ const SingleJob = (props) => {
                         {(!(!!+isMasterConfirmed) && isMaster) && (jobApply?.status === null || jobApply?.status === undefined) &&
                             <>
                                 <a onClick={() => setIsOpen(true)} style={{ color: '#fff', cursor: 'pointer' }} className="apply-now-button popup-with-zoom-anim">{t("ApplyNow")} <i className="icon-material-outline-arrow-right-alt"></i></a>
-                                <ApplyJob jobId={location.state.id} open={isOpen} onClose={() => setIsOpen(false)} />
+                                <ApplyJob jobId={location?.state?.id ? location.state.id : searchParams.get('id')} open={isOpen} onClose={() => setIsOpen(false)} />
                             </>
                         }
 

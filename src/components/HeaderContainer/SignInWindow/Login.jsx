@@ -11,21 +11,23 @@ import NotificationDialog from './../Popup/NotificationDialog';
 
 const Login = ({ onClose, fromLocationData, from }) => {
     const { t } = useTranslation();
-    const { register, handleSubmit } = useForm();
     const [isOpen, setIsOpen] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
+    const [isPassword, setIsPassword] = useState(true);
 
-    const [login, { isLoading }] = useLoginMutation();
+    const [login] = useLoginMutation();
     const persist = useSelector(selectPersist);
-    const [isPersist, setIsPersist] = useState(false);//??
+    const [isPersist, setIsPersist] = useState(persist);//??
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const onSubmit = async (data) => {
+    const onSubmit = async e => {
+        e.preventDefault();
+        
         try {
-            const userData = await login(data).unwrap();
+            const userData = await login({ phone: phoneNumber == '+0965323364' ? '0965323364' : phoneNumber, password }).unwrap();
             if (!userData) return;
 
             dispatch(setAuth({...userData}));
@@ -46,32 +48,27 @@ const Login = ({ onClose, fromLocationData, from }) => {
         dispatch(setPersist(!isPersist));
     }
 
-    useEffect(() => {
-        
-        localStorage.setItem('persist', isPersist);
+    useEffect(() => {        
+        isPersist && localStorage.setItem('persist', isPersist);
     }, [isPersist]);
 
-    const onPhoneChange = e => {
-        const re = /^[\+0-9\b]+$/;
+    const onPhoneChange = val => {
+        const phoneRegex = /^[\+0-9\b]+$/;
+        const lastChar = val[val.length - 1];
 
-        if (e.keyCode !== 16) {
-            if (re.test(e.key)) {
-                
-                if (e.key === '+') {
-                    if (!phoneNumber.startsWith('+') && phoneNumber.indexOf('+') === -1 && phoneNumber.length === 0) {
-                        setPhoneNumber(phoneNumber + e.key);                                            
-                    }
-                } else {
-                    setPhoneNumber(phoneNumber + e.key); 
-                }
-                
+        if (phoneRegex.test(lastChar) && phoneRegex.test(val)) {
+            
+            if (lastChar === '+') {
+                return (!phoneNumber.startsWith('+') && phoneNumber.indexOf('+') === -1 && phoneNumber.length === 0)
+                ? val                                          
+                : val.substr(0, val.length - 1);
             }
-
-            if (e.keyCode === 8) {
-                setPhoneNumber(phoneNumber.slice(0, phoneNumber.length - 1));
-            }  
+            
+            return val[0] === '+' ? val : '+' + val;      
+            
         }
-
+            
+        return val.length === 0 ? '' : phoneNumber;
     };
 
     return <div className="popup-tab-content" id="login">
@@ -81,19 +78,24 @@ const Login = ({ onClose, fromLocationData, from }) => {
             <span>{t('DontHaveAnAccount')} <a data-signin="1" style={{ color: '#2a41e8', cursor: 'pointer' }}  className="register-tab">{t('SignUp')}</a></span>
         </div>
 
-        <form onSubmit={ handleSubmit(onSubmit) } id="login-form">
+        <form onSubmit={onSubmit} id="login-form">
             <div className="input-with-icon-left">
                 <i className="icon-feather-phone"></i>
-                <input type="tel" value={phoneNumber} onKeyDown={onPhoneChange} title="Only + and numbers"
-                 {...register('phone', { required: true })} autoComplete={"off"}
+                <input type="tel"  title="Only + and numbers" 
+                value={phoneNumber}
+                onChange={e => setPhoneNumber(onPhoneChange(e.target.value))}
                 className="input-text with-border" name="phone" id="phone" placeholder={t('PhoneNumber')} required />
             </div>
 
-            <div className="input-with-icon-left">
-                <i className="icon-material-outline-lock"></i>
-                <input type="password" title='Should be at least 8 characters long'
-                {...register('password', { required: true })}
-                className="input-text with-border" name="password" id="password" placeholder={t('Password')} required />
+            <div className="input-with-eye-icon">
+                <div className='input-with-icon-left'>
+                    <i className="icon-material-outline-lock"></i>
+                    <input type={isPassword ? 'password' : 'text'} title='Should be at least 8 characters long'
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    className="input-text with-border" name="password" id="password" placeholder={t('Password')} required />
+                </div>
+                <i className={`icon-feather-eye${isPassword ? '' : '-off'}`} onClick={() => setIsPassword(!isPassword)}></i>
             </div>
         </form> 
 
