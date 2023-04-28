@@ -4,6 +4,10 @@ import ReactDOM from 'react-dom';
 export default function NotificationDialog({ open = false, onClose, type = 'error', children}) {
   if (open) {
     document.getElementById('notification__portal').style.display = 'flex';
+    if (type === 'notice' || type === 'success') {
+      setTimeout(onClose, 3000);
+    }
+
   } else {
     let displayNone = false;
     for (const n of document.getElementById('notification__portal').children) {
@@ -31,7 +35,7 @@ export default function NotificationDialog({ open = false, onClose, type = 'erro
 
   return ReactDOM.createPortal (
     <>
-        <div className={`notification ${type} closeable`} style={POSITION_STYLES}>
+        <div className={`notification ${type} ${(type === 'notice' || type === 'success') ? '' : 'closeable'}`} style={POSITION_STYLES}>
 				  <p>{children}</p>
 				  <a className="close" onClick={() => onClose()}></a>
 			  </div>

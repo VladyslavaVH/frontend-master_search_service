@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import $ from 'jquery';
-import { avatarSwitcher } from "../../../amimations/amimations";
 import { useSelector } from 'react-redux';
 import { selectCurrentUser, selectIsAdmin, selectIsMaster } from "../../../features/auth/authSlice";
 import PasswordChange from "./PasswordChange";
@@ -8,22 +7,16 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useChangeAvatarMutation } from "../../../features/user/userApiSlice";
-import CategoriesList from "./CategoriesList";
 import { useTranslation } from 'react-i18next';
 import { useGetFullMasterInfoQuery } from "../../../features/admin/adminApiSlice";
-import { PhotoProvider, PhotoView } from 'react-photo-view';
-import nationalities from "./nationalities";
-import Select from 'react-select';
-import NationalitySelect from "./NationalitySelect";
-import EmailVerification from "./MasterComponents/EmailVerification";
+import EmailVerification from "./EmailVerification";
 import Documents from "./MasterComponents/Documents";
 import UploadDocuments from "./MasterComponents/UploadDocuments";
 import ProfileSettings from "./MasterComponents/ProfileSettings";
 import { setNewAvatar } from "../../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
 import LocationPermission from "./MasterComponents/LocationPermission";
+import { useGetInfoQuery } from "../../../features/user/userApiSlice";
 
 const schema = yup
     .object()
@@ -48,9 +41,10 @@ let Settings = (props) => {
 
     const isMaster = useSelector(selectIsMaster);
     const isAdmin = useSelector(selectIsAdmin);
+    const { data: info } = useGetInfoQuery();
     const { id, firstName, lastName, avatar, phone, email, isEmailVerified,
         masterInfo
-    } = useSelector(selectCurrentUser);
+    } = info || {};
     const [avatarPhoto, setAvatarPhoto] = useState(avatar);
     const { data, isLoading } = useGetFullMasterInfoQuery(id);
     const { passportFirstSide, passportSecondSide, individual_tax_number } = data || {};
@@ -64,8 +58,13 @@ let Settings = (props) => {
     const mastersDocumentsPath = process.env.REACT_APP_MASTERS_DOCUMENTS_PATH;
 
     useEffect(() => {
+        if (avatar) {
+            setAvatarPhoto(avatar);
+        }
+    }, [avatar]);
+
+    useEffect(() => {
         if (!isLoading && documents.length < 3) {      
-            console.log(data)      
             data.passportFirstSide && documents.push(`${mastersDocumentsPath}${passportFirstSide}`);
             data.passportSecondSide && documents.push(`${mastersDocumentsPath}${passportSecondSide}`);
             data.individual_tax_number && documents.push(`${mastersDocumentsPath}${individual_tax_number}`);
@@ -195,6 +194,11 @@ let Settings = (props) => {
                     </div>
                 </div>
 
+                {!(!!+isEmailVerified)
+                    ? <EmailVerification email={email} />
+                    : null
+                }
+
                 {!!+isMaster
                     ? <>
                     
@@ -222,10 +226,6 @@ let Settings = (props) => {
 
                         <ProfileSettings categories={categories} tagLine={tagLine} description={description} />
 
-                        {!(!!+isEmailVerified)
-                            ? <EmailVerification email={email} />
-                            : null
-                        }
                     </>
                     : null}
             </>}

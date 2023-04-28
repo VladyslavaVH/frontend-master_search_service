@@ -9,7 +9,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 body: { ...credentials }
             }),
             invalidatesTags: ['settings'],
-            providesTags: ['avatar']
+            providesTags: ['avatar', 'settings']
         }),
         registration: builder.mutation({
             query: credentials => ({
@@ -17,7 +17,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: { ...credentials }
             }), 
-            invalidatesTags: ['settings']
+            invalidatesTags: ['settings'],
+            providesTags: ['settings']
         }),             
     })
 });

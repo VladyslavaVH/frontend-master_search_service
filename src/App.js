@@ -38,6 +38,7 @@ import Unauthorized from "./components/Unauthorized";
 import { setPersist } from "./features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { Loader } from '@googlemaps/js-api-loader';
+import EmailConfirmation from "./components/Confirmation/EmailConfirmation";
 
 const ROLE = {
   ADMIN: process.env.REACT_APP_ADMIN_ROLE,
@@ -142,6 +143,7 @@ function App() {
               <Route path="/contact/us" element={<ContactUs isMapApiLoaded={isMapApiLoaded} />} />
               <Route path="/faqs" element={<FAQs />} />
               <Route path="/" element={<Home isMapApiLoaded={isMapApiLoaded} />} />
+              <Route path="/confirmation/:token/:id/:email" element={<EmailConfirmation />} />
         
               {/*protected routes*/}              
               <Route element={<RequireAuth allowedRole={ROLE.ADMIN} />}>

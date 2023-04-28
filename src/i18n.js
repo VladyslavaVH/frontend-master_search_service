@@ -234,6 +234,8 @@ i18n
           DeniedPermission: 'You previously declined permission to view your geolocation. To use all the features of the service, enable the permission to view your location for our site in the browser settings.',
           ViewPermissionNotAllowed: 'To access viewing applications nearby, confirm permission to view your location in your account settings.',
           EmptyAddress: 'Empty address',
+          TheConfirmationLetterHasBeenSentSuccessfully: 'The confirmation letter has been sent successfully. Please confirm your email.',
+          TheEmailIsNotValid: 'The email is not valid.',
         }    
       },
     uk: {
@@ -453,6 +455,8 @@ i18n
           DeniedPermission: 'Раніше ви відхилили дозвіл на перегляд своєї геолокації. Щоб користуватися всіма можливостями сервісу, увімкніть дозвіл на перегляд вашого місцезнаходження для нашого сайту в налаштуваннях браузера.',
           ViewPermissionNotAllowed: 'Для доступу до перегляду заявок поблизу, підтвердіть дозвіл на перегляд вашого місцезнаходження в налаштуваннях кабінету.',
           EmptyAddress: 'Порожня адреса',
+          TheConfirmationLetterHasBeenSentSuccessfully: 'Лист-підтвердження успішно надіслано. Будь ласка, підтвердьте свою електронну адресу.',
+          TheEmailIsNotValid: 'Електронна адреса недійсна.',
         }      
       },
       cs: {
@@ -672,6 +676,8 @@ i18n
           DeniedPermission: 'Dříve jste odmítli oprávnění zobrazit svou geolokaci. Chcete-li využívat všechny funkce služby, povolte v nastavení prohlížeče oprávnění k zobrazení vaší polohy pro naše stránky.',
           ViewPermissionNotAllowed: 'Chcete-li získat přístup k prohlížení aplikací v okolí, potvrďte oprávnění k zobrazení vaší polohy v nastavení účtu.',
           EmptyAddress: 'Prázdná adresa',
+          TheConfirmationLetterHasBeenSentSuccessfully: 'Potvrzující dopis byl úspěšně odeslán. Prosím, potvrďte svůj email.',
+          TheEmailIsNotValid: 'E-mail není platný.',
         }
       },
     }

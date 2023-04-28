@@ -2,6 +2,11 @@ import { apiSlice } from "../../app/api/apiSlice";
 
 export const masterApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
+        getInfo: builder.query({
+            query: () => `/user/info`,
+            keepUnusedDataFor: 5,
+            providesTags: ['settings'] 
+        }),
         getNotifications: builder.query({
             query: () => `/user/notifications`,
             keepUnusedDataFor: 5 
@@ -19,6 +24,21 @@ export const masterApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['avatar']
         }),
+        sendEmailConfirmation: builder.mutation({
+            query: formData => ({
+                url: '/user/confirmation',
+                method: 'PUT',
+                body: formData
+            }),
+        }),  
+        updateConfirmation: builder.mutation({
+            query: formData => ({
+                url: '/update/confirmation',
+                method: 'PUT',
+                body: formData
+            }),
+            invalidatesTags: ['settings']
+        }),  
         createNewMessage: builder.mutation({
             query: formData => ({
                 url: '/conversations',
@@ -31,9 +51,12 @@ export const masterApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
+    useGetInfoQuery,
     useGetNotificationsQuery,
     useGetMessagesQuery,
     useChangeAvatarMutation,
+    useSendEmailConfirmationMutation,
+    useUpdateConfirmationMutation,
     useCreateNewMessageMutation,
 } = masterApiSlice
 
