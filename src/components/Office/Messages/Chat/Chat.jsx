@@ -5,8 +5,9 @@ import Message from './Message';
 import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { useGetMessagesQuery } from '../../../../features/user/userApiSlice';
 import { useSelector } from "react-redux";
-import { selectCurrentUser, selectCurrentSocket } from './../../../../features/auth/authSlice';
+import { selectCurrentUser, selectCurrentSocket, clearUnreadMessagesByUser } from './../../../../features/auth/authSlice';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from "react-redux";
 
 const Chat = ({}) => {
     const [messages, setMessages] = useState([]);
@@ -16,6 +17,7 @@ const Chat = ({}) => {
     const user = useSelector(selectCurrentUser);
     const socket = useSelector(selectCurrentSocket);
     const location = useLocation();
+    const dispatch = useDispatch();
     const { firstName, lastName } = useParams();
     const [searchParams] = useSearchParams();
     const { data, isLoading } = useGetMessagesQuery(location?.state?.userId ? location.state.userId : searchParams.get('targetUser'));
@@ -24,11 +26,17 @@ const Chat = ({}) => {
     //const socket = useRef();
 
     useEffect(() => {
+        if (searchParams.get('targetUser')) {
+            dispatch(clearUnreadMessagesByUser({ targetUser: searchParams.get('targetUser') }));
+        }
+    }, []);
+
+    useEffect(() => {
         //socket.current = io(`ws://localhost:5000`);
         //socket.current = io(`http://localhost:5000`);
         if (socket) {
             socket.on('getMessage', data => {
-                console.log('client data from getMessage', data);
+                //console.log('client data from getMessage', data);
                 setArrivalMessage({
                     senderFK: data.senderFK,
                     receiverFK: data.receiverFK,
@@ -107,6 +115,7 @@ const Chat = ({}) => {
         setMessages={setMessages} 
         messages={messages} 
         senderId={user?.id} 
+        senderFullName={`${user?.firstName} ${user?.lastName}`}
         receiverId={location?.state?.userId ? location.state.userId : searchParams.get('targetUser')} />}
     </div>;
 }

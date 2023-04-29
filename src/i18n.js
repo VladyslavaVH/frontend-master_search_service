@@ -209,6 +209,7 @@ i18n
           YourDataHasBeenSuccessfullyUpdated: 'Your data has been successfully updated!',
           SaveProfileChanges: 'Save profile changes',
           PhoneExistsMessage: 'The user with this phone number is already registered. \nPlease log in to your account or reset your password if you have forgotten it.',
+          PhoneNotExistsMessage: 'The user with this phone number is not registered.',
           MasterWithoutPermission: 'To access this service option, please go through full verification at your office. If you have passed it, please wait for verification confirmation from the site administrator.',
           Only2PassportPhotos: 'Please select only 2 passport photos',
           UploadDocError: 'An error occurred while uploading the photo. Please try this operation again later.',
@@ -236,6 +237,7 @@ i18n
           EmptyAddress: 'Empty address',
           TheConfirmationLetterHasBeenSentSuccessfully: 'The confirmation letter has been sent successfully. Please confirm your email.',
           TheEmailIsNotValid: 'The email is not valid.',
+          EmptyNewQuestionOrAnswer: 'New question or answer is empty',
         }    
       },
     uk: {
@@ -430,6 +432,7 @@ i18n
           YourDataHasBeenSuccessfullyUpdated: 'Ваші дані були успішно оновлені!',
           SaveProfileChanges: 'Зберегти зміни профілю',
           PhoneExistsMessage: 'Користувач за цим номером телефону вже зареєстрований. \nБудь ласка, увійдіть в свій акаунт або скиньте пароль, якщо ви його забули.',
+          PhoneNotExistsMessage: 'Користувач за цим номером телефону не зареєстрований.',
           MasterWithoutPermission: 'Для доступу до цієї опції сервісу, будь ласка, пройдіть повну верифікацію в вашому кабінеті. В випадку, якщо ви її пройшли, будь ласка, дочекайтеся підтвердження верифікації від адміністратора сайту.',
           Only2PassportPhotos: 'Будь ласка, оберіть тільки 2 фотографії паспорту',
           UploadDocError: 'Сталася помилка під час завантаження фото. Будь ласка, повторіть цю операцію пізніше.',
@@ -457,6 +460,7 @@ i18n
           EmptyAddress: 'Порожня адреса',
           TheConfirmationLetterHasBeenSentSuccessfully: 'Лист-підтвердження успішно надіслано. Будь ласка, підтвердьте свою електронну адресу.',
           TheEmailIsNotValid: 'Електронна адреса недійсна.',
+          EmptyNewQuestionOrAnswer: 'Нове запитання чи відповідь порожні',
         }      
       },
       cs: {
@@ -651,6 +655,7 @@ i18n
           YourDataHasBeenSuccessfullyUpdated: 'Vaše data byla úspěšně aktualizována!',
           SaveProfileChanges: 'Uložení změn profilu',
           PhoneExistsMessage: 'Uživatel s tímto telefonním číslem je již zaregistrován. \nPřihlaste se prosím ke svému účtu nebo si resetujte heslo, pokud jste jej zapomněli.',
+          PhoneNotExistsMessage: 'Uživatel s tímto telefonním číslem není registrován.',
           MasterWithoutPermission: 'Chcete-li získat přístup k této možnosti služby, proveďte úplné ověření ve svém účtu. Pokud jste ji prošli, vyčkejte prosím na potvrzení ověření od správce webu.',
           Only2PassportPhotos: 'Vyberte prosím pouze 2 pasové fotografie',
           UploadDocError: 'Při nahrávání fotografie došlo k chybě. Zkuste prosím tuto operaci znovu později.',
@@ -678,6 +683,7 @@ i18n
           EmptyAddress: 'Prázdná adresa',
           TheConfirmationLetterHasBeenSentSuccessfully: 'Potvrzující dopis byl úspěšně odeslán. Prosím, potvrďte svůj email.',
           TheEmailIsNotValid: 'E-mail není platný.',
+          EmptyNewQuestionOrAnswer: 'Nová otázka nebo odpověď je prázdná',
         }
       },
     }

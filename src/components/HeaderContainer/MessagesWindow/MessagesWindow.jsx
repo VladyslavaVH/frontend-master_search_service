@@ -1,15 +1,62 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { selectUnreadMessages, selectIsMaster } from "../../../features/auth/authSlice";
+import { selectUnreadMessages, selectIsMaster, selectCurrentSocket } from "../../../features/auth/authSlice";
 import { NavLink } from 'react-router-dom';
 import MessageListItem from "./MessageListItem";
 import { useTranslation } from "react-i18next";
+import { addNewMessage, clearUnreadMessages } from "../../../features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 const MessagesWindow = (props) => {
     const { t } = useTranslation();
+    const dispatch = useDispatch();
     const [isActive, setIsActive] = useState(false);
     let unreadMessages = useSelector(selectUnreadMessages); 
     let isMaster = useSelector(selectIsMaster);
+    const socket = useSelector(selectCurrentSocket);
+
+    const addNewMessageToArray = async data => {
+        console.log(`new message from ${data.senderFK}`, data);
+
+        try {
+            dispatch(addNewMessage({ 
+                id: data.senderFK, 
+                receiverId: data.receiverFK,
+                fullName: data.senderFullName, 
+                message: data.message, 
+                avatar: data.avatar, 
+                date: Date.now()
+            }));
+        } catch (error) {
+            console.error(error);
+        }
+
+        // setArrivalMessage({
+        //     senderFK: data.senderFK,
+        //     receiverFK: data.receiverFK,
+        //     message: data.message,
+        //     avatar: data.avatar,
+        //     createdAt: Date.now()
+        // });
+    };
+
+    useEffect(() => {
+        if (socket) {
+            socket.on('getMessage', addNewMessageToArray);            
+        } else {
+            console.log('socket is not available');
+        }
+    }, [socket]);
+
+    useEffect(() => {
+        if (unreadMessages.length !== 0) {
+            console.log(unreadMessages);
+        }
+    }, [unreadMessages]);
+
+    const markAsAllRead = () => {
+        dispatch(clearUnreadMessages());
+    }
 
     return <div className={`header-notifications ${isActive ? 'active' : ''}`} >
         <div className="header-notifications-trigger" style={{ cursor: 'pointer' }}>
@@ -26,7 +73,7 @@ const MessagesWindow = (props) => {
                 <h4>{t('Messages')}</h4>
 
                 {unreadMessages.length !== 0 
-                && <button className="mark-as-read ripple-effect-dark" title={t('MarkAllAsRead')} data-tippy-placement="left">
+                && <button onClick={markAsAllRead} className="mark-as-read ripple-effect-dark" title={t('MarkAllAsRead')} data-tippy-placement="left">
                     <i className="icon-feather-check-square"></i>
                 </button>}
             </div>

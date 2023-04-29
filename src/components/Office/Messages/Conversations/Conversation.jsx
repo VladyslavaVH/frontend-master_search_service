@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from 'react-router-dom';
-import { useSelector } from "react-redux";
-import { selectIsMaster } from '../../../../features/auth/authSlice';
+import { NavLink, useSearchParams, useNavigate} from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
+import { selectIsMaster, clearUnreadMessagesByUser } from '../../../../features/auth/authSlice';
 
 const Conversation = (props) => {
     const [isOnline, setIsOnline] = useState(false);
+    const [searchParams] = useSearchParams();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { socket, id, firstName, lastName, isActive, avatar, date, message,
         setActiveConversation } = props;  
     
     useEffect(() => {
         if (socket) {
+            socket.emit('checkUserStatus', id);
+
             socket.on('isOnline', userId => {
                 if (userId == id) {
                     setIsOnline(true);                
+                }
+            });
+
+            socket.on('getUsers', (users) => {
+                let tmp = users.find(u => u.id == id);
+                if (!tmp) {
+                    setIsOnline(false);
+                } else {
+                    setIsOnline(true);
                 }
             });
         }
@@ -23,13 +37,20 @@ const Conversation = (props) => {
 
     const onConversationClick = () => {
         setActiveConversation(id);
+        dispatch(clearUnreadMessagesByUser({ targetUser: searchParams.get('targetUser') }));
+
+        navigate(`/${isMaster ? 'master' : 'client'}-office/messages?firstName=${firstName}&lastName=${lastName}&targetUser=${id}`,
+        { state: {
+            userId: id, receiverAvatar: avatar, name: 'Messages', page: 'Messages'
+        }});   
+             
         let parent = document.getElementsByClassName('messages-inbox')[0].parentElement.parentElement.parentElement.parentElement;
         parent.scrollTop = parent.scrollHeight;
+
     };
 
-    return <li className={isActive ? 'active-message' : ''} onClick={onConversationClick}>
-        <NavLink state={{ userId: id, receiverAvatar: avatar, name: 'Messages', page: 'Messages'}} 
-        to={`/${isMaster ? 'master' : 'client'}-office/messages?firstName=${firstName}&lastName=${lastName}&targetUser=${id}`}>
+    return <li className={isActive ? 'active-message' : ''} onClick={onConversationClick} style={{ cursor: 'pointer' }}>
+        <a>
             <div className="message-avatar">
                 <i className={`status-icon status-${isOnline ? 'online' : 'offline'}`}></i>
                 <img src={`${profilePhotosPath}${avatar}`} alt="" />
@@ -42,7 +63,7 @@ const Conversation = (props) => {
                 </div>
                 <p>{message}</p>
             </div>
-        </NavLink>
+        </a>
     </li>;
 }
 

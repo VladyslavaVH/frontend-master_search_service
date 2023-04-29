@@ -3,7 +3,7 @@ import { useCreateNewMessageMutation } from '../../../../features/user/userApiSl
 import { useTranslation } from 'react-i18next';
 import NotificationDialog from './../../../HeaderContainer/Popup/NotificationDialog';
 
-const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, receiverId }) => {
+const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, senderFullName, receiverId }) => {
     const [newMessage, setNewMessage] = useState('');
     const [notification, setNotification] = useState('');
     const [isOpen, setIsOpen] = useState(false);
@@ -38,6 +38,7 @@ const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, receiverId
         //socket?.current
         socket.emit('sendMessage', {
             senderFK: senderId,
+            senderFullName,
             receiverFK: receiverId,
             message: newMessage,
             avatar

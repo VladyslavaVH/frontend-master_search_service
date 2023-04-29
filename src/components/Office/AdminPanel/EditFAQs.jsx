@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Success from './../Settings/Success';
 import Modal from './../../HeaderContainer/Popup/Modal';
 import { useCreateFaqMutation } from '../../../features/admin/adminApiSlice';
-import { logOut } from '../../../features/auth/authSlice';
+import NotificationDialog from './../../HeaderContainer/Popup/NotificationDialog';
 
 const EDIT_BTN_STYLES = { 
     minWidth: '100px', 
@@ -25,6 +25,9 @@ const EditFAQs = (props) => {
     const [changeFaqs] = useChangeFaqsMutation();
     const [newQuestion, setNewQuestion] = useState('');
     const [newAnswer, setNewAnswer] = useState('');
+
+    const [errorText, setErrorText] = useState('');
+    const [isErrorOpen, setIsErrorOpen] = useState(false);
 
     useEffect(() => {
         if (!isLoading && accordionData.length !== data.faqs.length) {
@@ -86,6 +89,10 @@ const EditFAQs = (props) => {
 
     const createNewFaqClick = async () => {
         try {
+            if (!newQuestion || !newAnswer || newQuestion.length === 0 || newAnswer.length === 0) {
+                throw new Error('EmptyNewQuestionOrAnswer');
+            }
+
             const data = {
                 newQuestion,
                 newAnswer
@@ -98,7 +105,9 @@ const EditFAQs = (props) => {
             setNewAnswer('');
             setIsSuccess(true);
         } catch (error) {
-            console.error(error);
+            setErrorText(error.message);
+            setIsErrorOpen(true);
+            console.error(error.message);
         }
     };
 
@@ -161,7 +170,9 @@ const EditFAQs = (props) => {
             </div>
         </div>
 
-
+        <NotificationDialog open={isErrorOpen} onClose={() => setIsErrorOpen(false)}>
+            {t(errorText)}
+        </NotificationDialog>
 
 
         <Modal tabs={[t('Success')]} open={isSuccess}>

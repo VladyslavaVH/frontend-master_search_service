@@ -1,17 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
-import Verified from "./Verified";
 import { ReactComponent as MySpinner } from '../../.././amimations/mySpinner.svg';
-import { setAuth } from '../../../features/auth/authSlice';
-import { useRegistrationMutation } from "../../../features/auth/authApiSlice";
-import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentToken } from './../../../features/auth/authSlice';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
-//authentication.languageCode = 'en-US';
-// To apply the default browser preference instead of explicitly setting it.
-// firebase.auth().useDeviceLanguage();
 
 const INPUT_STYLES = {
     maxWidth: '40px',
@@ -19,13 +8,10 @@ const INPUT_STYLES = {
     padding: '14px'
 };
 
-const NumberVerification = ({ regData, phone, onClose, resendOTP, isForgotPassword }) => {
+const ResetNumberVerification = ({ phone, onClose, resendOTP }) => {
     const { t } = useTranslation();
     const inputN0El = useRef(null);
-    const dispatch = useDispatch();
-    const [registration] = useRegistrationMutation();
     const [loading, setLoading] = useState(false);
-    const token = useSelector(selectCurrentToken);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -41,23 +27,15 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP, isForgotPasswo
         console.log(code);
         
         setLoading(true);
-
+        
         window.confirmationResult
         .confirm(code)
-        .then(async (res) => {
-            console.log(res);
-            console.log('isForgotPassword: ', isForgotPassword);
+        .then((result) => {
+            console.log(result);
             debugger;
-            if (isForgotPassword) {
-                console.log('confirmed');
-                console.log(res.user);
-            } else {
-                const userData = await registration(regData).unwrap();
-                if (!userData) return;
-
-                dispatch(setAuth({...userData}));
-                setUser(res.user);
-            }
+            console.log('confirmed');
+            console.log(result.user);
+            setUser(result.user);
             
             setLoading(false);
         })
@@ -97,9 +75,7 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP, isForgotPasswo
     }
 
     return <>
-        {token
-        ? <Verified onClose={onClose} />
-        : <>
+        <>
             <div className="welcome-text">
                 <h3>{t('PleaseCheckYourPhone')}</h3>
                 <span>{t('WeReSendACodeTo')} <b>{phone}</b></span>
@@ -154,8 +130,8 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP, isForgotPasswo
                 </button>
             }
             
-        </>}
+        </>
     </>;
 };
 
-export default NumberVerification;
+export default ResetNumberVerification;

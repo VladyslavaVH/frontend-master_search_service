@@ -117,7 +117,7 @@ const JobListing = (props) => {
                 to={`/client-office/manage-jobs/edit/job/${category}`}
                 className="button gray ripple-effect ico" title="Edit" data-tippy-placement="top"><i className="icon-feather-edit"></i></NavLink>}
 
-            <a onClick={() => setIsOpen(true)} className="button gray ripple-effect ico" title="Remove" data-tippy-placement="top"><i className="icon-feather-trash-2"></i></a>
+            {!confirmedMaster && <a onClick={() => setIsOpen(true)} className="button gray ripple-effect ico" title="Remove" data-tippy-placement="top"><i className="icon-feather-trash-2"></i></a>}
             
             <Modal open={isOpen} onClose={() => setIsOpen(false)} tabs={[]} >
                 <div className="container">

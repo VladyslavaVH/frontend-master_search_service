@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectCurrentUser } from "../../../features/auth/authSlice";
+import { selectCurrentUser, selectUnreadMessages } from "../../../features/auth/authSlice";
 import useLogout from './../../../hooks/useLogout';
-import { useGetMessagesQuery } from '../../../features/user/userApiSlice';
-import Modal from "../../HeaderContainer/Popup/Modal";
-import QrCodeScanner from "../../Jobs/QrCode/QrCodeScanner";
 import { useTranslation } from 'react-i18next';
 import NotificationDialog from "../../HeaderContainer/Popup/NotificationDialog";
 
@@ -14,7 +11,7 @@ let Sidebar = (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const [notificationText, setNotificationText] = useState('');
-    const { data: unreadMessages } = useGetMessagesQuery();
+    let unreadMessages = useSelector(selectUnreadMessages); 
     const [isApply, setApply] = useState(null);
     const user = useSelector(selectCurrentUser);
     const logout = useLogout();

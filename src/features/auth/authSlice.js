@@ -71,10 +71,27 @@ const authSlice = createSlice({
         setNewLocation: (state, { payload }) => {
             state.user.masterInfo.location = payload;
         },
+        addNewMessage: (state, { payload }) => {
+            state.unreadMessages.push(payload);
+        },
+        clearUnreadMessages: (state) => {
+            state.unreadMessages = [];
+        },
+        clearUnreadMessagesByUser: (state, { payload }) => {
+            const tmp = state.unreadMessages;
+            state.unreadMessages = tmp.filter(el => 
+                (el.id !== state.user.id && el.receiverId !== payload.targetUser) &&
+                (el.id !== payload.targetUser && el.receiverId !== state.user.id)
+            );
+        },
     }
 });
 
-export const { setAuth, logOut, setPersist, setLanguage, setDefaultLanguage, setNewAvatar, setNewLocation } = authSlice.actions;
+export const { setAuth, logOut, setPersist, setLanguage, setDefaultLanguage, setNewAvatar, setNewLocation, 
+    addNewMessage, 
+    clearUnreadMessages,
+    clearUnreadMessagesByUser
+} = authSlice.actions;
 
 export default authSlice.reducer;
 

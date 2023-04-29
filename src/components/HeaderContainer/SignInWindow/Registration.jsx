@@ -25,7 +25,7 @@ const Registration = ({ onClose }) => {
     const [isClientChecked, setIsClientChecked] = useState(true);
 
     const [isErrorOpen, setIsErrorOpen] = useState(false);
-    const [errorText, setNotificationText] = useState('');
+    const [errorText, setErrorText] = useState('');
 
     const [isWarningOpen, setIsWarningOpen] = useState(false);
     const [warningText, setWarningText] = useState('');
@@ -66,7 +66,7 @@ const Registration = ({ onClose }) => {
         .catch((error) => {
             //alert(error);//? modal dialog about error
             console.log(error.message);
-            setNotificationText(t('InvalidPhoneNumberFormat'));
+            setErrorText(t('InvalidPhoneNumberFormat'));
             setIsErrorOpen(true);
             setLoading(false);
         });
@@ -124,7 +124,7 @@ const Registration = ({ onClose }) => {
 
             sendOTP(formatPhone);
         } catch (error) {
-            setNotificationText(error.message);
+            setErrorText(error.message);
             setIsErrorOpen(true);
             setLoading(false);
             console.error(error);

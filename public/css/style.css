@@ -724,7 +724,9 @@ button.mark-as-read:hover {
 .header-notifications-content .notification-text {
 	padding-left: 20px;
 	padding-right: 5px; 
-	display: inline-block;
+	/* display: inline-block; */
+	display: flex;
+	flex-direction: column;
 	line-height: 23px;
 	font-size: 14.7px
 }
@@ -6405,6 +6407,7 @@ table.basic-table th:last-child { border-radius: 0 4px 4px 0; }
 table.basic-table th,
 table.basic-table td {
 	padding: 15px 28px;
+	min-height: 57.67px;
 }
 
 table.basic-table tr:nth-child(odd) {
@@ -6421,7 +6424,8 @@ table.basic-table { margin-bottom: 0; }
 
 	table tr {
 		display: block;
-		margin-bottom: 0;
+		/* margin-bottom: 0; */
+		margin-bottom: 57.67px;
 	}
 	table td {
 		border-bottom: 1px solid #ddd;
@@ -6437,6 +6441,10 @@ table.basic-table { margin-bottom: 0; }
 	}
 
 	table td:last-child { border-bottom: 0; }
+
+	table.basic-table td {
+		justify-content: space-between !important;
+	}
 }
 
 /* ---------------------------------- */

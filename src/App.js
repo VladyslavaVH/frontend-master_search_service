@@ -183,6 +183,9 @@ function App() {
                   <Route path="job/:title" element={<SingleJob />} />
       
                   <Route path="messages" element={<Messages />} >
+                    <Route path="" element={<Chat />} />
+                    <Route path="user" element={<Chat />} />
+                    <Route path="user/:id" element={<Chat />} />
                     <Route path="user/:firstName/:lastName" element={<Chat />} />
                   </Route>
                   
