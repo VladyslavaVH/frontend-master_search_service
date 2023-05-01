@@ -16,8 +16,8 @@ const Registration = ({ onClose }) => {
     const { t } = useTranslation();
     const [regData, setRegData] = useState(null);
     const { register, handleSubmit } = useForm();
-    const [firstName, setFirstName] = useState(null);
-    const [lastName, setLastName] = useState(null);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [loading, setLoading] = useState(false);//? false
     const [isNumberVer, setIsNumberVer] = useState(false);//? set false
     const [phone, setPhone] = useState(null);//? set null
@@ -140,7 +140,7 @@ const Registration = ({ onClose }) => {
 
     const onChange = val => {
         const lastChar = val[val.length - 1];
-        if (isDigit(lastChar) || isSymbol(lastChar)) {
+        if (isDigit(lastChar) || isSymbol(lastChar?.toLowerCase())) {
             return val.substr(0, val.length - 1);
         }
         return val;

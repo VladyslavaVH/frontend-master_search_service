@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useCreateNewMessageMutation } from '../../../../features/user/userApiSlice';
 import { useTranslation } from 'react-i18next';
-import NotificationDialog from './../../../HeaderContainer/Popup/NotificationDialog';
 
 const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, senderFullName, receiverId }) => {
     const [newMessage, setNewMessage] = useState('');
-    const [notification, setNotification] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
+    const [isEmptyMessage, setIsEmptyMessage] = useState(true);
     const [timer, setTimer] = useState(undefined);
     const { t } = useTranslation();
     const [createNewMessage] = useCreateNewMessageMutation();
@@ -16,6 +14,12 @@ const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, senderFull
     };
 
     useEffect(() => {
+        if (!newMessage || newMessage.length === 0) {
+            setIsEmptyMessage(true);
+        } else {
+            setIsEmptyMessage(false);            
+        }
+
         if (newMessage.length > 0) {
             socket.emit('typing', { receiverId, typing: true })
             clearTimeout(timer);
@@ -28,12 +32,6 @@ const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, senderFull
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (!newMessage || newMessage.length === 0) {
-            setNotification('EmptyMessage');
-            setIsOpen(true);
-            return;
-        }
 
         //socket?.current
         socket.emit('sendMessage', {
@@ -60,11 +58,12 @@ const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, senderFull
     name="newMessage"
     value={newMessage}
     onChange={e => setNewMessage(e.target.value)}></textarea>
-    <button onClick={handleSubmit} className="button ripple-effect">{t("Send")}</button>
 
-    <NotificationDialog type="warning" open={isOpen} onClose={() => setIsOpen(false)}>
-        {t(notification)}
-    </NotificationDialog>
+    <button disabled={isEmptyMessage}
+    onClick={handleSubmit} 
+    className={`button ${isEmptyMessage ? 'gray' : ''} ripple-effect${isEmptyMessage ? '-dark' : ''}`}>
+        {t("Send")}
+    </button>
 </div>;
 }
 

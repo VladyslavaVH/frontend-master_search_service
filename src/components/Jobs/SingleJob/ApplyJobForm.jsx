@@ -22,7 +22,13 @@ const ApplyJobForm = ({ jobId, onClose }) => {
         console.log(user?.id);
     }, []);
 
-    useEffect(() => console.log(proposedPayment), [proposedPayment]);
+    useEffect(() => {
+        if (proposedPayment < 0 || proposedPayment.toString().indexOf('-') !== -1) {
+            setProposedPayment(0);
+            setNotificationText('NotValidPaymentData');
+            setIsOpen(true);
+        }
+    }, [proposedPayment]);
     useEffect(() => console.log(currencyFK), [currencyFK]);
 
     const onSubmit = async (data) => {

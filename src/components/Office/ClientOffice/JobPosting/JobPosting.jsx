@@ -27,7 +27,7 @@ const schema = yup
         //   })
   });
 
-let JobPosting = (props) => {
+let JobPosting = ({ isMapApiLoaded }) => {
     const { t } = useTranslation();
     const [notificationText, setNotificationText] = useState('');
     const [minP, setMinP] = useState(100);
@@ -47,16 +47,46 @@ let JobPosting = (props) => {
     }, [watch('photos'), errors, errors.photos]);
 
     useEffect(() => {
-        if (minP < 0 || minP >= maxP || (minP == 0 && maxP == 0)) {
-            let min = maxP > 0 
-            ? minP < 0 
-                ? 0 
-                : maxP - 1 
-            : 0;
-            setMinP(min);
-            setMaxP(maxP <= 0 ? min + 1 : maxP);
+        // if (minP < 0 || minP >= maxP || (minP == 0 && maxP == 0)) {
+        //     let min = maxP > 0 
+        //     ? minP < 0 
+        //         ? 0 
+        //         : maxP - 1 
+        //     : 0;
+        //     setMinP(min);
+        //     setMaxP(maxP <= 0 ? min + 1 : maxP);
+        // }
+
+        let minTmp = minP == '-0' ? 0 : parseFloat(minP);
+        let maxTmp = maxP == '-0' ? 0 :  parseFloat(maxP);
+        if (minTmp < 0) {
+            minTmp = 0;
         }
 
+        if (maxTmp < 0) {
+            maxTmp = 0;
+        }
+
+        if (minTmp && maxTmp) {
+            if (minTmp >= maxTmp) {
+                minTmp = maxTmp - 1;
+            } 
+            
+            if (minTmp < 0) {
+                minTmp = 0;        
+            } 
+            
+            if (maxTmp <= 0) {
+                maxTmp = minTmp + 1;
+            }
+        }
+
+        if (minTmp === maxTmp) {
+            maxTmp++;
+        }
+
+        setMinP(minTmp);
+        setMaxP(maxTmp);
     }, [minP, maxP])
     
     const navigate = useNavigate();
@@ -70,9 +100,9 @@ let JobPosting = (props) => {
     const onSubmit = async data => {
         try {
             if (minP == 0 || !minP || !maxP || maxP == 0 || (minP >= maxP) || isNaN(minP) || isNaN(maxP)) {
-                let min = maxP > 0 ? maxP - 1 : 0;
-                setMinP(min);
-                setMaxP(maxP <= 0 ? min + 1 : maxP);
+                // let min = maxP > 0 ? maxP - 1 : 0;
+                // setMinP(min);
+                // setMaxP(maxP <= 0 ? min + 1 : maxP);
                 setNotificationText('NotValidPaymentData');
                 setIsOpen(true);
                 return;
@@ -150,7 +180,7 @@ let JobPosting = (props) => {
                             <div className="col-xl-4">
                                 <div className="submit-field">
                                     <h5>{t('Location')}</h5>
-                                    <LocationsAutocomplete setCenter={setJobLocation} />
+                                    {isMapApiLoaded && <LocationsAutocomplete  setCenter={setJobLocation} />}
                                 </div>
                             </div>
                             

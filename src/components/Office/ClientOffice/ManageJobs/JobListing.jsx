@@ -4,7 +4,6 @@ import TimeAgo from './../../../TimeAgo';
 import ExpiringOn from '../../../ExpiringOn';
 import { useDeleteJobMutation } from "../../../../features/jobs/jobsApiSlice";
 import Modal from './../../../HeaderContainer/Popup/Modal';
-import QrCodeGenerator from "../../../Jobs/QrCode/QrCodeGenerator";
 import { useTranslation } from 'react-i18next';
 import Success from './../../Settings/Success';
 import DisplayTime from "../../../Jobs/DisplayTime";

@@ -27,7 +27,7 @@ const LocationsAutocomplete = ({ setCenter }) => {
         clearSuggestions();
 
         const results = await getGeocode({ address });
-        const { lat, lng } = await getLatLng(results[0]);
+        const { lat, lng } = getLatLng(results[0]);
 
         console.log(`lat: ${lat} lng: ${lng}`);
         setCenter({ lat, lng });

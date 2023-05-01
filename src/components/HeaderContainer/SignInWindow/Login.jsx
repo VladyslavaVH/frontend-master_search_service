@@ -39,7 +39,9 @@ const Login = ({ onClose, fromLocationData, from }) => {
 
     const onSubmit = async e => {
         e.preventDefault();
-        
+        setIsErrorOpen(false);
+        setIsWarningOpen(false);
+        debugger;
         try {
             const userData = await login({ phone: phone == '+0965323364' ? '0965323364' : phone, password }).unwrap();
             if (!userData) return;
@@ -52,7 +54,7 @@ const Login = ({ onClose, fromLocationData, from }) => {
             onClose();
 
         } catch (error) {
-            setIsErrorOpen(true);
+            !isErrorOpen && setIsErrorOpen(true);
             console.error(error);
         }
     };

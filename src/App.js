@@ -160,7 +160,7 @@ function App() {
               <Route element={<RequireAuth allowedRole={ROLE.CLIENT} />}>
                 <Route path="/client-office" element={<ClientOffice />} >
                   <Route path="master-profile" element={<MasterProfile isMapApiLoaded={isMapApiLoaded} />} />
-                  <Route path="job-posting" element={<JobPosting />} />
+                  <Route path="job-posting" element={<JobPosting isMapApiLoaded={isMapApiLoaded} />} />
                   <Route path="manage-jobs/edit/job" element={<EditJob />} />
                   <Route path="manage-jobs/job" element={<SingleJob isMapApiLoaded={isMapApiLoaded} />} />
       

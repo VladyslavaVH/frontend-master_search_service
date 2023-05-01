@@ -53,7 +53,7 @@ const MasterProfile = ({ isMapApiLoaded }) => {
                       if ((address[p].types.indexOf("country") != -1)
                        && (address[p].types.indexOf("political") != -1)) {
                         setCountry(address[p].long_name);
-                        setFlag(address[p].short_name);
+                        setFlag(address[p].short_name.toLowerCase());
                       }
                     }
                   } else {

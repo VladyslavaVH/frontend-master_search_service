@@ -39,7 +39,7 @@ let MasterCard = (props) => {
                       if ((address[p].types.indexOf("country") != -1)
                        && (address[p].types.indexOf("political") != -1)) {
                         setCountry(address[p].long_name);
-                        setShortCountry(address[p].short_name);
+                        setShortCountry(address[p].short_name.toLowerCase());
                       }
                     }
                   } else {
