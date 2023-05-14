@@ -3,7 +3,7 @@ import $ from 'jquery';
 import Stats from "./Stats";
 import SearchBar from './SearchBar';
 import IntroHeadline from "./IntroHeadline";
-import { inlineBG } from "../../../amimations/amimations";
+import { inlineBG } from "../../../animations/animations";
 import { useGetHomePageStatisticsQuery } from "../../../features/home/homeApiSlice";
 import { selectIsAuth, selectIsMaster } from "../../../features/auth/authSlice";
 import { useSelector } from 'react-redux';
@@ -49,10 +49,10 @@ const IntroBanner = ({isMapApiLoaded}) => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="margin-top-35">
-                                <button onClick={() => setIsOpen(true)} style={{ marginRight: '35px', paddingRight: '20px' }} className="button ripple-effect">
+                                <button onClick={() => setIsOpen(true)} className="button ripple-effect margin-bottom-20 margin-right-35 padding-right-20">
                                     {t('PostAJob')}
                                 </button>
-                                <button onClick={() => setIsOpen(true)} className="button ripple-effect">
+                                <button onClick={() => setIsOpen(true)} className="button ripple-effect margin-bottom-20">
                                     {t('BecomeAMaster')}
                                 </button>
                                 <SignInWindow open={isOpen} onClose={() => setIsOpen(false)} />

@@ -4,7 +4,7 @@ import { useApplyJobMutation } from '../../../features/master/masterApiSlice';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from './../../../features/auth/authSlice';
 import { useTranslation } from 'react-i18next';
-import { INPUTS_SHADOW_STYLES } from '../../../amimations/selectDetails';
+import { INPUTS_SHADOW_STYLES } from '../../../animations/selectDetails';
 import CurrencySelect from './../../Office/ClientOffice/JobPosting/CurrencySelect';
 import NotificationDialog from '../../HeaderContainer/Popup/NotificationDialog';
 

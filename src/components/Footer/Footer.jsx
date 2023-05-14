@@ -8,7 +8,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { selectCurrentUser, selectIsAuth, selectIsMaster, selectIsAdmin, selectDefaultLanguage } from "../../features/auth/authSlice";
 // import AsyncSelect from 'react-select/async';
 import { NavLink } from 'react-router-dom';
-import { FooterDropdownIndicator, Option, FOOTER_LANG_SELECT_STYLES } from '../../amimations/selectDetails';
+import { FooterDropdownIndicator, Option, FOOTER_LANG_SELECT_STYLES } from '../../animations/selectDetails';
 
 let Footer = (props) => {
     const { t, i18n } = useTranslation();

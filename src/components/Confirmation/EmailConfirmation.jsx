@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Footer from "../Footer/Footer";
-import { ReactComponent as MyBigSpinner } from '../../amimations/myBigSpinner.svg';
+import { ReactComponent as MyBigSpinner } from '../../animations/myBigSpinner.svg';
 import { useUpdateConfirmationMutation } from "../../features/user/userApiSlice";
 import NotificationDialog from "../HeaderContainer/Popup/NotificationDialog";
 import { useTranslation } from "react-i18next";

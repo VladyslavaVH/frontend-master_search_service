@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import Verified from "./Verified";
-import { ReactComponent as MySpinner } from '../../.././amimations/mySpinner.svg';
+import { ReactComponent as MySpinner } from '../../../animations/mySpinner.svg';
 import { setAuth } from '../../../features/auth/authSlice';
 import { useRegistrationMutation } from "../../../features/auth/authApiSlice";
 import { useDispatch, useSelector } from 'react-redux';

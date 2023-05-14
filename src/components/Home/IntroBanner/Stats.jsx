@@ -13,7 +13,7 @@ const Stats = ({ jobsCount, usersCount }) => {
 
     return <div className="row">
     <div className="col-md-12">
-        <ul className="intro-stats margin-top-45 hide-under-992px">
+        <ul className="intro-stats margin-top-25 hide-under-992px">
             <li>
                 <strong className="counter" ref={jobsCountRef}></strong>
                 <span>{t('JobsPosted')}</span>

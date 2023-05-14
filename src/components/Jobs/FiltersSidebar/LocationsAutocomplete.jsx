@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import AsyncSelect from 'react-select/async';
-import { LocationDropdownIndicator, LOCATION_AUTOCOMPLETE_STYLES } from '../../../amimations/selectDetails';
+import { LocationDropdownIndicator, LOCATION_AUTOCOMPLETE_STYLES } from '../../../animations/selectDetails';
 import usePlacesAutocomplete, {
     getGeocode,
     getLatLng

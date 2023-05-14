@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { starRating } from '../../../../amimations/amimations';
+import { starRating } from '../../../../animations/animations';
 import TimeAgo from './../../../TimeAgo';
 import { useTranslation } from 'react-i18next';
 

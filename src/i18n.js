@@ -238,6 +238,10 @@ i18n
           TheConfirmationLetterHasBeenSentSuccessfully: 'The confirmation letter has been sent successfully. Please confirm your email.',
           TheEmailIsNotValid: 'The email is not valid.',
           EmptyNewQuestionOrAnswer: 'New question or answer is empty',
+          EnterANewPassword: 'Enter a new password',
+          PasswordReset: 'Password reset',
+          YourPasswordHasBeenUpdatedSuccessfully: 'Your password has been updated successfully',
+          InvalidCode: 'Invalid Code',
         }    
       },
     uk: {
@@ -461,6 +465,10 @@ i18n
           TheConfirmationLetterHasBeenSentSuccessfully: 'Лист-підтвердження успішно надіслано. Будь ласка, підтвердьте свою електронну адресу.',
           TheEmailIsNotValid: 'Електронна адреса недійсна.',
           EmptyNewQuestionOrAnswer: 'Нове запитання чи відповідь порожні',
+          EnterANewPassword: 'Введіть новий пароль',
+          PasswordReset: 'Скидання пароля',
+          YourPasswordHasBeenUpdatedSuccessfully: 'Ваш пароль успішно оновлено',
+          InvalidCode: 'Невірний код',
         }      
       },
       cs: {
@@ -684,6 +692,10 @@ i18n
           TheConfirmationLetterHasBeenSentSuccessfully: 'Potvrzující dopis byl úspěšně odeslán. Prosím, potvrďte svůj email.',
           TheEmailIsNotValid: 'E-mail není platný.',
           EmptyNewQuestionOrAnswer: 'Nová otázka nebo odpověď je prázdná',
+          EnterANewPassword: 'vložte nové heslo',
+          PasswordReset: 'Resetovat heslo',
+          YourPasswordHasBeenUpdatedSuccessfully: 'Vaše heslo bylo úspěšně aktualizováno',
+          InvalidCode: 'Neplatný kód',
         }
       },
     }

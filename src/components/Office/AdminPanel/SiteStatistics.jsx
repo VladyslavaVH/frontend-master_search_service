@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { funFacts } from "../../../amimations/amimations";
+import { funFacts } from "../../../animations/animations";
 import { useCountUp } from 'react-countup';
 import { useGetAdminPanelQuery } from '../../../features/admin/adminApiSlice';
 import { useTranslation } from 'react-i18next';

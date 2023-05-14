@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Documents from './Documents';
 import NotificationDialog from '../../../HeaderContainer/Popup/NotificationDialog';
-import { ReactComponent as MySpinner } from '../../../../amimations/mySpinner.svg';
+import { ReactComponent as MySpinner } from '../../../../animations/mySpinner.svg';
 import { useUploadDocumentsMutation } from '../../../../features/master/masterApiSlice';
 
 const UploadDocuments = ({ setDocuments }) => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useGetOptionCurrenciesQuery } from '../../../../features/details/detailsApiSlice';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
-import { SINGLE_SELECT_STYLES, DropdownIndicator, Option } from '../../../../amimations/selectDetails';
+import { SINGLE_SELECT_STYLES, DropdownIndicator, Option } from '../../../../animations/selectDetails';
 
 const CurrencySelect = ({ setCurrencyFK }) => {
     const { t } = useTranslation();

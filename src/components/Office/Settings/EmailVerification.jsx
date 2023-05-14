@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import NotificationDialog from '../../HeaderContainer/Popup/NotificationDialog';
 import { useSendEmailConfirmationMutation } from '../../../features/user/userApiSlice';
-import { ReactComponent as MySpinner } from '../../.././amimations/mySpinner.svg';
+import { ReactComponent as MySpinner } from '../../.././animations/mySpinner.svg';
 
 const EmailVerification = ({  }) => {
     const { t } = useTranslation();

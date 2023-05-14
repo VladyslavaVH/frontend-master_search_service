@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import Titlebar from "../Titlebar";
 import SimpleBar from 'simplebar-react';
 import 'simplebar/dist/simplebar.min.css';
-import { responsiveDashboardNavTrigger } from "../../../amimations/amimations";
+import { responsiveDashboardNavTrigger } from "../../../animations/animations";
 
 let MasterOffice = (props) => {
     const location = useLocation();

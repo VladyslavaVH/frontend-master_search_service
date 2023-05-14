@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { inlineBG, starRating } from "../../../amimations/amimations";
+import { inlineBG, starRating } from "../../../animations/animations";
 import { useGetMasterByIdQuery } from "../../../features/masters/mastersApiSlice";
 import Comments from "./Comments/Comments";
 import Sidebar from "./Sidebar/Sidebar";

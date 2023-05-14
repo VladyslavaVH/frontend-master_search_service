@@ -2,9 +2,6 @@ import React, { useEffect } from "react";
 import { NavLink } from 'react-router-dom';
 import $ from 'jquery';
 import MasterCard from "../Masters/MasterCard";
-import { useSelector } from "react-redux";
-import { selectIsAuth, selectIsMaster } from "../../features/auth/authSlice";
-import { useGetHighestRatedMastersQuery } from "../../features/home/homeApiSlice";
 import { useTranslation } from "react-i18next";
 
 const MasterCarousel = ({ isMapApiLoaded, masters }) => {
@@ -52,7 +49,7 @@ const MasterCarousel = ({ isMapApiLoaded, masters }) => {
       .slick(slickSettings);
   }, []);
 
-  return <div className="section gray padding-top-65 padding-bottom-70 full-width-carousel-fix">
+  return <div className="section margin-bottom-74 full-width-carousel-fix">
     <div className="container">
       <div className="row">
 
@@ -63,7 +60,7 @@ const MasterCarousel = ({ isMapApiLoaded, masters }) => {
           </div>
         </div>
 
-        <div className="col-xl-12">
+        <div className="col-xl-12 padding-left-0">
           <div className="default-slick-carousel freelancers-container freelancers-grid-layout">
             {masters?.map((m) =>
               <MasterCard isMapApiLoaded={isMapApiLoaded} key={m.id} {...m} />)}

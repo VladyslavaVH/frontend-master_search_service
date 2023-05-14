@@ -25,7 +25,7 @@ import Chat from "./components/Office/Messages/Chat/Chat";
 import ManageCandidates from "./components/Office/ClientOffice/ManageCandidates/ManageCandidates";
 import OrderConfirmation from "./components/OrderConfirmation";
 import Invoice from "./components/Invoice/Invoice";
-import { wrapperHeight, fullPageScrollbar, stickyHeader } from "./amimations/amimations";
+import { wrapperHeight, fullPageScrollbar, stickyHeader } from "./animations/animations";
 import AdminPanel from "./components/Office/AdminPanel/AdminPanel";
 import MasterDocuments from './components/Office/AdminPanel/MasterDocuments';
 import SiteStatistics from './components/Office/AdminPanel/SiteStatistics';
@@ -39,6 +39,7 @@ import { setPersist } from "./features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { Loader } from '@googlemaps/js-api-loader';
 import EmailConfirmation from "./components/Confirmation/EmailConfirmation";
+import ForgotPassword from './components/HeaderContainer/SignInWindow/ForgotPassword/ForgotPassword';
 
 const ROLE = {
   ADMIN: process.env.REACT_APP_ADMIN_ROLE,
@@ -144,6 +145,7 @@ function App() {
               <Route path="/faqs" element={<FAQs />} />
               <Route path="/" element={<Home isMapApiLoaded={isMapApiLoaded} />} />
               <Route path="/confirmation/:token/:id/:email" element={<EmailConfirmation />} />
+              <Route path="/forgot/password/:number" element={<ForgotPassword />} />
         
               {/*protected routes*/}              
               <Route element={<RequireAuth allowedRole={ROLE.ADMIN} />}>

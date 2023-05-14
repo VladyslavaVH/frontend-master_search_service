@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useGetMasterStatisticsQuery } from '../../../features/master/masterApiSlice';
 import { useGetNotificationsQuery } from '../../../features/user/userApiSlice';
 import { useCountUp } from "react-countup";
-import { funFacts } from "../../../amimations/amimations";
+import { funFacts } from "../../../animations/animations";
 import NotificationListItem from './../../HeaderContainer/NotificationsWindow/NotificationListItem';
 import { useTranslation } from 'react-i18next';
 

@@ -8,7 +8,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { auth } from '../../../utils/firebase.config';
 import { PHONE_INPUT_STYLE, PHONE_INPUT_BUTTON_STYLE, PHONE_INPUT_CONTAINER_STYLE } from './styles';
 
-import { ReactComponent as MySpinner } from '../../.././amimations/mySpinner.svg';
+import { ReactComponent as MySpinner } from '../../../animations/mySpinner.svg';
 import NotificationDialog from '../Popup/NotificationDialog';
 import { useCheckPhoneMutation } from '../../../features/details/detailsApiSlice';
 

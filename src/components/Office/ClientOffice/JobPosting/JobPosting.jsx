@@ -11,7 +11,7 @@ import CategorySelect from "./CategorySelect";
 import LocationsAutocomplete from "../../../Jobs/FiltersSidebar/LocationsAutocomplete";
 import CurrencySelect from "./CurrencySelect";
 import NotificationDialog from './../../../HeaderContainer/Popup/NotificationDialog';
-import { INPUTS_SHADOW_STYLES } from "../../../../amimations/selectDetails";
+import { INPUTS_SHADOW_STYLES } from "../../../../animations/selectDetails";
 
 const schema = yup
   .object()

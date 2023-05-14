@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { inlineBG } from "../../../amimations/amimations";
+import { inlineBG } from "../../../animations/animations";
 import { useLocation, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCurrentLanguage, selectIsMaster } from './../../../features/auth/authSlice';

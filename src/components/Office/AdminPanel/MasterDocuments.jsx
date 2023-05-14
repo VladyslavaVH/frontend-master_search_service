@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { inlineBG, starRating } from "../../../amimations/amimations";
+import { inlineBG, starRating } from "../../../animations/animations";
 import { useGetFullMasterInfoQuery, useVerifyMasterMutation } from "../../../features/admin/adminApiSlice";
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';

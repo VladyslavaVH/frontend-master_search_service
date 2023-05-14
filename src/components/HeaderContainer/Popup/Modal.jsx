@@ -13,6 +13,9 @@ export default function Modal({ open, onClose, tabs, children }) {
   });
 
   if (!open) return null;
+  else {
+    window.scrollTo(0,0);
+  }
 
   const MODAL_STYLES = {
     position: 'absolute',

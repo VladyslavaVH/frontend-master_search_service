@@ -1,7 +1,7 @@
 import { async } from "@firebase/util";
 import React, { useEffect, useState } from "react";
 import { NavLink } from 'react-router-dom';
-import { starRating } from "../../../../amimations/amimations";
+import { starRating } from "../../../../animations/animations";
 import { useDeleteCandidateMutation, useConfirmCandidateMutation } from "../../../../features/jobs/jobsApiSlice";
 import { useTranslation } from 'react-i18next';
 import { useGetAdditionalMasterInfoQuery } from '../../../../features/master/masterApiSlice';

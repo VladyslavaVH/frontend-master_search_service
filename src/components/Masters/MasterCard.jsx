@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import SignInWindow from "../HeaderContainer/SignInWindow/SignInWindow";
 import { NavLink } from 'react-router-dom';
-import { starRating } from '../../amimations/amimations';
+import { starRating } from '../../animations/animations';
 import { selectIsAuth, selectIsMaster } from './../../features/auth/authSlice';
 import { useTranslation } from 'react-i18next';
 
@@ -12,7 +12,7 @@ let MasterCard = (props) => {
     const isMaster = useSelector(selectIsMaster);
     const [ isOpen, setIsOpen ] = useState(false);
     const { isMapApiLoaded, id, isAdminChecked, avatar, firstName, lastName, tagLine, rating, 
-    nationality, lat, lng } = props;
+    lat, lng } = props;
     const [cityName, setCityName] = useState('');
     const [country, setCountry] = useState(null);
     const [shortCountry, setShortCountry] = useState(null);
@@ -60,7 +60,7 @@ let MasterCard = (props) => {
         }
     }, []);
 
-    return <div className="freelancer">
+    return <div className="freelancer" style={{maxWidth: '300px'}}>
 
         <div className="freelancer-overview">
             <div className="freelancer-overview-inner">

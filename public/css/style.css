@@ -1420,10 +1420,16 @@ body #navigation ul ul ul { margin-top: 0; }
 #wrapper.wrapper-with-transparent-header #header .right-side { background-color: transparent; }
 #header { transition: background 0.3s; }
 #wrapper { padding-top: 82px; }
+#wrapper .single {
+	margin-top: 0px;
+}
 #wrapper.wrapper-with-transparent-header { padding-top: 0 !important;}
 
 @media (max-width: 1099px) {
   #wrapper { padding-top: 0 !important; }
+  #wrapper .single {
+	margin-top: 76px !important;
+  }
   /* #header-container { position: relative !important; } */
   #header-container.transparent-header { position: absolute; }
 }
@@ -2182,6 +2188,7 @@ em.mm-counter+a.mm-fullsubopen+span {
 
 /* Media Queries Menu */
 @media (max-width: 1099px) {
+	.intro-banner { margin-top: 76px !important; }
 
 	/* Header Responsive Styles */
 	#responsive { display: none; }
@@ -2846,6 +2853,7 @@ body #backtotop a {
 	position: relative;
 	padding: 70px 0;
 	margin-bottom: 65px;
+	margin-top: 0;
 }
 
 #titlebar.gradient {
@@ -4484,6 +4492,10 @@ span.blog-item-tag {
 
 
 @media (max-width: 1099px) {
+	#titlebar {
+		margin-top: 76px;
+	}
+	
 	.full-page-content-inner .grid-layout .job-listing {
 	    width: calc(100% - 30px);
 		overflow: hidden;
@@ -7660,6 +7672,7 @@ input:checked + .switch-button:before {
 .intro-banner {
 	padding: 105px 0;
 	position: relative;
+	margin-top: 0;
 }
 
 .intro-banner.big-padding {

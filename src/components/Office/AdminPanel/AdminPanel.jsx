@@ -3,7 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import OfficeFooter from "../OfficeFooter";
 import Sidebar from './Sidebar';
 import Titlebar from "../Titlebar";
-import { responsiveDashboardNavTrigger } from "../../../amimations/amimations";
+import { responsiveDashboardNavTrigger } from "../../../animations/animations";
 
 const AdminPanel = (props) => {
     const location = useLocation();

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useGetOptionCategoriesQuery } from '../../../features/details/detailsApiSlice';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
-import { CATEGORY_SELECT_STYLES, DropdownIndicator, Option, ValueContainer } from '../../../amimations/selectDetails';
+import { CATEGORY_SELECT_STYLES, DropdownIndicator, Option, ValueContainer } from '../../../animations/selectDetails';
 import { selectCurrentLanguage } from '../../../features/auth/authSlice';
 import { useSelector } from 'react-redux';
 import { fireCategoriesTr } from '../../../utils/firebase.config';
