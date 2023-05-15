@@ -1,13 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
-import { setAuth } from '../../../../features/auth/authSlice';
-import { useLoginMutation } from '../../../../features/auth/authApiSlice';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectPersist, setPersist } from '../../../../features/auth/authSlice';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from "react-i18next";
 import NotificationDialog from '../../Popup/NotificationDialog';
-import { useCheckPhoneMutation } from '../../../../features/details/detailsApiSlice';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { auth } from '../../../../utils/firebase.config';
 import ResetNumberVerification from './Reset/ResetNumberVerification';
@@ -20,7 +13,7 @@ const Login = ({ onClose, fromLocationData, from }) => {
     const [isNumberVer, setIsNumberVer] = useState(false);
     
     const [isErrorOpen, setIsErrorOpen] = useState(false);
-    const [errorText, setErrorText] = useState('IncorrectPhoneNumberOrPassword');
+    const [errorText, setErrorText] = useState('IncorrectPhoneNumber');
 
     function onCaptchaVerify() {
         if (!window.recaptchaVerifier) {
@@ -53,8 +46,6 @@ const Login = ({ onClose, fromLocationData, from }) => {
             setIsNumberVer(true);
         })
         .catch((error) => {
-            //alert(error);//? modal dialog about error
-            console.log(error);
             console.log(error.message);
             setErrorText(t('InvalidPhoneNumberFormat'));
             setIsErrorOpen(true);

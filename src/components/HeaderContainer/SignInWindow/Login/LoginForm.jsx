@@ -23,10 +23,12 @@ const LoginForm = ({ onClose, fromLocationData, from, loading, setLoading, setPh
 
     const onSubmit = async e => {
         e.preventDefault();
-        setIsErrorOpen(false);
         try {
+            const isPhoneExists = await checkPhone(phone).unwrap();
+            if (!isPhoneExists) throw new Error('IncorrectPhoneNumber');
+
             const userData = await login({ phone: phone == '+0965323364' ? '0965323364' : phone, password }).unwrap();
-            if (!userData) return;
+            if (!userData) throw new Error('IncorrectPassword');
 
             dispatch(setAuth({ ...userData }));
 
@@ -36,6 +38,7 @@ const LoginForm = ({ onClose, fromLocationData, from, loading, setLoading, setPh
             onClose();
 
         } catch (error) {
+            error.originalStatus === 401 && setErrorText(t('IncorrectPassword'));
             !isErrorOpen && setIsErrorOpen(true);
             console.error(error);
         }
@@ -50,23 +53,33 @@ const LoginForm = ({ onClose, fromLocationData, from, loading, setLoading, setPh
         isPersist && localStorage.setItem('persist', isPersist);
     }, [isPersist]);
 
-    const onPhoneChange = val => {
+    const onPhoneInputChange = val => {
         const phoneRegex = /^[\+0-9\b]+$/;
         const lastChar = val[val.length - 1];
+        let resultPhone = '';
 
         if (phoneRegex.test(lastChar) && phoneRegex.test(val)) {
-
             if (lastChar === '+') {
-                return (!phone.startsWith('+') && phone.indexOf('+') === -1 && phone.length === 0)
+                resultPhone = (!phone.startsWith('+') && phone.indexOf('+') === -1 && phone.length === 0)
                     ? val
                     : val.substr(0, val.length - 1);
+            } else {
+                resultPhone = val[0] === '+' ? val : '+' + val;
             }
 
-            return val[0] === '+' ? val : '+' + val;
-
+        } else {
+            resultPhone = val.length === 0 ? '' : phone;
         }
 
-        return val.length === 0 ? '' : phone;
+        if (isErrorOpen) {
+            checkPhone(resultPhone).unwrap().then(isExists => {
+                if (isExists) {
+                    setIsErrorOpen(false);
+                }
+            });
+        }
+
+        return resultPhone;
     };
 
     const onClickForgotPassword = async () => {
@@ -103,7 +116,7 @@ const LoginForm = ({ onClose, fromLocationData, from, loading, setLoading, setPh
                 <i className="icon-feather-phone"></i>
                 <input type="tel" title="Only + and numbers"
                     value={phone}
-                    onChange={e => setPhone(onPhoneChange(e.target.value))}
+                    onChange={e => setPhone(onPhoneInputChange(e.target.value))}
                     className="input-text with-border" name="phone" id="phone" placeholder={t('PhoneNumber')} required />
             </div>
 

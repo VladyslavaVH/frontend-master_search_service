@@ -14,7 +14,8 @@ const ReplyArea = ({ socket, setMessages, messages, avatar, senderId, senderFull
     };
 
     useEffect(() => {
-        if (!newMessage || newMessage.length === 0) {
+        const tmpStr = newMessage.replaceAll(' ', '');
+        if (!newMessage || newMessage.length === 0 || tmpStr.length === 0) {
             setIsEmptyMessage(true);
         } else {
             setIsEmptyMessage(false);            

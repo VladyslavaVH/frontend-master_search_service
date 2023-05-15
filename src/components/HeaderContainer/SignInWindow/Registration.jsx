@@ -18,9 +18,9 @@ const Registration = ({ onClose }) => {
     const { register, handleSubmit } = useForm();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [loading, setLoading] = useState(false);//? false
-    const [isNumberVer, setIsNumberVer] = useState(false);//? set false
-    const [phone, setPhone] = useState(null);//? set null
+    const [loading, setLoading] = useState(false);
+    const [isNumberVer, setIsNumberVer] = useState(false);
+    const [phone, setPhone] = useState(null);
     const [checkPhone] = useCheckPhoneMutation();
     const [isClientChecked, setIsClientChecked] = useState(true);
 
@@ -131,19 +131,36 @@ const Registration = ({ onClose }) => {
         }
     };
 
-    const isDigit = (char) => char >= '0' && char <= '9';
+    const isDigit = char => char >= '0' && char <= '9';
 
-    const isSymbol = (char) => {
-        const regex = /^[~:;.,!@#$%^&*()-_+="><?\/|]+$/gm;
+    const isSymbol = char => {
+        const regex = /^[~:;.,!@#$%^&*()_+="><?\/|]+$/gm;
         return regex.test(char);
     }
 
+    const isTwiceSymb = str => {
+        const lastChar = str[str.length - 1];
+        let counter1 = 0;
+        let counter2 = 0;
+        let counter3 = 0;
+        
+        if (lastChar === '-' || lastChar === `'` || lastChar === '`') {
+            for (const char of str) {
+                if (char === '-') counter1++;
+                if (char === `'`) counter2++;
+                if (char === '`') counter3++;
+            }
+        }
+
+        return counter1 > 1 || counter2 > 1 || counter3 > 1;        
+    };
+
     const onChange = val => {
         const lastChar = val[val.length - 1];
-        if (isDigit(lastChar) || isSymbol(lastChar?.toLowerCase())) {
-            return val.substr(0, val.length - 1);
-        }
-        return val;
+        
+        return (isDigit(lastChar) || isSymbol(lastChar?.toLowerCase()) || isTwiceSymb(val))
+            ? val.substr(0, val.length - 1)
+            : val;
     }
 
     return <div className="popup-tab-content" id="register">
