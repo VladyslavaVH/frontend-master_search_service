@@ -25,7 +25,7 @@ const RecentJobsList = (props) => {
         if (!isLoading) {
             fireCategoriesTr(setTrCategoriesArr); 
         }
-    }, [isLoading]);
+    }, [isLoading, jobs]);
 
     return <div className="section gray margin-top-45 padding-top-65 padding-bottom-65">
         <div className="container">
@@ -39,7 +39,8 @@ const RecentJobsList = (props) => {
 
                     <div className="listings-container compact-list-layout margin-top-35">
                         {
-                            !isLoading && jobs?.map((j) => {
+                            !isLoading && 
+                            jobs?.map((j) => {
                                 let index = trCategoriesArr?.input?.indexOf(j.category);
 
                                 return <JobListItem key={j.id} {...j}

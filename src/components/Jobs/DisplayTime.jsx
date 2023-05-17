@@ -10,15 +10,24 @@ const DisplayTime = ({  createTime }) => {
     const lang = useSelector(selectCurrentLanguage);
     const [days, setDays] = useState(null);
 
-    useEffect(() => {
+    const changeTime = () => {
         setCurDate(new Date(Date.now()));
-        setJobDate(new Date(createTime));
 
         const diffTime = Math.abs(new Date(Date.now()) - new Date(createTime));
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         setDays(diffDays);
+    };
+
+    useEffect(() => {
+        setJobDate(new Date(createTime));
+        changeTime();
     }, [createTime]);
+
+    useEffect(() => {
+        const interval = setInterval(changeTime, 60000);
+        return () => clearInterval(interval);
+    }, []);
 
     return <>
         {days > 1

@@ -17,7 +17,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: { ...credentials }
             }), 
-            invalidatesTags: ['settings'],
+            invalidatesTags: ['settings', 'user'],
             providesTags: ['settings']
         }), 
         resetPassword: builder.mutation({

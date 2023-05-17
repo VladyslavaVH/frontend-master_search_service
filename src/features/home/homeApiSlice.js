@@ -4,7 +4,8 @@ export const homeApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getHomePageStatistics: builder.query({
             query: () => '/home/statistics',
-            keepUnusedDataFor: 5
+            keepUnusedDataFor: 5,
+            providesTags: ['job', 'user']
         }),
         getPopularCategories: builder.query({
             query: () => '/popular/categories',
@@ -12,7 +13,8 @@ export const homeApiSlice = apiSlice.injectEndpoints({
         }),
         getRecentJobsList: builder.query({
             query: () => `/recent/jobs`,
-            keepUnusedDataFor: 5
+            keepUnusedDataFor: 5,
+            providesTags: ['job']
         }),
         getHighestRatedMasters: builder.query({
             query: () => `/jobs/masters/highestRated`,
