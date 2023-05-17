@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
 import Verified from "./Verified";
 import { ReactComponent as MySpinner } from '../../../animations/mySpinner.svg';
 import { setAuth } from '../../../features/auth/authSlice';
 import { useRegistrationMutation } from "../../../features/auth/authApiSlice";
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentToken } from './../../../features/auth/authSlice';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 //authentication.languageCode = 'en-US';
@@ -19,7 +17,7 @@ const INPUT_STYLES = {
     padding: '14px'
 };
 
-const NumberVerification = ({ regData, phone, onClose, resendOTP, isForgotPassword }) => {
+const NumberVerification = ({ regData, phone, onClose, resendOTP }) => {
     const { t } = useTranslation();
     const inputN0El = useRef(null);
     const dispatch = useDispatch();
@@ -32,32 +30,26 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP, isForgotPasswo
         inputN0El.current.focus();
     }, []);
 
-    const onSubmit = ({ target }) => {
+    const onSubmit = e => {
+        e.preventDefault();
+        const target = e.target;
         const inputs = target.children;
         let code = '';
+
         for (const n of inputs) {
             code += n.value != undefined ? n.value : '' ;
         }
-        console.log(code);
         
         setLoading(true);
 
         window.confirmationResult
         .confirm(code)
         .then(async (res) => {
-            console.log(res);
-            console.log('isForgotPassword: ', isForgotPassword);
-            debugger;
-            if (isForgotPassword) {
-                console.log('confirmed');
-                console.log(res.user);
-            } else {
-                const userData = await registration(regData).unwrap();
-                if (!userData) return;
+            const userData = await registration(regData).unwrap();
+            if (!userData) return;
 
-                dispatch(setAuth({...userData}));
-                setUser(res.user);
-            }
+            dispatch(setAuth({...userData}));
+            setUser(res.user);
             
             setLoading(false);
         })
@@ -97,7 +89,7 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP, isForgotPasswo
     }
 
     return <>
-        {token
+        {user
         ? <Verified onClose={onClose} />
         : <>
             <div className="welcome-text">

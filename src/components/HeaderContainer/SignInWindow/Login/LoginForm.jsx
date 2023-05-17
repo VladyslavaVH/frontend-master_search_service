@@ -24,9 +24,11 @@ const LoginForm = ({ onClose, fromLocationData, from, loading, setLoading, setPh
     const onSubmit = async e => {
         e.preventDefault();
         try {
-            const isPhoneExists = await checkPhone(phone).unwrap();
+            //?
+            const isPhoneExists = await checkPhone(phone == '+0965323364' ? '0965323364' : phone).unwrap();
             if (!isPhoneExists) throw new Error('IncorrectPhoneNumber');
 
+            //?
             const userData = await login({ phone: phone == '+0965323364' ? '0965323364' : phone, password }).unwrap();
             if (!userData) throw new Error('IncorrectPassword');
 
