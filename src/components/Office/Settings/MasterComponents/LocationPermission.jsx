@@ -35,35 +35,39 @@ const LocationPermission = ({ }) => {
     }
 
     useEffect(() => {
-        navigator.permissions.query({ name: "geolocation" }).then((result) => {
-            let permission = false;
-            if (result.state === "granted") {
-                permission = true;
-                navigator.geolocation.getCurrentPosition(
-                    success,
-                    () => console.error('Geolocation API not supported by this browser')
-                ); 
-            } else if (result.state === "prompt") {
-                permission = false;
-            } else if (result.state === "denied") {
-                permission = false;
-                setIsDenied(true);              
-            }
-
-            setIsChecked(permission);
-
-            result.addEventListener("change", () => {
+        if (!/safari/i.test(navigator.userAgent)) {
+            navigator.permissions.query({ name: "geolocation" }).then((result) => {
+                let permission = false;
                 if (result.state === "granted") {
+                    permission = true;
                     navigator.geolocation.getCurrentPosition(
                         success,
                         () => console.error('Geolocation API not supported by this browser')
                     ); 
+                } else if (result.state === "prompt") {
+                    permission = false;
+                } else if (result.state === "denied") {
+                    permission = false;
+                    setIsDenied(true);              
                 }
-
-                setIsChecked(result.state === "granted" ? true : false);
-                setIsDenied(result.state === "denied" ? true : false);
+    
+                setIsChecked(permission);
+    
+                result.addEventListener("change", () => {
+                    if (result.state === "granted") {
+                        navigator.geolocation.getCurrentPosition(
+                            success,
+                            () => console.error('Geolocation API not supported by this browser')
+                        ); 
+                    }
+    
+                    setIsChecked(result.state === "granted" ? true : false);
+                    setIsDenied(result.state === "denied" ? true : false);
+                });
             });
-          });
+        } else {
+            onClick();
+        }
     }, []);
 
     const onClick = () => {
@@ -79,8 +83,6 @@ const LocationPermission = ({ }) => {
                 () => setIsChecked(false)
             );
           }
-
-        //setIsChecked(!isChecked);
     }
 
     return <div className="col-xl-12">

@@ -83,7 +83,7 @@ let MasterCard = (props) => {
                 </div>
 
                 <div className="freelancer-rating">
-                    <div className="star-rating" data-rating={rating}></div>
+                    <div className="star-rating" data-rating={(rating && parseInt(rating) === parseFloat(rating)) ? `${rating}.0` : rating}></div>
                 </div>
 
                 {cityName.length > 0 && <strong className="margin-top-5"><i className="icon-material-outline-location-on"></i> {cityName}</strong>}

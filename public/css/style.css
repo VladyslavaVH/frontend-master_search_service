@@ -5330,13 +5330,13 @@ span.blog-item-tag {
 
 .freelancer-overview {
 	text-align: center;
-	/* padding: 38px 20px; */
 	padding: 30px 20px;
 	padding-bottom: 19px;
 	flex-grow: 1;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
+	height: 300px;
 }
 
 .freelancer-overview-inner {
@@ -5476,7 +5476,7 @@ span.blog-item-tag {
 	.freelances-grid-layout.freelancers-container { width: 100%; }
 	.freelances-grid-layout .freelancer { margin: 0 0 30px 0; width: 100%; }
 	.freelancers-container.freelancers-grid-layout { width: 100%; }
-	.freelancers-container.freelancers-grid-layout .freelancer { width: 100%; margin-right: 0; }
+	.freelancers-container.freelancers-grid-layout .freelancer { width: 97vw !important; margin-right: 0; }
 }
 
 /* Full Page Media Queiers for Freelancers List */
@@ -8086,7 +8086,7 @@ input:checked + .switch-button:before {
 		padding: 0;
 		border-radius: 4px;
 		box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-		margin-top: 20px;
+		margin-top: 75px;
 	}
 
 	.intro-banner-search-form .intro-search-field.with-label {

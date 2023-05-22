@@ -19,10 +19,10 @@ const CategoriesList = ({ setMasterCategories, categories }) => {
     }, [isLoading]);
 
     useEffect(() => {
-        if (newCategoriesArr.length === 0) {
+        if (newCategoriesArr.length === 0 && categories) {
             setNewCategoriesArr(categories);            
         }
-    }, []);
+    }, [categories]);
 
     useEffect(() => {
         setMasterCategories(newCategoriesArr);
@@ -59,7 +59,7 @@ const CategoriesList = ({ setMasterCategories, categories }) => {
         <div className="keywords-list" style={{ width: '100%', height: 'max-content' }}>
             {newCategoriesArr?.map(c => {
                 let index = trCategoriesArr?.input?.indexOf(c.category);
-                if (c?.desc !== 'delete' ) {
+                if (c?.desc !== 'delete') {
                     return <span key={c?.id} className="keyword"><span onClick={() => removeKeyword(c?.id)} className="keyword-remove"></span><span className="keyword-text">{(trCategoriesArr?.translated && trCategoriesArr.translated[index]) ? trCategoriesArr.translated[index][lang] : c?.category}</span></span>
                 }                   
             })}

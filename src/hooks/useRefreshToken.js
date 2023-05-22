@@ -29,17 +29,24 @@ const useRefreshToken = () => {
 
     useEffect(() => {
         if (role && role === ROLE.MASTER && navigator.geolocation) {
-            navigator.permissions.query({ name: "geolocation" }).then((permission) => {
-                if (permission.state === "granted") {
-                    navigator.geolocation.getCurrentPosition(
-                        success,
-                        () => console.error('Geolocation API not supported by this browser')
-                    );                    
-                    
-                } else {
-
-                }   
-            });
+            if (!/safari/i.test(navigator.userAgent)) {
+                navigator.permissions.query({ name: "geolocation" }).then((permission) => {
+                    if (permission.state === "granted") {
+                        navigator.geolocation.getCurrentPosition(
+                            success,
+                            () => console.error('Geolocation API not supported by this browser')
+                        );                    
+                        
+                    } else {
+    
+                    }   
+                });
+            } else {
+                navigator.geolocation.getCurrentPosition(
+                    success,
+                    err => console.error(err)
+                );
+            }
         }
     }, [role]);
     
