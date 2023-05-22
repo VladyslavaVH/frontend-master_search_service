@@ -42,32 +42,34 @@ let Jobs = ({ isMapApiLoaded }) => {
 			fireCategoriesTr(setTrCategoriesArr); 
 		}
 	}, [isLoading]);
+
+	const success = ({ coords }) => setCenter({ lat: coords.latitude, lng: coords.longitude });
 	
 	useEffect(() => {
 		window.scrollTo(0, 0);
 
 		if (!pos) {
 			if (navigator.geolocation) {
-				navigator.permissions.query({ name: "geolocation" }).then((result) => {
-					if (result.state === "granted") {
-						navigator.geolocation.getCurrentPosition(
-							(position) => {
-								const userPos = {
-									lat: position.coords.latitude,
-									lng: position.coords.longitude,
-								};
-								window.vvgPos = userPos;
-								setCenter(userPos);
-							},
-							() => {
-								console.log('Error: Geolocation failed');
-								navigate(-1);
-							}
-						);
-					} else if (result.state === "prompt" || result.state === "denied") {
-						navigate('/master-office/settings', {state: { permission: true, name: 'Settings', page: 'Settings' }});
-					}
-				});
+				if (!/safari/i.test(navigator.userAgent)) {
+					navigator.permissions.query({ name: "geolocation" }).then((result) => {
+						if (result.state === "granted") {
+							navigator.geolocation.getCurrentPosition(
+								success,
+								() => {
+									console.log('Error: Geolocation failed');
+									navigate(-1);
+								}
+							);
+						} else if (result.state === "prompt" || result.state === "denied") {
+							navigate('/master-office/settings', {state: { permission: true, name: 'Settings', page: 'Settings' }});
+						}
+					});
+				} else {
+					navigator.geolocation.getCurrentPosition(
+						success,
+						() => navigate('/master-office/settings', { state: { permission: true, name: 'Settings', page: 'Settings' } })
+					);
+				}
 				
 			} else {
 				// Browser doesn't support Geolocation
