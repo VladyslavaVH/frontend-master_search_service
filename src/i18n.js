@@ -244,6 +244,11 @@ i18n
           PasswordReset: 'Password reset',
           YourPasswordHasBeenUpdatedSuccessfully: 'Your password has been updated successfully',
           InvalidCode: 'Invalid Code',
+          ImageLoadingCondition: 'The size of each image must not exceed 6 MB and be in one of the following formats:',
+          ImageSizeNotice: 'The size of the image or images is too large. Please select another image or images.',
+          ImageTypeNotice: 'Invalid image or images format. Please select another image or images.',
+          Reset: 'Reset',
+          ResetAllImages: 'Reset all images',
         }    
       },
     uk: {
@@ -473,6 +478,11 @@ i18n
           PasswordReset: 'Скидання пароля',
           YourPasswordHasBeenUpdatedSuccessfully: 'Ваш пароль успішно оновлено',
           InvalidCode: 'Невірний код',
+          ImageLoadingCondition: 'Розмір кожного зображення не повинен перевищувати 6 МБ і бути в одному з наступних форматів:',
+          ImageSizeNotice: 'Розмір зображення або зображень завеликий. Будь ласка, оберіть інше або інші зображення.',
+          ImageTypeNotice: 'Недійсний формат зображення або зображень. Будь ласка, оберіть інше чи інші зображення.',
+          Reset: 'Скинути',
+          ResetAllImages: 'Скинути всі зображення',
         }      
       },
       cs: {
@@ -702,6 +712,11 @@ i18n
           PasswordReset: 'Resetovat heslo',
           YourPasswordHasBeenUpdatedSuccessfully: 'Vaše heslo bylo úspěšně aktualizováno',
           InvalidCode: 'Neplatný kód',
+          ImageLoadingCondition: 'Velikost každého obrázku nesmí přesáhnout 6 MB a musí být v jednom z následujících formátů:',
+          ImageSizeNotice: 'Velikost obrázku nebo obrázků je příliš velká. Vyberte prosím jiný obrázek nebo obrázky.',
+          ImageTypeNotice: 'Neplatný formát obrázku nebo obrázků. Vyberte prosím jiný obrázek nebo obrázky.',
+          Reset: 'Resetovat',
+          ResetAllImages: 'Obnovit všechny obrázky',
         }
       },
     }

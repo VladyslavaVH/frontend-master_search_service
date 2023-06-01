@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Documents from './Documents';
 import NotificationDialog from '../../../HeaderContainer/Popup/NotificationDialog';
 import { ReactComponent as MySpinner } from '../../../../animations/mySpinner.svg';
 import { useUploadDocumentsMutation } from '../../../../features/master/masterApiSlice';
+import { imageFormats, isValidFile } from '../../../../utils/fileValidationFunctions';
 
 const UploadDocuments = ({ setDocuments }) => {
     const { t } = useTranslation();
@@ -17,55 +18,22 @@ const UploadDocuments = ({ setDocuments }) => {
 
     const [uploadDocuments] = useUploadDocumentsMutation();
 
-    const mastersDocumentsPath = process.env.REACT_APP_MASTERS_DOCUMENTS_PATH;
-
-    const onSubmit = async e => {
-        e.preventDefault();
-
-        try {
-            setLoading(true);
-            let formData = new FormData();
-
-            formData.append(`passport1`, passportPhotos[0]);
-            formData.append(`passport2`, passportPhotos[1]);
-            formData.append(`itn`, itnPhoto);
-
-            // let formEntries = Array.from(formData.entries());
-            // console.log("formEntries " , formEntries); 
-            
-            const res = await uploadDocuments(formData).unwrap();
-
-            if(!res.success) {
-                setNotificationText('UploadDocError');
-                setIsOpen(true);
-            } else {
-                setDocuments(imgUrls);
-            }
-
-            setLoading(false);
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    const saveItnPhoto = async ({ target }) => {
-        setItnPhoto(target.files[0]);
-
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            imgUrls.push(e.target.result);
-            setImgUrls([...imgUrls]);
-        }
-
-        reader.readAsDataURL(target.files[0]);
-    };
-
     const savePassportPhotos = async ({ target }) => {
         if (target.files.length !== 2) {
             setNotificationText('Only2PassportPhotos');
             setIsOpen(true);
             return;
+        }
+
+        for (const f of target.files) {
+            const { isValid, error } = isValidFile(f);
+
+            if (!isValid) {
+                setNotificationText(error);
+                !isOpen && setIsOpen(true);
+                target.value = '';
+                return;
+            }
         }
         
         let files = Array.from(target.files).map(file => {
@@ -91,16 +59,77 @@ const UploadDocuments = ({ setDocuments }) => {
         setPassportPhotos([...passportPhotos]);
     };
 
+    const saveItnPhoto = async ({ target }) => { 
+        const { isValid, error } = isValidFile(target.files[0]);       
+        if (!isValid) {
+            setNotificationText(error);
+            !isOpen && setIsOpen(true);
+            target.value = '';
+            return;
+        }
+
+        setItnPhoto(target.files[0]);
+
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            imgUrls.push(e.target.result);
+            setImgUrls([...imgUrls]);
+        }
+
+        reader.readAsDataURL(target.files[0]);
+    };
+
+    const onSubmit = async e => {
+        e.preventDefault();
+
+        try {
+            setLoading(true);
+            let formData = new FormData();
+
+            formData.append(`passport1`, passportPhotos[0]);
+            formData.append(`passport2`, passportPhotos[1]);
+            formData.append(`itn`, itnPhoto);
+
+            // let formEntries = Array.from(formData.entries());
+            // console.log("formEntries " , formEntries);
+            
+            const res = await uploadDocuments(formData).unwrap();
+
+            if(!res.success) {
+                setNotificationText('UploadDocError');
+                setIsOpen(true);
+            } else {
+                setDocuments(imgUrls);
+            }
+
+            setLoading(false);
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const onReset = () => {
+        setPassportPhotos([]);
+        setItnPhoto(null);
+        setImgUrls([]);
+    } 
+
     return <div className='col'>
-        <form className='row margin-bottom-15' onSubmit={onSubmit} id="uploadDocForm">
-            <div className="col-xl-12">
+        <p title="explanation" style={{ cursor: 'pointer' }} >
+            <i className="icon-feather-info"></i>
+            &nbsp;{t('ImageLoadingCondition')}&nbsp; 
+            <i>{imageFormats?.map((f, i) => <>{f}{i != imageFormats.length - 1 ? ',' : '.'}&nbsp;</>)}</i>
+        </p>
+        <form onSubmit={onSubmit} onReset={onReset} id="uploadDocForm">
+            <div>
                 <div className="numbered color filled">
-                    <ol className="col-xl-12">
-                        <li className="container">
+                    <ol className="col-xl-12" style={{ fontSize: '18px' }}>
+                        <li>
                             {passportPhotos.length === 0
-                                ? <div className="row">
+                                ? <div className="row" style={{ width: '100%' }}>
                                     <div className="col-xl-6 col-md-6">
-                                        <div className="uploadButton" title={t("UploadPassportPhotos")}>
+                                        <div className="uploadButton margin-bottom-0" title={t("UploadPassportPhotos")}>
                                             <div style={{ width: 'inherit' }} className="">
                                                 <input
                                                     onChange={savePassportPhotos}
@@ -114,16 +143,16 @@ const UploadDocuments = ({ setDocuments }) => {
 
                                     <span className='uploadButton-file-name col-xl-6 col-md-6'><i className="icon-feather-user-check margin-right-5"></i>{t("UploadPassportPhotos")}</span>
                                 </div>
-                                : <i style={{ fontSize: 36, color: '#2a41e8' }} className="icon-material-outline-check"></i>
+                                : <>{t("Passport")}&nbsp;<i style={{ fontSize: 30, marginTop: '-10px', color: '#2a41e8' }} className="icon-material-outline-check"></i></>
                             }
                         </li>
 
                         {passportPhotos.length > 0 &&
-                        <li className="container">
+                        <li>
                             {!itnPhoto
-                                ? <div className="row">
+                                ? <div className="row" style={{ width: '100%' }}>
                                     <div className="col-xl-6 col-md-6">
-                                        <div className="uploadButton" title={t('UploadAPhotoOfYourTaxIdentificationNumber')}>
+                                        <div className="uploadButton margin-bottom-0" title={t('UploadAPhotoOfYourTaxIdentificationNumber')}>
                                             <div style={{ width: 'inherit' }} className=''>
                                                 <input
                                                     onChange={saveItnPhoto}
@@ -136,7 +165,7 @@ const UploadDocuments = ({ setDocuments }) => {
 
                                     <span className='uploadButton-file-name col-xl-6 col-md-6'><i className="icon-material-outline-note-add margin-right-5"></i>{t("UploadAPhotoOfYourTaxIdentificationNumber")}</span>
                                 </div>
-                                : <i style={{ fontSize: 36, color: '#2a41e8' }} className="icon-material-outline-check"></i>
+                                : <>ITN &nbsp;<i style={{ fontSize: 30, marginTop: '-10px', color: '#2a41e8' }} className="icon-material-outline-check"></i></>
                             }
                         </li>}
                     </ol>
@@ -169,6 +198,11 @@ const UploadDocuments = ({ setDocuments }) => {
                     type='submit'
                     form='uploadDocForm'
                     >{t("Upload")}</button>}
+
+                    <button className='button big gray gray-ripple-effect margin-left-15' 
+                    type='reset'
+                    form='uploadDocForm'
+                    >{t("Reset")}</button>
                 </div>
             </div>}
         </form >

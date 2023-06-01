@@ -24,7 +24,7 @@ let Jobs = ({ isMapApiLoaded }) => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const masterCurLocation = useSelector(selectCurrentLocation);
-	const { categoryId, title: category, pos, masterCategories } = location?.state || {};
+	const { categoryId, title: category, pos, masterCategories, masterPos } = location?.state || {};
 	const [center, setCenter] = useState(pos);
     const [bounds, setBounds] = useState(null);
 	const [mapZoom] = useState(13);
@@ -65,10 +65,14 @@ let Jobs = ({ isMapApiLoaded }) => {
 						}
 					});
 				} else {
-					navigator.geolocation.getCurrentPosition(
-						success,
-						() => navigate('/master-office/settings', { state: { permission: true, name: 'Settings', page: 'Settings' } })
-					);
+					if (masterPos) {
+						setCenter(masterPos);
+					} else {
+						navigator.geolocation.getCurrentPosition(
+							success,
+							() => navigate('/master-office/settings', { state: { permission: true, name: 'Settings', page: 'Settings' } })
+						);						
+					}
 				}
 				
 			} else {

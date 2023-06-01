@@ -12,6 +12,7 @@ import LocationsAutocomplete from "../../../Jobs/FiltersSidebar/LocationsAutocom
 import CurrencySelect from "./CurrencySelect";
 import NotificationDialog from './../../../HeaderContainer/Popup/NotificationDialog';
 import { INPUTS_SHADOW_STYLES } from "../../../../animations/selectDetails";
+import { isValidFile, imageFormats } from "../../../../utils/fileValidationFunctions";
 
 const schema = yup
   .object()
@@ -32,31 +33,28 @@ let JobPosting = ({ isMapApiLoaded }) => {
     const [notificationText, setNotificationText] = useState('');
     const [minP, setMinP] = useState(100);
     const [maxP, setMaxP] = useState(1000);
-    const [jobDateTime, setJobDateTime] = useState(null);
+    const [jobDateTime, setJobDateTime] = useState(undefined);
     const [isOpen, setIsOpen] = useState(false);
     const { register, handleSubmit, reset, watch,
         formState: { errors },
     } = useForm({ resolver: yupResolver(schema) });
 
-    useState(() => {
-        if (watch('photos')?.length > 0 && errors?.photos) {
-            setNotificationText(errors.photos.message);
-            setIsOpen(true);
-            reset();
+    const photosArray = watch('photos');
+    useEffect(() => {
+        if (photosArray?.length > 0) {
+            for (const f of photosArray) {
+                const { isValid, error } = isValidFile(f);
+    
+                if (!isValid) {
+                    setNotificationText(error);
+                    !isOpen && setIsOpen(true);
+                    reset();
+                }
+            }
         }
-    }, [watch('photos'), errors, errors.photos]);
+    }, [photosArray]);
 
     useEffect(() => {
-        // if (minP < 0 || minP >= maxP || (minP == 0 && maxP == 0)) {
-        //     let min = maxP > 0 
-        //     ? minP < 0 
-        //         ? 0 
-        //         : maxP - 1 
-        //     : 0;
-        //     setMinP(min);
-        //     setMaxP(maxP <= 0 ? min + 1 : maxP);
-        // }
-
         let minTmp = minP == '-0' ? 0 : parseFloat(minP);
         let maxTmp = maxP == '-0' ? 0 :  parseFloat(maxP);
         if (minTmp < 0) {
@@ -100,9 +98,6 @@ let JobPosting = ({ isMapApiLoaded }) => {
     const onSubmit = async data => {
         try {
             if (minP == 0 || !minP || !maxP || maxP == 0 || (minP >= maxP) || isNaN(minP) || isNaN(maxP)) {
-                // let min = maxP > 0 ? maxP - 1 : 0;
-                // setMinP(min);
-                // setMaxP(maxP <= 0 ? min + 1 : maxP);
                 setNotificationText('NotValidPaymentData');
                 setIsOpen(true);
                 return;
@@ -235,9 +230,15 @@ let JobPosting = ({ isMapApiLoaded }) => {
                                     {...register('description')}
                                      cols="30" rows="5" className="with-border"></textarea>
                                      
+                                     <p className="margin-top-30" title="explanation" style={{ cursor: 'pointer' }} >
+                                        <i className="icon-feather-info"></i>
+                                        &nbsp;{t('ImageLoadingCondition')}&nbsp; 
+                                        <i>{imageFormats?.map((f, i) => <>{f}{i != imageFormats.length - 1 ? ',' : '.'}&nbsp;</>)}</i>
+                                    </p>
+
                                     {
                                         !watch('photos') || watch('photos').length === 0
-                                            ? <div className="uploadButton margin-top-30">
+                                            ? <div className="uploadButton">
                                                 <input name="photos"
                                                     {...register('photos')}
                                                     className="uploadButton-input" type="file" accept="image/*" id="upload" multiple />
@@ -250,13 +251,17 @@ let JobPosting = ({ isMapApiLoaded }) => {
                                                     }
                                                 </span>
                                             </div>
-                                            : <div className="numbered color margin-top-28">
-                                                 <ol>
+                                            : <div className="numbered color margin-top-28" style={{ display: 'flex', flexDirection: 'column' }}>
+                                                <ol>
                                                     {
                                                         Array.from(watch('photos'))?.map(p => <li>{p.name}</li>)
                                                     }
-                                                    {/* <strong>{watch('photos')[0].name}</strong> */}
                                                 </ol>
+                                                <button className='button big gray gray-ripple-effect' 
+                                                type='button'
+                                                onClick={() => reset()}
+                                                style={{ width: 'max-content' }}
+                                                >{t("ResetAllImages")}</button>
                                             </div>
                                     }
                                 </div>

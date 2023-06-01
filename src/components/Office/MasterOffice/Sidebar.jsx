@@ -24,18 +24,29 @@ let Sidebar = (props) => {
     })
 
     const viewJobsClick = () => {
-        navigator.permissions.query({ name: "geolocation" }).then((result) => {
-            if (result.state === "granted") {
-                navigate('/jobs', {state: { masterCategories: user?.masterInfo?.categories }});
-            } else if (result.state === "prompt" || result.state === "denied") {
-                setNotificationText('ViewPermissionNotAllowed');
-                setIsNotificationOpen(true);
-            } 
-
-            result.addEventListener("change", () => {
-              
-            });
-        });
+        if (navigator.geolocation) {
+            if (!/safari/i.test(navigator.userAgent)) {
+                navigator.permissions.query({ name: "geolocation" }).then((result) => {
+                    if (result.state === "granted") {
+                        navigate('/jobs', { state: { masterCategories: user?.masterInfo?.categories }});
+                    } else if (result.state === "prompt" || result.state === "denied") {
+                        setNotificationText('ViewPermissionNotAllowed');
+                        setIsNotificationOpen(true);
+                    }
+                });
+            } else {
+                navigator.geolocation.getCurrentPosition(
+                    ({ coords }) => navigate('/jobs', { state: { masterPos: { lat: coords.latitude, lng: coords.longitude }, masterCategories: user?.masterInfo?.categories }}),
+                    () => navigate('/master-office/settings', { state: { permission: true, name: 'Settings', page: 'Settings' } })
+                );
+            }
+            
+        } else {
+            // Browser doesn't support Geolocation
+            console.log(`Browser doesn't support Geolocation`);
+            navigate(-1);
+        }
+        
     };
 
     return <div className="dashboard-sidebar">

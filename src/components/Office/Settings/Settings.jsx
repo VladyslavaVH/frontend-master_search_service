@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import $ from 'jquery';
 import { useSelector } from 'react-redux';
-import { selectCurrentUser, selectIsAdmin, selectIsMaster } from "../../../features/auth/authSlice";
+import { selectIsAdmin, selectIsMaster } from "../../../features/auth/authSlice";
 import PasswordChange from "./PasswordChange";
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -213,7 +213,7 @@ let Settings = (props) => {
                                     <h3><i style={{ color: documents.length === 0 ? 'red' : '' }} className="icon-material-outline-assignment"></i> {t("MyDocuments")}</h3>
                                 </div>
 
-                                <div className="content with-padding padding-bottom-0">
+                                <div className="content with-padding">
                                     <div className="row">
                                         {!isLoading && documents.length > 0
                                             ? <Documents documents={documents} />
@@ -231,7 +231,6 @@ let Settings = (props) => {
             </>}
 
         {false && <PasswordChange />}
-
     </div>;
 }
 

@@ -23,7 +23,7 @@ const UserWindow = (props) => {
     const profilePhotosPath = process.env.REACT_APP_PROFILE_PHOTOS_PATH;
 
     useEffect(() => {
-        if (!localStorage.getItem('isPersistent')) {
+        if (!localStorage.getItem('isPersistent') || localStorage.getItem('isLogin')) {
             if (isAdmin) {
                 navigate('/admin-panel/statistics', { replace: true, state: { name: 'Howdy', page: 'Statistics' } });
             } else {
@@ -33,40 +33,14 @@ const UserWindow = (props) => {
                     navigate(`/client-office`, { replace: true, state: { name: 'Howdy', span: 'Greetings' } });
                 }
             } 
+
+            localStorage.removeItem('isLogin');
         } else {
             localStorage.removeItem('isPersistent');
         }
          
         
         setFullName(`${firstName} ${lastName}`);
-
-        if ($('.status-switch label.user-invisible').hasClass('current-status')) {
-            $('.status-indicator').addClass('right');
-        }
-    
-        $('.status-switch label.user-invisible').on('click', function(){
-            $('.status-indicator').addClass('right');
-            $('.status-switch label').removeClass('current-status');
-            $('.user-invisible').addClass('current-status');
-        });
-    
-        $('.status-switch label.user-online').on('click', function(){
-            $('.status-indicator').removeClass('right');
-            $('.status-switch label').removeClass('current-status');
-            $('.user-online').addClass('current-status');
-        });
-
-        $('#snackbar-user-status label').on('click', function() { 
-            Snackbar.show({
-                text: 'Your status has been changed!',
-                pos: 'bottom-center',
-                showAction: false,
-                actionText: "Dismiss",
-                duration: 3000,
-                textColor: '#fff',
-                backgroundColor: '#383838'
-            }); 
-        }); 
     }, []);
 
     return <div className={`header-notifications user-menu ${isActive ? 'active' : ''}`} onClick={() => setIsActive(!isActive)} style={{ cursor: 'pointer' }}>

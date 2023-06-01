@@ -842,6 +842,7 @@ a.header-notifications-button i {
 
 .user-avatar img {
 	width: 100%;
+	height: inherit !important;
 	display: inline-block;
 	border-radius: 50%;
 	image-rendering: -webkit-optimize-contrast;
@@ -15866,7 +15867,7 @@ ul.dashboard-box-list > li:hover {
 	/* Dashboard Mobile Basis */
 	.dashboard-sidebar .dashboard-nav-container,
 	.dashboard-content-inner { padding: 15px; }
-	.dashboard-sidebar-inner { padding-bottom: 30px; }
+	/* .dashboard-sidebar-inner { padding-bottom: 30px; } */
 	.dashboard-sidebar .simplebar-content { overflow-x: hidden; }
 
 	.dashboard-nav-inner {

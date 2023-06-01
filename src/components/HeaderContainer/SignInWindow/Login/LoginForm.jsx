@@ -37,6 +37,7 @@ const LoginForm = ({ onClose, fromLocationData, from, loading, setLoading, setPh
             if (from) {
                 navigate(from, { replace: true, state: { ...fromLocationData } },);
             }
+            localStorage.setItem('isLogin', true);
             onClose();
 
         } catch (error) {

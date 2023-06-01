@@ -66,17 +66,6 @@ let HeaderContainer = (props) => {
 			}
 		});
 
-		document.body.addEventListener('click', e => {
-			const clName = e.target.className;
-			if (clName != 'mmenu-trigger' &&
-				clName != 'hamburger hamburger--collapse' &&
-				clName != 'hamburger-box' &&
-				clName != 'hamburger-inner' && document.getElementById('wrapper').style.transform.substring(12, 15) != '0px') {
-				document.getElementById('wrapper').style.transform = 'translate3d(0px, 0, 0)';
-				setIsMobNavOpen(false);
-			} 
-		}, false);
-
 		// Close with ESC
 		$(document).on('keyup', function (e) {
 			if (e.key === 'Escape') {

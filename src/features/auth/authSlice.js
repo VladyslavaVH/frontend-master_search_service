@@ -22,7 +22,7 @@ const authSlice = createSlice({
         isMaster: false,
         isAdmin: undefined,
         unreadNotifications: [],
-        unreadMessages: []
+        unreadMessages: [],
     },
     reducers: {
         setAuth: (state, { payload }) => {
