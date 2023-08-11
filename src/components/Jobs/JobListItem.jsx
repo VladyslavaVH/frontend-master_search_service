@@ -19,35 +19,38 @@ const JobListItem = (props) => {
     const isMaster = useSelector(selectIsMaster);
     const { minPayment, maxPayment, currency,
         id, isVerified, clientName, lat, lng, category, createTime, days,
-         isHomePage } = props;
+        isHomePage, isMapApiLoaded,
+        activeTab, setActiveTab} = props;
     const [cityName, setCityName] = useState('');
     const { data:permission } = useGetPermissionCheckQuery(!isAuth && skipToken);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
     useEffect(() => {
-        if (window.google && (lat && lng)) {
-
-            if (!window.myGeocoder) {
-                window.myGeocoder = new window.google.maps.Geocoder();
+        if (isMapApiLoaded) {
+            if (window.google && (lat && lng)) {
+    
+                if (!window.myGeocoder) {
+                    window.myGeocoder = new window.google.maps.Geocoder();
+                }
+    
+                window.myGeocoder
+                .geocode({ location: { lat, lng } }, function(results, status) {
+                    if( status === window.google.maps.GeocoderStatus.OK ) {
+                        let address = results[0].address_components;
+                        for (let p = address.length-1; p >= 0; p--) {
+                          if ((address[p].types.indexOf("locality") != -1)
+                           && (address[p].types.indexOf("political") != -1)) {
+                            setCityName(address[p].long_name);
+                          }
+                        }
+                      } else {
+                        console.log("Sorry - We couldn't find this location. Please try an alternative");
+                     }
+                })
+                .catch((e) => console.log("Geocoder failed due to: " + e));
             }
-
-            window.myGeocoder
-            .geocode({ location: { lat, lng } }, function(results, status) {
-                if( status === window.google.maps.GeocoderStatus.OK ) {
-                    let address = results[0].address_components;
-                    for (let p = address.length-1; p >= 0; p--) {
-                      if ((address[p].types.indexOf("locality") != -1)
-                       && (address[p].types.indexOf("political") != -1)) {
-                        setCityName(address[p].long_name);
-                      }
-                    }
-                  } else {
-                    console.log("Sorry - We couldn't find this location. Please try an alternative");
-                 }
-            })
-            .catch((e) => console.log("Geocoder failed due to: " + e));
         }
-    }, []);
+    }, [isMapApiLoaded]);
 
     const applyJobClickHandler = () => {
         if (!isHomePage && isAuth && isMaster && location.pathname.includes('/jobs')) {
@@ -74,7 +77,13 @@ const JobListItem = (props) => {
         }
     }
 
-    return <div className={`job-listing${isHomePage ? ' with-apply-button' : ''}`}>
+    const hoverTab = () => {
+        setActiveTab(id);
+    };
+
+    return <div 
+    onMouseOver={hoverTab} 
+    className={`job-listing${isHomePage ? ' with-apply-button' : ''} ${activeTab == id ? 'active-job-listing' : ''}`}>
     
         <div className="job-listing-details">
     

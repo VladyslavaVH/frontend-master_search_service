@@ -17,7 +17,6 @@ import JobPosting from './components/Office/ClientOffice/JobPosting/JobPosting';
 import Checkout from "./components/Checkout/Checkout";
 import ManageJobs from './components/Office/ClientOffice/ManageJobs/ManageJobs';
 import Settings from './components/Office/Settings/Settings';
-import EditJob from './components/Office/ClientOffice/EditJob';
 import SingleJob from './components/Jobs/SingleJob/SingleJob';
 import Masters from "./components/Masters/Masters";
 import MasterProfile from "./components/Masters/MasterProfile/MasterProfile";
@@ -161,7 +160,6 @@ function App() {
                 <Route path="/client-office" element={<ClientOffice />} >
                   <Route path="master-profile" element={<MasterProfile isMapApiLoaded={isMapApiLoaded} />} />
                   <Route path="job-posting" element={<JobPosting isMapApiLoaded={isMapApiLoaded} />} />
-                  <Route path="manage-jobs/edit/job" element={<EditJob />} />
                   <Route path="manage-jobs/job" element={<SingleJob isMapApiLoaded={isMapApiLoaded} />} />
       
                   <Route path="messages" element={<Messages />} >

@@ -2,32 +2,24 @@ import React, { useState, useEffect } from "react";
 import Category from "./Category";
 import { useGetPopularCategoriesQuery } from "../../../features/home/homeApiSlice";
 import { useTranslation } from 'react-i18next';
-
 import { fireCategoriesTr, fireDescriptionsTr } from "../../../utils/firebase.config";
 import { selectCurrentLanguage } from "../../../features/auth/authSlice";
 import { useSelector } from "react-redux";
  
-const Categories = (props) => {
+const Categories = ({}) => {
     const { t } = useTranslation();
     const lang = useSelector(selectCurrentLanguage);
     const [trCategoriesArr, setTrCategoriesArr] = useState(null);
     const [descriptionsArr, setDescriptionsArr] = useState(null);
-    const { 
-        data: popularCategories,
-        //data,
-        isLoading,
-        isSuccess,
-        isError,
-        error
-    } = useGetPopularCategoriesQuery();
-
+    const { data: popularCategories, isLoading } = useGetPopularCategoriesQuery();
+    
     useEffect(() => {
         if (!isLoading) {
             fireCategoriesTr(setTrCategoriesArr);
             fireDescriptionsTr(setDescriptionsArr);
         }
     }, [isLoading]);
-
+    
     return <div className="section margin-top-65">
         <div className="container">
             <div className="row">

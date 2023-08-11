@@ -4,13 +4,11 @@ import { useSelector } from 'react-redux';
 import { selectCurrentUser, selectUnreadMessages } from "../../../features/auth/authSlice";
 import useLogout from './../../../hooks/useLogout';
 import { useTranslation } from 'react-i18next';
-import NotificationDialog from "../../HeaderContainer/Popup/NotificationDialog";
+import PermissionRequest from "../../Jobs/PermissionRequest";
 
-let Sidebar = (props) => {
+let Sidebar = ({}) => {
     const { t } = useTranslation();
-    const [isOpen, setIsOpen] = useState(false);
-    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-    const [notificationText, setNotificationText] = useState('');
+    const [start, setStartPermissionRequest] = useState(false);
     let unreadMessages = useSelector(selectUnreadMessages); 
     const [isApply, setApply] = useState(null);
     const user = useSelector(selectCurrentUser);
@@ -19,38 +17,19 @@ let Sidebar = (props) => {
     const location = useLocation();    
     const navigate = useNavigate();
 
-    useEffect(() => {        
-        setApply(location.state?.isApply)
-    })
-
-    const viewJobsClick = () => {
-        if (navigator.geolocation) {
-            if (!/safari/i.test(navigator.userAgent)) {
-                navigator.permissions.query({ name: "geolocation" }).then((result) => {
-                    if (result.state === "granted") {
-                        navigate('/jobs', { state: { masterCategories: user?.masterInfo?.categories }});
-                    } else if (result.state === "prompt" || result.state === "denied") {
-                        setNotificationText('ViewPermissionNotAllowed');
-                        setIsNotificationOpen(true);
-                    }
-                });
-            } else {
-                navigator.geolocation.getCurrentPosition(
-                    ({ coords }) => navigate('/jobs', { state: { masterPos: { lat: coords.latitude, lng: coords.longitude }, masterCategories: user?.masterInfo?.categories }}),
-                    () => navigate('/master-office/settings', { state: { permission: true, name: 'Settings', page: 'Settings' } })
-                );
-            }
-            
-        } else {
-            // Browser doesn't support Geolocation
-            console.log(`Browser doesn't support Geolocation`);
-            navigate(-1);
-        }
-        
+    const DEFAULT_LOCATION = {
+        lat: parseFloat(process.env.REACT_APP_DEFAULT_LAT),
+        lng: parseFloat(process.env.REACT_APP_DEFAULT_LNG),
     };
 
+    useEffect(() => {        
+        setApply(location.state?.isApply)
+    });
+
+    const viewJobsClick = () => setStartPermissionRequest(true);
+
     return <div className="dashboard-sidebar">
-    <div className="dashboard-sidebar-inner" >{/*data-simplebar*/}
+    <div className="dashboard-sidebar-inner" >
         <div className="dashboard-nav-container">
 
             {/* <!-- Responsive Navigation Trigger --> */}
@@ -68,20 +47,19 @@ let Sidebar = (props) => {
                 <div className="dashboard-nav-inner">
 
                     <ul data-submenu-title={t('Start')}>
-                        {isApply && <li className={!isOpen &&
-                            isApply ? 'active' : ''}>
+                        {isApply && <li className={isApply ? 'active' : ''}>
                             <a>
                                 <i className="icon-material-outline-assignment"></i> 
                                 {t("ApplyForAJob")}
                             </a>
                         </li>}
-                        <li className={!isOpen && location.pathname.includes('jobs') ? 'active' : ''}>
+                        <li className={location.pathname.includes('jobs') ? 'active' : ''}>
                             <a onClick={viewJobsClick}>
                                 <i className="icon-material-outline-assignment"></i> 
                                 {t('ViewJobs')}
                             </a>
                         </li>
-                        <li className={!isOpen && location.pathname.includes('messages') ? 'active' : ''}>
+                        <li className={location.pathname.includes('messages') ? 'active' : ''}>
                             <NavLink state={{name: 'Messages', page: 'Messages'}}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/master-office/messages'>
@@ -98,7 +76,7 @@ let Sidebar = (props) => {
                                 Pricing Plans
                             </NavLink>
                         </li>}
-                        <li className={!isOpen && location.pathname.includes('statistics') ? 'active' : ''}>
+                        <li className={location.pathname.includes('statistics') ? 'active' : ''}>
                             <NavLink state={{ name: 'Statistics', page: 'Statistics' }}
                             className={({ isActive }) => { return isActive ? 'active' : '' }}
                             to='/master-office/statistics'>
@@ -139,9 +117,10 @@ let Sidebar = (props) => {
             </div>
             {/* <!-- Navigation / End --> */}
 
-            <NotificationDialog type="notice" open={isNotificationOpen} onClose={() => setIsNotificationOpen(false)}>
-                {t(notificationText)}
-            </NotificationDialog>
+            <PermissionRequest 
+            start={start} 
+            finish={() => setStartPermissionRequest(false)} 
+            action={(GEO, defaultCenter) => navigate('/jobs', { state: { defaultCenter, masterPos: GEO, masterCategories: user?.masterInfo?.categories }})} />
         </div>
     </div>
 </div>;

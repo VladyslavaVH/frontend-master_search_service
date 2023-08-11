@@ -1,33 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useGetAllJobsListQuery } from "../../features/jobs/jobsApiSlice";
-import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import OfficeFooter from "../Office/OfficeFooter";
 import FiltersSidebar from "./FiltersSidebar/FiltersSidebar";
-
 import JobListItem from "./JobListItem";
 import Map from "./Map";
 import Pagination from "./Pagination";
 import { useTranslation } from 'react-i18next';
 import { fireCategoriesTr } from '../../utils/firebase.config';
-import { selectCurrentLanguage, selectCurrentLocation } from "../../features/auth/authSlice";
+import { selectCurrentLanguage } from "../../features/auth/authSlice";
 import { useSelector } from 'react-redux';
+import NotificationDialog from "../HeaderContainer/Popup/NotificationDialog";
+import PermissionRequest from "./PermissionRequest";
 
 let Jobs = ({ isMapApiLoaded }) => {
-	// const [center, setCenter] = useState({ 
-	// 	lat: 46.399904,   
-	// 	lng: 30.732074,
-	// });
 	const { t } = useTranslation();
 	const lang = useSelector(selectCurrentLanguage);
 	const [trCategoriesArr, setTrCategoriesArr] = useState(null);
 	const location = useLocation();
-	const navigate = useNavigate();
-	const masterCurLocation = useSelector(selectCurrentLocation);
-	const { categoryId, title: category, pos, masterCategories, masterPos } = location?.state || {};
+	const { categoryId, title: category, pos, masterCategories, masterPos, defaultCenter } = location?.state || {};
 	const [center, setCenter] = useState(pos);
+	const [masterCoordinates, setMasterCoordinates] = useState(null);
     const [bounds, setBounds] = useState(null);
-	const [mapZoom] = useState(13);
+	const [mapZoom] = useState(11);
 	const [page, setPage] = useState(1);
 	const [categories, setCategories] = useState(categoryId ? [categoryId] : []);
 	//const [categories, setCategories] = useState(masterCategories ? masterCategories : categoryId ? [categoryId] : []);
@@ -36,6 +32,11 @@ let Jobs = ({ isMapApiLoaded }) => {
 		useGetAllJobsListQuery(bounds ? { page, bounds, categories, payment, title: category } : skipToken);
 	const { jobs, total, lastPage } = data || {};
 
+	const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    const [notificationText, setNotificationText] = useState('');
+    const [start, setStartPermissionRequest] = useState(false);
+    const [activeTab, setActiveTab] = useState(undefined);
+	
 	useEffect(() => {
 		if(!isLoading && data) {
 			setPage(data.page);
@@ -43,45 +44,16 @@ let Jobs = ({ isMapApiLoaded }) => {
 		}
 	}, [isLoading]);
 
-	const success = ({ coords }) => setCenter({ lat: coords.latitude, lng: coords.longitude });
-	
 	useEffect(() => {
 		window.scrollTo(0, 0);
-
+		
 		if (!pos) {
-			if (navigator.geolocation) {
-				if (!/safari/i.test(navigator.userAgent)) {
-					navigator.permissions.query({ name: "geolocation" }).then((result) => {
-						if (result.state === "granted") {
-							navigator.geolocation.getCurrentPosition(
-								success,
-								() => {
-									console.log('Error: Geolocation failed');
-									navigate(-1);
-								}
-							);
-						} else if (result.state === "prompt" || result.state === "denied") {
-							navigate('/master-office/settings', {state: { permission: true, name: 'Settings', page: 'Settings' }});
-						}
-					});
-				} else {
-					if (masterPos) {
-						setCenter(masterPos);
-					} else {
-						navigator.geolocation.getCurrentPosition(
-							success,
-							() => navigate('/master-office/settings', { state: { permission: true, name: 'Settings', page: 'Settings' } })
-						);						
-					}
-				}
-				
-			} else {
-				// Browser doesn't support Geolocation
-				console.log(`Browser doesn't support Geolocation`);
-				navigate(-1);
+			setCenter(masterPos);
+			if (!defaultCenter) {
+				setMasterCoordinates(masterPos)
 			}
 		}
-	}, [pos, masterCurLocation]);
+	}, [pos, masterPos]);
 
     return <div className="full-page-container with-map" style={{ maxHeight: '95vh'}}>
 
@@ -100,6 +72,8 @@ let Jobs = ({ isMapApiLoaded }) => {
 						return <JobListItem
 							key={j.id}
 							{...j}
+							setActiveTab={setActiveTab}
+							activeTab={activeTab}
 							category={trCategoriesArr?.translated ? trCategoriesArr.translated[index][lang] : j.category}
 							isHomePage={false} />
 					})
@@ -130,16 +104,28 @@ let Jobs = ({ isMapApiLoaded }) => {
 		{
 			(center && !isLoading && isMapApiLoaded) &&
 			<Map
-				lang={lang}
+			lang={lang}
 				trCategoriesArr={trCategoriesArr}
 				jobs={jobs}
 				mapZoom={mapZoom}
 				setBounds={setBounds}
 				bounds={bounds}
 				center={center}
-				isMapApiLoaded={isMapApiLoaded} />
-		}
+				isMapApiLoaded={isMapApiLoaded}
+				startRequest={() => setStartPermissionRequest(true)}
+				defaultCenter={defaultCenter}
+				masterCoordinates={masterCoordinates}
+				setMasterCoordinates={setMasterCoordinates}
+				activeTab={activeTab}
+				setActiveTab={setActiveTab} />
+			}
 	</div>
+
+	<NotificationDialog open={isNotificationOpen} onClose={() => setIsNotificationOpen(false)}>
+		{t(notificationText)}
+	</NotificationDialog>
+	
+	<PermissionRequest start={start} finish={() => setStartPermissionRequest(false)} action={(GEO) => setCenter(GEO)} />
 </div>;
 };
 

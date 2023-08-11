@@ -4780,6 +4780,10 @@ span.blog-item-tag {
 	opacity: 1;
 }
 
+.active-job-listing::before {
+	opacity: 1 !important;
+} 
+
 .compact-list-layout .job-listing:hover {
 	transform: none;
 }

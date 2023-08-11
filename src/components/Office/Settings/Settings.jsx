@@ -33,7 +33,7 @@ const schema = yup
     })
     .required();
 
-let Settings = (props) => {
+let Settings = ({}) => {
     const { t } = useTranslation();
     const { register, handleSubmit, reset, watch,
         formState: { errors },
@@ -202,10 +202,10 @@ let Settings = (props) => {
                 {!!+isMaster
                     ? <>
                     
-                        {true
+                        {/* {true
                             ? <LocationPermission />
                             : null
-                        }
+                        } */}
 
                         <div className="col-xl-12">
                             <div className="dashboard-box" style={{ boxShadow: documents.length === 0 ? '0 2px 8px rgba(255,0,0,0.2)' : '' }}>

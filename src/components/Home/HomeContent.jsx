@@ -13,7 +13,7 @@ let HomeContent = ({isMapApiLoaded}) => {
     
     <Categories />  
 
-    <RecentJobsList />
+    <RecentJobsList isMapApiLoaded={isMapApiLoaded} />
 
     {!isLoading && <MasterCarousel isMapApiLoaded={isMapApiLoaded} masters={masters} />}
 

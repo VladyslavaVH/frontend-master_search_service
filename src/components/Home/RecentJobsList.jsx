@@ -7,7 +7,7 @@ import { selectCurrentLanguage, selectIsAuth, selectIsMaster } from "../../featu
 import { useSelector } from 'react-redux';
 import { fireCategoriesTr } from '../../utils/firebase.config';
 
-const RecentJobsList = (props) => {
+const RecentJobsList = ({ isMapApiLoaded }) => {
     const { t } = useTranslation();
     const lang = useSelector(selectCurrentLanguage);
     const [trCategoriesArr, setTrCategoriesArr] = useState(null);
@@ -45,7 +45,8 @@ const RecentJobsList = (props) => {
 
                                 return <JobListItem key={j.id} {...j}
                                 category={(trCategoriesArr?.translated && trCategoriesArr.translated[index]) ? trCategoriesArr.translated[index][lang] : j.category}
-                                isHomePage={true} />
+                                isHomePage={true}
+                                isMapApiLoaded={isMapApiLoaded} />
                             })
                         }
                     </div>

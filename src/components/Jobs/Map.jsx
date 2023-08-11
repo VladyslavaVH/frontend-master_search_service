@@ -8,7 +8,7 @@ import { useGetPermissionCheckQuery } from '../../features/master/masterApiSlice
 import NotificationDialog from '../HeaderContainer/Popup/NotificationDialog';
 import { useTranslation } from 'react-i18next';
 
-const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
+const Map = ({ activeTab, setActiveTab, startRequest, defaultCenter, masterCoordinates, setMasterCoordinates, lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
     const { t } = useTranslation();
     const [curBounds, setCurBounds] = useState(null);
     const [prevCenter, setPrevCenter] = useState(null);
@@ -16,14 +16,16 @@ const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, 
     const isMaster = useSelector(selectIsMaster);
     const [mapContainer, setMapContainer] = useState(null);
     const [markerCluster, setMarkerCluster] = useState(null);
+    const [infoWindow, setInfoWindow] = useState(undefined);
     const ref = useRef(null);
     const prevMarkersRef = useRef([]);
     const navigate = useNavigate();
     const { data:permission } = useGetPermissionCheckQuery();
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    const [firstRequest, setFirstRequest] = useState(true);
     
     useEffect(() => {
-        if (ref.current && !mapContainer) { 
+        if (ref.current && !mapContainer) {
             const map = new window.google.maps.Map(ref.current, {
                 center: center,
                 zoom: mapZoom,
@@ -40,28 +42,40 @@ const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, 
                 },
                 keyboardShortcuts: true,
             });
-            setMapContainer(map);
+            setMapContainer(map);            
+
+            window.google.maps.event.addListener(map, 'tilesloaded', function () {
+                if (firstRequest) {
+                    if (defaultCenter) {
+                        startRequest();
+                        setMasterCoordinates(center);
+                        setFirstRequest(false);
+                    }
+                }
+            });
 
             setPrevCenter(center);
 
             //bounds_changed
             window.google.maps.event.addListener(map, 'idle', function() {
                 const bounds = map.getBounds();
-                const ne = bounds.getNorthEast(); // Coords of the northeast corner
-                const sw = bounds.getSouthWest(); // Coords of the southwest corner
-
-                setBounds({
-                    lats: {
-                        startLat: sw.lat(),
-                        endLat: ne.lat()
-                    },
-                    lngs: {
-                        startLng: sw.lng(),
-                        endLng: ne.lng()
-                    }
-                });
-
-                setCurBounds(bounds);
+                if (bounds) {
+                    const ne = bounds.getNorthEast(); // Coords of the northeast corner
+                    const sw = bounds.getSouthWest(); // Coords of the southwest corner
+    
+                    setBounds({
+                        lats: {
+                            startLat: sw.lat(),
+                            endLat: ne.lat()
+                        },
+                        lngs: {
+                            startLng: sw.lng(),
+                            endLng: ne.lng()
+                        }
+                    });
+    
+                    setCurBounds(bounds);
+                }
             });
         }
     }, [ref?.current]);
@@ -72,7 +86,6 @@ const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, 
              * оновлюємо кластер та маркери 
              * без центрування та зумування
              */
-            //debugger;
             if (bounds && curBounds) {  
                 if (!(prevCenter.lat == center.lat && prevCenter.lng == center.lng)) {
                     if (!curBounds.contains(center)) {
@@ -83,15 +96,21 @@ const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, 
                         setPrevCenter(center);
                     }   
                 } 
-            }           
+            }
+            
+            !infoWindow && setInfoWindow(new window.google.maps.InfoWindow({ 
+                maxWidth: '320px', 
+                maxHeight: '91px',
+                minWidth: '300px',
+            }));
 
             if (markerCluster && prevMarkersRef.current.length > 0) {
                 clearAllMarkersFromCluster();
                 clearMarkers(prevMarkersRef.current);
             }
 
-            //addMarkers(mapContainer, locations);
             addMarkers(mapContainer, jobs);
+
         }
     }, [center, mapContainer, bounds, jobs]);
     /*
@@ -109,10 +128,78 @@ const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, 
             }
 
             addMarkers(mapContainer, jobs);
+            addMasterMarker();
         }
     }, [lang]);
 
-    function createMarker(id, category, clientName, position, map, infoWindow) {
+    useEffect(() => {
+        if (activeTab && mapContainer) {
+            const activeMarker = markerCluster?.markers?.find(m => m?.id == activeTab);
+            const popup = createPopup(activeMarker?.id, activeMarker?.category, activeMarker?.clientName);
+            infoWindow.setContent(popup);
+            infoWindow.open({ 
+                anchor: activeMarker,
+                map: mapContainer, 
+            });
+        }
+    }, [activeTab]);
+    
+    function addMasterMarker() {
+        const marker = new window.google.maps.Marker({ 
+            map: mapContainer,
+            position: masterCoordinates,
+            icon: {
+                path: window.google.maps.SymbolPath.CIRCLE,
+                scale: 9,
+                fillColor: "#34a853",
+                strokeColor: '#a8dab5',
+                fillOpacity: 1,
+                strokeWeight: 11,
+                strokeOpacity: 0.2
+            },
+        });
+    }
+
+    useEffect(() => {
+        if (typeof masterCoordinates === 'object') {
+            addMasterMarker();
+        }
+    }, [center]);
+
+    function createPopup(id, category, clientName) {
+        const popup = document.createElement('div');
+                        
+        popup.innerHTML = `
+        <div data-job="${id}" data-title="${category}" class="job-listing-description">
+            <h3 class="job-listing-title" style="font-size: 16px;line-height: 24px;color: #333;font-weight: 500;font-family: "Nunito", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;text-transform: none;">${category}</h3>
+            <h4 class="job-listing-company" style="font-size: 14px;position: relative;top: 0px;color: #808080;font-weight: 500;font-family: "Nunito", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;text-transform: none;">${clientName}</h4>
+        </div> 
+        `;
+
+        popup.addEventListener('click', e => {
+            let jobId = e.target.getAttribute('data-job') ||
+            e.target.parentNode.getAttribute('data-job');
+
+            let jobCategory = e.target.getAttribute('data-title') ||
+            e.target.parentNode.getAttribute('data-title');
+
+            if (isAuth && isMaster ) {
+                if (permission) {
+                    navigate(`/master-office/job/${jobCategory.replace('/', '-')}`,
+                        { state: { id: jobId, name: 'ApplyForAJob', page: 'ApplyForAJob', isApply: true } }
+                    );
+                } else {
+                    setIsNotificationOpen(true);
+                }
+                
+            }
+            
+        });
+
+        return popup;
+    }
+
+    function createMarker(id, category, clientName, position, map) {
         /*and then, if you want to change the marker dynamically (like on mouseover), you can, for example:
     
             oMarker.setIcon({
@@ -134,37 +221,23 @@ const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, 
                 strokeWeight: 9,
                 strokeOpacity: 0.15
             },
+            id,
+            category, 
+            clientName,
+            position
         });
 
         marker.addListener('click', () => {
             infoWindow.setPosition(position);
-            const popup = document.createElement('div');
-                        
-            popup.innerHTML = `
-            <div data-job="${id}" data-title="${category}" class="job-listing-description">
-                <h3 class="job-listing-title" style="font-size: 16px;line-height: 24px;color: #333;font-weight: 500;font-family: "Nunito", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;text-transform: none;">${category}</h3>
-                <h4 class="job-listing-company" style="font-size: 14px;position: relative;top: 0px;color: #808080;font-weight: 500;font-family: "Nunito", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;text-transform: none;">${clientName}</h4>
-            </div> 
-            `;
-            popup.addEventListener('click', e => {
-                let jobId = e.target.getAttribute('data-job') ||
-                e.target.parentNode.getAttribute('data-job');
-
-                let jobCategory = e.target.getAttribute('data-title') ||
-                e.target.parentNode.getAttribute('data-title');
-
-                if (isAuth && isMaster ) {
-                    if (permission) {
-                        navigate(`/master-office/job/${jobCategory.replace('/', '-')}`,
-                            { state: { id: jobId, name: 'ApplyForAJob', page: 'ApplyForAJob', isApply: true } }
-                        );
-                    } else {
-                        setIsNotificationOpen(true);
-                    }
-                    
-                }
-                
-            });
+            const popup = createPopup(id, category, clientName);
+            infoWindow.setContent(popup);
+            infoWindow.open({ map });
+        });
+        
+        marker.addListener('mouseover', () => {
+            setActiveTab(id);
+            infoWindow.setPosition(position);
+            const popup = createPopup(id, category, clientName);
             infoWindow.setContent(popup);
             infoWindow.open({ map });
         });
@@ -183,17 +256,11 @@ const Map = ({ lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, 
     }
 
     function addMarkers(map, jobsArr) {
-        const infoWindow = new window.google.maps.InfoWindow({ 
-            maxWidth: '320px', 
-            maxHeight: '91px',
-            minWidth: '300px',
-        });
-        
         const markers = jobsArr?.map(({id, category, clientName, lat, lng }) => {
             let index = trCategoriesArr?.input?.indexOf(category);
             return createMarker(id, 
                 (trCategoriesArr?.translated && trCategoriesArr.translated[index]) ? trCategoriesArr.translated[index][lang] : category, 
-                clientName, { lat, lng }, map, infoWindow);
+                clientName, { lat, lng }, map);
         });
         prevMarkersRef.current = markers;
     
