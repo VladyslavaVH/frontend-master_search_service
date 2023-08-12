@@ -2,21 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectIsMaster, selectCurrentUser, selectIsAdmin } from "../../../features/auth/authSlice";
 import useLogout from './../../../hooks/useLogout';
-import { NavLink, useNavigate, useOutletContext } from 'react-router-dom';
-import Snackbar from "node-snackbar";
-import $ from 'jquery';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 
-const UserWindow = (props) => {
+const UserWindow = ({}) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [isActive, setIsActive] = useState(false);
-    const [isOnline, setIsOnline] = useState(true);
+    const [isOnline] = useState(true);
     const user = useSelector(selectCurrentUser);
     const logout = useLogout();
     const isMaster = useSelector(selectIsMaster);
     const isAdmin = useSelector(selectIsAdmin);
-    const { userPlaceholder, firstName, lastName, avatar} = user;
+    const { firstName, lastName, avatar} = user;
 
     const [fullName, setFullName] = useState(`${firstName} ${lastName}`);
 

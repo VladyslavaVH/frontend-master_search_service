@@ -50,7 +50,9 @@ let Jobs = ({ isMapApiLoaded }) => {
 		if (!pos) {
 			setCenter(masterPos);
 			if (!defaultCenter) {
-				setMasterCoordinates(masterPos)
+				setMasterCoordinates(masterPos);
+			} else {
+				localStorage.setItem('firstRequest', true);
 			}
 		}
 	}, [pos, masterPos]);
@@ -113,9 +115,7 @@ let Jobs = ({ isMapApiLoaded }) => {
 				center={center}
 				isMapApiLoaded={isMapApiLoaded}
 				startRequest={() => setStartPermissionRequest(true)}
-				defaultCenter={defaultCenter}
 				masterCoordinates={masterCoordinates}
-				setMasterCoordinates={setMasterCoordinates}
 				activeTab={activeTab}
 				setActiveTab={setActiveTab} />
 			}
@@ -125,7 +125,12 @@ let Jobs = ({ isMapApiLoaded }) => {
 		{t(notificationText)}
 	</NotificationDialog>
 	
-	<PermissionRequest start={start} finish={() => setStartPermissionRequest(false)} action={(GEO) => setCenter(GEO)} />
+	<PermissionRequest start={start} 
+	finish={() => setStartPermissionRequest(false)} 
+	action={(GEO) => {
+		setCenter(GEO);
+		setMasterCoordinates(GEO);
+	}} />
 </div>;
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import SuperClusterAlgorithm from '../../utils/superClusterAlgorithm';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { useGetPermissionCheckQuery } from '../../features/master/masterApiSlice
 import NotificationDialog from '../HeaderContainer/Popup/NotificationDialog';
 import { useTranslation } from 'react-i18next';
 
-const Map = ({ activeTab, setActiveTab, startRequest, defaultCenter, masterCoordinates, setMasterCoordinates, lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
+const Map = ({ activeTab, setActiveTab, startRequest, masterCoordinates, lang, trCategoriesArr, jobs, mapZoom, setBounds, bounds, center, isMapApiLoaded }) => {
     const { t } = useTranslation();
     const [curBounds, setCurBounds] = useState(null);
     const [prevCenter, setPrevCenter] = useState(null);
@@ -22,7 +22,6 @@ const Map = ({ activeTab, setActiveTab, startRequest, defaultCenter, masterCoord
     const navigate = useNavigate();
     const { data:permission } = useGetPermissionCheckQuery();
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-    const [firstRequest, setFirstRequest] = useState(true);
     
     useEffect(() => {
         if (ref.current && !mapContainer) {
@@ -42,16 +41,14 @@ const Map = ({ activeTab, setActiveTab, startRequest, defaultCenter, masterCoord
                 },
                 keyboardShortcuts: true,
             });
-            setMapContainer(map);            
-
+            setMapContainer(map);
+            
             window.google.maps.event.addListener(map, 'tilesloaded', function () {
-                if (firstRequest) {
-                    if (defaultCenter) {
-                        startRequest();
-                        setMasterCoordinates(center);
-                        setFirstRequest(false);
-                    }
-                }
+                if (localStorage.getItem('firstRequest')) {                    
+                    localStorage.removeItem('firstRequest');
+                    startRequest();//permission to view master geo
+                } 
+                
             });
 
             setPrevCenter(center);
@@ -110,7 +107,9 @@ const Map = ({ activeTab, setActiveTab, startRequest, defaultCenter, masterCoord
             }
 
             addMarkers(mapContainer, jobs);
-
+            if (masterCoordinates !== null) {
+                addMasterMarker();
+            }
         }
     }, [center, mapContainer, bounds, jobs]);
     /*
@@ -128,7 +127,6 @@ const Map = ({ activeTab, setActiveTab, startRequest, defaultCenter, masterCoord
             }
 
             addMarkers(mapContainer, jobs);
-            addMasterMarker();
         }
     }, [lang]);
 
@@ -155,16 +153,11 @@ const Map = ({ activeTab, setActiveTab, startRequest, defaultCenter, masterCoord
                 strokeColor: '#a8dab5',
                 fillOpacity: 1,
                 strokeWeight: 11,
-                strokeOpacity: 0.2
+                strokeOpacity: 0.2,
             },
         });
-    }
 
-    useEffect(() => {
-        if (typeof masterCoordinates === 'object') {
-            addMasterMarker();
-        }
-    }, [center]);
+    }
 
     function createPopup(id, category, clientName) {
         const popup = document.createElement('div');

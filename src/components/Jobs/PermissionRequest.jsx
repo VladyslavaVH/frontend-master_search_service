@@ -29,8 +29,7 @@ const PermissionRequest = ({ start, finish, action }) => {
 		updateMasterGeo(MASTER_GEO);
         
         setNotificationText('GrantedAccessToView');
-		setNotificationType('success');
-        !isNotificationOpen && setIsNotificationOpen(true);
+        setNotificationType('success');
 		
         if (action) {
             action(MASTER_GEO, false);
@@ -61,7 +60,6 @@ const PermissionRequest = ({ start, finish, action }) => {
 
     useEffect(() => {
         if (start) {
-            
             setNotificationText('ViewPermissionNotAllowed');
             !isNotificationOpen && setIsNotificationOpen(true);
             if (navigator.geolocation) {

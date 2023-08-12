@@ -28,6 +28,7 @@ const NumberVerification = ({ regData, phone, onClose, resendOTP }) => {
 
     useEffect(() => {
         inputN0El.current.focus();
+        localStorage.setItem('isRegistration', true);
     }, []);
 
     const onSubmit = e => {
