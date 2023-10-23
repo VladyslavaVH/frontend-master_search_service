@@ -1,4 +1,4 @@
-# Master search service (_Front-end_)
+# react_frontend-master_search_service
 React project with using redux and redux toolkit.
 
 ## [Attention please!](https://choosealicense.com/no-permission/)
